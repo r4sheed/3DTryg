@@ -317,7 +317,6 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 #define T3_NMTVF(%0,%1)							(((%0) > (%1))?(%1):(%0))
 
 #define T3_GetWeaponDamage(%0)					Tryg3D::WeaponDamage[(%0)]
-#define T3_CompressRotation(%0)					((%0)-floatround((%0)/360.0,floatround_floor)*360.0)
 #define T3_RotationInRange(%0,%1,%2)			((%0) >= (%1) && (%0) <= (%2))
 #define T3_RoundAccuracy(%0)					(floatround((%0)*10000.0)/10000.0)
 #define T3_AppendLineArguments2D(%0,%1,%2) 		%0[0] = (%1), %0[0] = (%2)
@@ -362,6 +361,10 @@ stock Float: Tryg3D::RandomFloat(const Float:min, const Float:max, accuracy = TR
 	new T3D:divValue = floatround(floatpower(10.0,accuracy)), T3D:prefix = floatround(max)-floatround(min), Float:T3D:rand_prefix = 0.0;
 	if(T3D:prefix > 0) T3D:rand_prefix = 1.0 * random(T3D:prefix);
 	return T3D:rand_prefix + min + (1.0*random(T3D:divValue)/(T3D:divValue*1.0));
+}
+
+stock Float: Tryg3D::CompressRotation(const Float:rotation){
+	return (rotation-floatround(rotation/360.0,floatround_floor)*360.0);
 }
 
 stock Float: Tryg3D::DeCompressRotation(Float:rotation){
