@@ -1113,7 +1113,7 @@ stock bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Fl
 	new Float:cylinder_length = Tryg3D::GetDistance3D(xA,yA,zA,xB,yB,zB);
 	if(cylinder_length <= 0.0) return false;
 	new Float:iX, Float:iY, Float:iZ,
-		Float:distance = GetDistancePointToLine(px,py,pz,xA,yA,zA,xB,yB,zB,iX,iY,iZ),
+		Float:distance = Tryg3D::GetDistancePointToLine(px,py,pz,xA,yA,zA,xB,yB,zB,iX,iY,iZ),
 		Float:tmp_radius = (Tryg3D::GetDistance3D(iX,iY,iZ,xA,yA,zA) / cylinder_length * radius) + (Tryg3D::GetDistance3D(iX,iY,iZ,xB,yB,zB) / cylinder_length * radius);
 	return (distance != -1.0 && distance <= tmp_radius);
 }
@@ -1246,7 +1246,7 @@ stock bool: Tryg3D::PointInCube(const Float:px, const Float:py, const Float:pz, 
  * Random Functions             *
  ********************************/
 
-stock Tryg3D::GetRandomHit(const Float:x, const Float:y, const Float:z, const Float:range, &Float:tx, &Float:ty, &Float:tz){
+stock Tryg3D::GetRandomHit(const Float:x, const Float:y, const Float:z, const range, &Float:tx, &Float:ty, &Float:tz){
 	tx = x + (random(range * 2 + 1) - range);
 	ty = y + (random(range * 2 + 1) - range);
 	tz = z + (random(range * 2 + 1) - range);
