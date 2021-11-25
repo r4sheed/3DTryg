@@ -302,57 +302,57 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
  * Internal Functions           *
  ********************************/
 
-#define T3_SingleClock(%1,%2)								((360.0/(%1))*(%2))
-#define T3_EvenClock(%1,%2)									((360.0/(%1))*(2*(%2)))
-#define T3_UnevenClock(%1,%2)								((360.0/(%1))*((2*(%2))-1))
+#define T3_SingleClock(%1,%2)					((360.0/(%1))*(%2))
+#define T3_EvenClock(%1,%2)						((360.0/(%1))*(2*(%2)))
+#define T3_UnevenClock(%1,%2)					((360.0/(%1))*((2*(%2))-1))
 
-#define T3_NLTZ(%0)											(((%0) < 0)?(0):(%0))
-#define T3_NMTZ(%0)											(((%0) > 0)?(0):(%0))
-#define T3_NLTZF(%0)										(((%0) < 0.0)?(0.0):(%0))
-#define T3_NMTZF(%0)										(((%0) > 0.0)?(0.0):(%0))
+#define T3_NLTZ(%0)								(((%0) < 0)?(0):(%0))
+#define T3_NMTZ(%0)								(((%0) > 0)?(0):(%0))
+#define T3_NLTZF(%0)							(((%0) < 0.0)?(0.0):(%0))
+#define T3_NMTZF(%0)							(((%0) > 0.0)?(0.0):(%0))
 
-#define T3_NLTV(%0,%1)										(((%0) < (%1))?(%1):(%0))
-#define T3_NMTV(%0,%1)										(((%0) > (%1))?(%1):(%0))
-#define T3_NLTVF(%0,%1)										(((%0) < (%1))?(%1):(%0))
-#define T3_NMTVF(%0,%1)										(((%0) > (%1))?(%1):(%0))
+#define T3_NLTV(%0,%1)							(((%0) < (%1))?(%1):(%0))
+#define T3_NMTV(%0,%1)							(((%0) > (%1))?(%1):(%0))
+#define T3_NLTVF(%0,%1)							(((%0) < (%1))?(%1):(%0))
+#define T3_NMTVF(%0,%1)							(((%0) > (%1))?(%1):(%0))
 
-#define T3_GetWeaponDamage(%0)								Tryg3D::WeaponDamage[(%0)]
-#define T3_CompressRotation(%0)								((%0)-floatround((%0)/360.0,floatround_floor)*360.0)
-#define T3_RotationInRange(%0,%1,%2)						((%0) >= (%1) && (%0) <= (%2))
-#define T3_RoundAccuracy(%0)								(floatround((%0)*10000.0)/10000.0)
-#define T3_AppendLineArguments2D(%0,%1,%2) 					%0[0] = (%1), %0[0] = (%2)
-#define T3_AppendLineArguments3D(%0,%1,%2,%3) 				%0[0] = (%1), %0[0] = (%2), %0[0] = (%3)
-#define T3_DivideValues(%0,%1,%2,%3)						((%1) /= (%0)), ((%2) /= (%0)), ((%3) /= (%0))
-#define T3_RecoilFloat(%0,%1)								(((%0) >= 0.0)?((%0)+(%1)):((%0)-(%1)))
-#define T3_IsProbable(%0)									((random(100)+1) <= (%0))
-#define T3_IsProbableEx(%0,%1)								((random(%1)+1) <= (%0))
-#define T3_CalculatePercent(%0,%1)							(((%0)/(%1))*100.0)
+#define T3_GetWeaponDamage(%0)					Tryg3D::WeaponDamage[(%0)]
+#define T3_CompressRotation(%0)					((%0)-floatround((%0)/360.0,floatround_floor)*360.0)
+#define T3_RotationInRange(%0,%1,%2)			((%0) >= (%1) && (%0) <= (%2))
+#define T3_RoundAccuracy(%0)					(floatround((%0)*10000.0)/10000.0)
+#define T3_AppendLineArguments2D(%0,%1,%2) 		%0[0] = (%1), %0[0] = (%2)
+#define T3_AppendLineArguments3D(%0,%1,%2,%3) 	%0[0] = (%1), %0[0] = (%2), %0[0] = (%3)
+#define T3_DivideValues(%0,%1,%2,%3)			((%1) /= (%0)), ((%2) /= (%0)), ((%3) /= (%0))
+#define T3_RecoilFloat(%0,%1)					(((%0) >= 0.0)?((%0)+(%1)):((%0)-(%1)))
+#define T3_IsProbable(%0)						((random(100)+1) <= (%0))
+#define T3_IsProbableEx(%0,%1)					((random(%1)+1) <= (%0))
+#define T3_CalculatePercent(%0,%1)				(((%0)/(%1))*100.0)
 
-#define T3_GetActiveTime()									(GetTickCount()-Tryg3D::UpTime)
-#define T3_GetVersion(%0) 									((%0) / 10000),(((%0) % 10000) / 100),(((%0) % 10000) % 100)
+#define T3_GetActiveTime()						(GetTickCount()-Tryg3D::UpTime)
+#define T3_GetVersion(%0)						((%0) / 10000),(((%0) % 10000) / 100),(((%0) % 10000) % 100)
 
-#define T3_GetActiveCount() 								GetSVarInt("ADM:3DTryg:ACTIVE")
-#define T3_GetErrorCount() 									GetSVarInt("ADM:3DTryg:Error")
-#define T3_ResetErrorCount() 								SetSVarInt("ADM:3DTryg:Error",0)
-#define T3_UpdateErrorCount() 								SetSVarInt("ADM:3DTryg:Error",Tryg3D::GetErrorCount()+1)
+#define T3_GetActiveCount()						GetSVarInt("ADM:3DTryg:ACTIVE")
+#define T3_GetErrorCount()						GetSVarInt("ADM:3DTryg:Error")
+#define T3_ResetErrorCount()					SetSVarInt("ADM:3DTryg:Error",0)
+#define T3_UpdateErrorCount()					SetSVarInt("ADM:3DTryg:Error",Tryg3D::GetErrorCount()+1)
 
-#define T3_SetStreamDistance(%0)							Tryg3D::StreamDistance = (%0)
-#define T3_GetStreamDistance()								Tryg3D::StreamDistance
-#define T3_RandomValue(%0,%1) 								(random((%1)-(%0)+1)+(%0))
+#define T3_SetStreamDistance(%0)				Tryg3D::StreamDistance = (%0)
+#define T3_GetStreamDistance()					Tryg3D::StreamDistance
+#define T3_RandomValue(%0,%1)					(random((%1)-(%0)+1)+(%0))
 
-#define T3_KeyPressed(%0) 									(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
-#define T3_KeyReleased(%0)									(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
-#define T3_KeyHolding(%0) 									((newkeys & (%0)) == (%0))
+#define T3_KeyPressed(%0)						(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
+#define T3_KeyReleased(%0)						(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
+#define T3_KeyHolding(%0)						((newkeys & (%0)) == (%0))
 
 //%d:%02d:%02d:%02d
-#define T3_SecToTimeDay(%0)									((%0) / 86400),(((%0) % 86400) / 3600),((((%0) % 86400) % 3600) / 60),((((%0) % 86400) % 3600) % 60)
-#define T3_MSToTimeDay(%0)									Tryg3D::SecToTimeDay((%0)/1000)
+#define T3_SecToTimeDay(%0)						((%0) / 86400),(((%0) % 86400) / 3600),((((%0) % 86400) % 3600) / 60),((((%0) % 86400) % 3600) % 60)
+#define T3_MSToTimeDay(%0)						Tryg3D::SecToTimeDay((%0)/1000)
 //%02d:%02d:%02d
-#define T3_SecToTime(%0)									((%0) / 3600),(((%0) % 3600) / 60),(((%0) % 3600) % 60)
-#define T3_MSToTime(%0)										Tryg3D::SecToTime((%0)/1000)
+#define T3_SecToTime(%0)						((%0) / 3600),(((%0) % 3600) / 60),(((%0) % 3600) % 60)
+#define T3_MSToTime(%0)							Tryg3D::SecToTime((%0)/1000)
 //%02d:%02d
-#define T3_SecToTimeMini(%0)								((%0) / 60),((%0) % 60)
-#define T3_MSToTimeMini(%0)									Tryg3D::SecToTimeMini((%0)/1000)
+#define T3_SecToTimeMini(%0)					((%0) / 60),((%0) % 60)
+#define T3_MSToTimeMini(%0)						Tryg3D::SecToTimeMini((%0)/1000)
 
 //Author: hesambia random.inc, modified by Abyss Morgan
 stock Float: Tryg3D::RandomFloat(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
@@ -402,7 +402,7 @@ stock Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0){
 //Provided by Nero_3D
 stock Tryg3D::EulerToQuat(Float:rx, Float:ry, Float:rz, &Float:qw, &Float:qx, &Float:qy, &Float:qz){
 	Tryg3D::DivideValues(2.0,rx,ry,rz);
-	new	Float:cosX = floatcos(rx,degrees), Float:cosY = floatcos(ry,degrees), Float:cosZ = floatcos(rz,degrees), Float:sinX = floatsin(rx,degrees), Float:sinY = floatsin(ry,degrees), Float:sinZ = floatsin(rz,degrees);
+	new Float:cosX = floatcos(rx,degrees), Float:cosY = floatcos(ry,degrees), Float:cosZ = floatcos(rz,degrees), Float:sinX = floatsin(rx,degrees), Float:sinY = floatsin(ry,degrees), Float:sinZ = floatsin(rz,degrees);
 	qw = Tryg3D::RoundAccuracy((sinX * sinY * sinZ - cosX * cosY * cosZ));
 	qx = Tryg3D::RoundAccuracy((sinX * cosY * cosZ - cosX * sinY * sinZ));
 	qy = Tryg3D::RoundAccuracy((cosX * sinY * cosZ + sinX * cosY * sinZ));
