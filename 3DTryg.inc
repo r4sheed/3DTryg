@@ -20,11 +20,11 @@
 /*
 //Check Version 3DTryg.inc
 #if !defined TRYG3D_REMASTERED_INCLUDE
-	#error [ADM] This include required 3DTryg.inc Gen.2 v1.0.0
+	#error [ADM] This include required 3DTryg.inc Gen. 2 v1.0.0
 #elseif !defined TRYG3D_VERSION
-	#error [ADM] Update your 3DTryg.inc to Gen.2 v1.0.0
+	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.0
 #elseif (TRYG3D_VERSION < 10000)
-	#error [ADM] Update your 3DTryg.inc to Gen.2 v1.0.0
+	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.0
 #endif
 */
 
@@ -1571,7 +1571,7 @@ stock Tryg3D::Init(){
 	format(T3D:ver_name,sizeof(T3D:ver_name),"%d.%d.%d",Tryg3D::GetVersion(TRYG3D_VERSION));
 	if(GetSVarInt("TRYG3D:REMASTERED:INIT") == 0){
 		SetSVarInt("TRYG3D:REMASTERED:INIT",1);
-		printf("[ADM] Info: Load %s Gen 2. v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
+		printf("[ADM] Info: Load %s Gen. 2 v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
 		new T3D:len = strlen(T3D:modules);
 		if(T3D:len > 0){
 			T3D:modules[T3D:len-1] = EOS;
@@ -1610,7 +1610,7 @@ stock Tryg3D::Exit(){
 	format(T3D:ver_name,sizeof(T3D:ver_name),"%d.%d.%d",Tryg3D::GetVersion(TRYG3D_VERSION));
 	if(Tryg3D::GetActiveCount() == 0){
 		SetSVarInt("TRYG3D:REMASTERED:INIT",0);
-		printf("[ADM] Info: Unload %s Gen 2. v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
+		printf("[ADM] Info: Unload %s Gen. 2 v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
 	}
 }
 
@@ -1625,9 +1625,10 @@ public OnFilterScriptInit(){
 		Tryg3D::Init();
 	}
 	#if defined T3_OnFilterScriptInit
-		Tryg3D::OnFilterScriptInit();
+		return T3_OnFilterScriptInit();
+	#else 
+		return 1;
 	#endif
-	return 1;
 }
 
 #if defined _ALS_OnFilterScriptInit
@@ -1635,9 +1636,9 @@ public OnFilterScriptInit(){
 #else
 	#define _ALS_OnFilterScriptInit
 #endif
-#define OnFilterScriptInit Tryg3D::OnFilterScriptInit
+#define OnFilterScriptInit T3_OnFilterScriptInit
 #if defined T3_OnFilterScriptInit
-	forward Tryg3D::OnFilterScriptInit();
+	forward T3_OnFilterScriptInit();
 #endif
 
 //Hook: OnGameModeInit
@@ -1647,9 +1648,10 @@ public OnGameModeInit(){
 		Tryg3D::Init();
 	}
 	#if defined T3_OnGameModeInit
-		Tryg3D::OnGameModeInit();
+		return T3_OnGameModeInit();
+	#else 
+		return 1;
 	#endif
-	return 1;
 }
 
 #if defined _ALS_OnGameModeInit
@@ -1657,9 +1659,9 @@ public OnGameModeInit(){
 #else
 	#define _ALS_OnGameModeInit
 #endif
-#define OnGameModeInit Tryg3D::OnGameModeInit
+#define OnGameModeInit T3_OnGameModeInit
 #if defined T3_OnGameModeInit
-	forward Tryg3D::OnGameModeInit();
+	forward T3_OnGameModeInit();
 #endif
 
 //Hook: OnFilterScriptExit
@@ -1669,9 +1671,10 @@ public OnFilterScriptExit(){
 		Tryg3D::Exit();
 	}
 	#if defined T3_OnFilterScriptExit
-		Tryg3D::OnFilterScriptExit();
+		return T3_OnFilterScriptExit();
+	#else 
+		return 1;
 	#endif
-	return 1;
 }
 
 #if defined _ALS_OnFilterScriptExit
@@ -1679,9 +1682,9 @@ public OnFilterScriptExit(){
 #else
 	#define _ALS_OnFilterScriptExit
 #endif
-#define OnFilterScriptExit Tryg3D::OnFilterScriptExit
+#define OnFilterScriptExit T3_OnFilterScriptExit
 #if defined T3_OnFilterScriptExit
-	forward Tryg3D::OnFilterScriptExit();
+	forward T3_OnFilterScriptExit();
 #endif
 
 //Hook: OnGameModeExit
@@ -1691,9 +1694,10 @@ public OnGameModeExit(){
 		Tryg3D::Exit();
 	}
 	#if defined T3_OnGameModeExit
-		Tryg3D::OnGameModeExit();
+		return T3_OnGameModeExit();
+	#else 
+		return 1;
 	#endif
-	return 1;
 }
 
 #if defined _ALS_OnGameModeExit
@@ -1701,9 +1705,9 @@ public OnGameModeExit(){
 #else
 	#define _ALS_OnGameModeExit
 #endif
-#define OnGameModeExit Tryg3D::OnGameModeExit
+#define OnGameModeExit T3_OnGameModeExit
 #if defined T3_OnGameModeExit
-	forward Tryg3D::OnGameModeExit();
+	forward T3_OnGameModeExit();
 #endif
 
 /********************************
