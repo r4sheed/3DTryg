@@ -32,7 +32,7 @@
  * Version                      *
  ********************************/
 
-#if defined TRYG3D_SAMP_INCLUDE
+#if (defined TRYG3D_SAMP_INCLUDE) || (defined _3D_Tryg)
 	#error [ADM] Trying to include 3DTryg.inc Gen. 2 with already included 3DTryg.inc Gen. 1
 #endif
 
