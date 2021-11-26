@@ -309,7 +309,6 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 #define T3_AppendLineArguments3D(%0,%1,%2,%3)   %0[0] = (%1), %0[0] = (%2), %0[0] = (%3)
 #define T3_DivideValues(%0,%1,%2,%3)            ((%1) /= (%0)), ((%2) /= (%0)), ((%3) /= (%0))
 #define T3_RecoilFloat(%0,%1)                   (((%0) >= 0.0)?((%0)+(%1)):((%0)-(%1)))
-#define T3_CalculatePercent(%0,%1)              (((%0)/(%1))*100.0)
 
 #define T3_GetActiveTime()                      (GetTickCount()-Tryg3D::UpTime)
 #define T3_GetVersion(%0)                       ((%0) / 10000),(((%0) % 10000) / 100),(((%0) % 10000) % 100)
@@ -321,7 +320,6 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 
 #define T3_SetStreamDistance(%0)                Tryg3D::StreamDistance = (%0)
 #define T3_GetStreamDistance()                  Tryg3D::StreamDistance
-#define T3_RandomInteger(%0,%1)                 (random((%1)-(%0)+1)+(%0))
 
 #define T3_KeyPressed(%0)                       (((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 #define T3_KeyReleased(%0)                      (((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
@@ -351,6 +349,16 @@ stock Float: Tryg3D::RandomFloat(const Float:min, const Float:max, accuracy = TR
 stock Float: Tryg3D::RandomFloatEx(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
 	if(min >= max) return 0.0;
 	return Tryg3D::RandomFloat(0.0,floatsqroot(floatpower(min-max,2.0)),accuracy) - min;
+}
+
+stock Tryg3D::RandomInteger(const min, const max){
+	if(min >= max) return 0;
+	return random(max-min+1) + min;
+}
+
+stock Float: Tryg3D::CalculatePercent(const Float:value, const Float:maxvalue){
+	if(maxvalue == 0.0) return 0.0;
+	return (value/maxvalue)*100.0;
 }
 
 stock Float: Tryg3D::CompressRotation(const Float:rotation){
