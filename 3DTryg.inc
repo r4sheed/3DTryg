@@ -26,6 +26,35 @@ Tryg3D::SwapInt(&variable1, &variable2);
 Tryg3D::SwapFloat(&Float:variable1, &Float:variable2);
 Tryg3D::RecoilVector(&Float:vx, &Float:vy, &Float:vz, const Float:sx, const Float:sy, const Float:sz);
 Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0);
+Float: Tryg3D::SingleClock(max_items,index);
+Float: Tryg3D::EvenClock(max_items,index);
+Float: Tryg3D::UnevenClock(max_items,index);
+Tryg3D::NLTZ(value);
+Tryg3D::NMTZ(value);
+Float: Tryg3D::NLTZF(Float:value);
+Float: Tryg3D::NMTZF(Float:value);
+Tryg3D::NLTV(value, min);
+Tryg3D::NMTV(value, max);
+Float: Tryg3D::NLTVF(Float:value, Float:min);
+Float: Tryg3D::NMTVF(Float:value, Float:max);
+Tryg3D::GetWeaponDamage(weaponid);
+bool: Tryg3D::RotationInRange(Float:rotation, Float:min, Float:max);
+Float: Tryg3D::RoundAccuracy(Float:value);
+Tryg3D::AppendLineArguments2D(Float:line[2], Float:x, Float:y);
+Tryg3D::AppendLineArguments3D(Float:line[3], Float:x, Float:y, Float:z);
+Tryg3D::DivideValues(denominator, &Float:x, &Float:y, &Float:z);
+Float: Tryg3D::RecoilFloat(Float:value, Float:recoil);
+Tryg3D::SetStreamDistance(const Float:streamdistance);
+Float: Tryg3D::GetStreamDistance();
+Tryg3D::KeyPressed(key);
+Tryg3D::KeyReleased(key);
+Tryg3D::KeyHolding(key);
+Tryg3D::SecToTimeDay(seconds);      //%d:%02d:%02d:%02d
+Tryg3D::MSToTimeDay(milliseconds);  //%d:%02d:%02d:%02d
+Tryg3D::SecToTime(seconds);         //%02d:%02d:%02d
+Tryg3D::MSToTime(milliseconds);     //%02d:%02d:%02d
+Tryg3D::SecToTimeMini(seconds);     //%02d:%02d
+Tryg3D::MSToTimeMini(milliseconds); //%02d:%02d
 
 # Quaternion Functions
 Tryg3D::EulerToQuat(Float:rx, Float:ry, Float:rz, &Float:qw, &Float:qx, &Float:qy, &Float:qz);
@@ -104,7 +133,7 @@ bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:pz, co
 bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b);
 bool: Tryg3D::IsPointInCircularSector(const Float:px, Float:py, Float:x, Float:y, Float:rz, Float:radius, Float:view_angle);
 bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz);
-bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Float:x, Float:y, Float:z, Float:rx, Float:rz, Float:radius, Float:vrx, Float:vrz, ignore_vehicle = INVALID_VEHICLE_ID, ignore_player = INVALID_PLAYER_ID, ignore_actor = INVALID_ACTOR_ID, collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
+//bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Float:x, Float:y, Float:z, Float:rx, Float:rz, Float:radius, Float:vrx, Float:vrz, ignore_vehicle = INVALID_VEHICLE_ID, ignore_player = INVALID_PLAYER_ID, ignore_actor = INVALID_ACTOR_ID, collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
 bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInEllipticalCylinder(const Float:px, const Float:py, const Float:pz, const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInPolygon(const Float:x, const Float:y, const Float:points[], const max_points = sizeof(points));
@@ -482,12 +511,12 @@ stock Float: Tryg3D::RandomFloat(const Float:min, const Float:max, accuracy = TR
 	if(accuracy > 6) accuracy = 6;
 	new T3D:divValue = floatround(floatpower(10.0,accuracy)), T3D:prefix = floatround(max)-floatround(min), Float:T3D:rand_prefix = 0.0;
 	if(T3D:prefix > 0) T3D:rand_prefix = 1.0 * random(T3D:prefix);
-	return T3D:rand_prefix + min + (1.0*random(T3D:divValue)/(T3D:divValue*1.0));
+	return T3D:rand_prefix + min + (1.0*random(T3D:divValue+1)/(T3D:divValue*1.0));
 }
 
 stock Float: Tryg3D::RandomFloatEx(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
 	if(min >= max) return 0.0;
-	return Tryg3D::RandomFloat(0.0,floatsqroot(floatpower(min-max,2.0)),accuracy) - min;
+	return Tryg3D::RandomFloat(0.0,max-min,accuracy) + min;
 }
 
 stock Tryg3D::RandomInteger(const min, const max){
