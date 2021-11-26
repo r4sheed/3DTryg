@@ -672,11 +672,11 @@ stock Tryg3D::GetQuatUpVector(const Float:qw, const Float:qx, const Float:qy, co
  ********************************/
 
 stock Float: Tryg3D::GetDistance1D(const Float:x1, const Float:x2){
-	return VectorSize(x1-x2,y1-y2,z1-z2);
+	return VectorSize(x1-x2,0.0,0.0);
 }
 
 stock Float: Tryg3D::GetDistance2D(const Float:x1, const Float:y1, const Float:x2, const Float:y2){
-	return VectorSize(x1-x2,y1-y2,z1-z2);
+	return VectorSize(x1-x2,y1-y2,0.0);
 }
 
 stock Float: Tryg3D::GetDistance3D(const Float:x1, const Float:y1, const Float:z1, const Float:x2, const Float:y2, const Float:z2){
