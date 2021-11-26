@@ -1766,10 +1766,9 @@ public OnFilterScriptInit(){
 		Tryg3D::Init();
 	}
 	#if defined T3_OnFilterScriptInit
-		return T3_OnFilterScriptInit();
-	#else 
-		return 1;
+		T3_OnFilterScriptInit();	
 	#endif
+	return 1;
 }
 
 #if defined _ALS_OnFilterScriptInit
@@ -1789,10 +1788,9 @@ public OnGameModeInit(){
 		Tryg3D::Init();
 	}
 	#if defined T3_OnGameModeInit
-		return T3_OnGameModeInit();
-	#else 
-		return 1;
+		T3_OnGameModeInit();
 	#endif
+	return 1;
 }
 
 #if defined _ALS_OnGameModeInit
@@ -1812,10 +1810,9 @@ public OnFilterScriptExit(){
 		Tryg3D::Exit();
 	}
 	#if defined T3_OnFilterScriptExit
-		return T3_OnFilterScriptExit();
-	#else 
-		return 1;
+		T3_OnFilterScriptExit();
 	#endif
+	return 1;
 }
 
 #if defined _ALS_OnFilterScriptExit
@@ -1835,10 +1832,9 @@ public OnGameModeExit(){
 		Tryg3D::Exit();
 	}
 	#if defined T3_OnGameModeExit
-		return T3_OnGameModeExit();
-	#else 
-		return 1;
+		T3_OnGameModeExit();
 	#endif
+	return 1;
 }
 
 #if defined _ALS_OnGameModeExit
@@ -1856,7 +1852,7 @@ public OnGameModeExit(){
  ********************************/
 
 #pragma unused T3_WeaponDamage
-//#pragma unused T3_StreamDistance
+#pragma unused T3_StreamDistance
 //#pragma unused T3_DeatchTick
 #pragma unused T3_OrientationRotation
 //#pragma unused T3_ExplosionTime
