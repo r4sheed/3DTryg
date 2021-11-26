@@ -32,120 +32,125 @@
  * Version                      *
  ********************************/
 
+#if defined TRYG3D_SAMP_INCLUDE
+	#error [ADM] Trying to include 3DTryg.inc Gen. 2 with already included 3DTryg.inc Gen. 1
+#endif
+
 #if defined TRYG3D_REMASTERED_INCLUDE
 	#endinput
 #endif
 #define TRYG3D_REMASTERED_INCLUDE
 
-#define TRYG3D_VERSION									(10000) //a.b.c g+10000*a+100*b+c
-#define TRYG3D_LIBRARY_NAME								"3DTryg"
-#define TRYG3D_AUTHOR_NAME								"Abyss Morgan"
+#define TRYG3D_VERSION                                  (10000) //a.b.c g+10000*a+100*b+c
+#define TRYG3D_LIBRARY_NAME                             "3DTryg"
+#define TRYG3D_AUTHOR_NAME                              "Abyss Morgan"
 
-#define TRYG3D_PLATFORM_NAME							"RAW"
-#define TRYG3D_PLATFORM_VERSION							"1.0.0"
+#define TRYG3D_PLATFORM_NAME                            "RAW"
+#define TRYG3D_PLATFORM_VERSION                         "1.0.0"
 
-#define Tryg3D::										T3_
+#define Tryg3D::                                        T3_
 
-#define T3D:											v3D
+#define T3D:                                            v3D
 
 /********************************
  * Modules                      *
  ********************************/
+
+#if defined TRYG3D_MODULE_PLAYER
+    #error [ADM] Module already defined: TRYG3D_MODULE_PLAYER
+#else
+    #if defined TRYG3D_ENABLE_PLAYER
+        #define TRYG3D_MODULE_PLAYER                    "Player"
+    #endif
+#endif
+
+#if defined TRYG3D_MODULE_VEHICLE
+    #error [ADM] Module already defined: TRYG3D_MODULE_VEHICLE
+#else
+    #if defined TRYG3D_ENABLE_VEHICLE
+        #define TRYG3D_MODULE_VEHICLE                   "Vehicle"
+    #endif
+#endif
+
+#if defined TRYG3D_MODULE_DRAW3D
+    #error [ADM] Module already defined: TRYG3D_MODULE_DRAW3D
+#else
+    #if defined TRYG3D_ENABLE_DRAW3D
+        #define TRYG3D_MODULE_DRAW3D                    "Draw3D"
+    #endif
+#endif
  
 /********************************
  * Definitions                  *
  ********************************/
 
 #if !defined FLOAT_PI
-	#define FLOAT_PI		 							(3.14159265358979323846)
+    #define FLOAT_PI                                    (3.14159265358979323846)
 #endif
 
 #if !defined FLOAT_EULER
-	#define FLOAT_EULER									(2.718281828459)
+    #define FLOAT_EULER                                 (2.718281828459)
 #endif
 
 #if !defined FLOAT_NAN
-	#define FLOAT_NAN 									(Float:0xFFFFFFFF)
+    #define FLOAT_NAN                                   (Float:0xFFFFFFFF)
 #endif
 
 #if !defined FLOAT_DEFECT
-	#define FLOAT_DEFECT								(0.000001)
-#endif
-
-#if !defined VBTP
-	#define VBTP 										(0x7FFFFFFF)
-#endif
-
-#if !defined VLTP
-	#define VLTP 										(0x80000000)
+    #define FLOAT_DEFECT                                (0.000001)
 #endif
 
 #if !defined FLOAT_INFINITY
-	#define FLOAT_INFINITY 								(Float:0x7F800000)
+    #define FLOAT_INFINITY                              (Float:0x7F800000)
 #endif
 
 #if !defined TRYG3D_MAX_POLYGON_POINTS
-	#define TRYG3D_MAX_POLYGON_POINTS 					(256)
+    #define TRYG3D_MAX_POLYGON_POINTS                   (256)
 #endif
 #if TRYG3D_MAX_POLYGON_POINTS < 10
-	#error [ADM] Definition TRYG3D_MAX_POLYGON_POINTS must be greater or equal than 10
-#endif
-
-#if !defined TRYG3D_INVALID_ROTATION
-	#define TRYG3D_INVALID_ROTATION						(-1000.0)
+    #error [ADM] Definition TRYG3D_MAX_POLYGON_POINTS must be greater or equal than 10
 #endif
 
 #if !defined TRYG3D_VEHICLE_SPEED_MULTIPLIER
-	#define TRYG3D_VEHICLE_SPEED_MULTIPLIER 			(170.0)
+    #define TRYG3D_VEHICLE_SPEED_MULTIPLIER             (170.0)
 #endif
 
 #if !defined TRYG3D_PLAYER_SPEED_MULTIPLIER
-	#define TRYG3D_PLAYER_SPEED_MULTIPLIER				(1.0)
-#endif
-
-#if !defined TRYG3D_INVALID_MOVE_TIME
-	#define TRYG3D_INVALID_MOVE_TIME 					(-1)
-#endif
-#if TRYG3D_INVALID_MOVE_TIME > -1
-	#error [ADM] Definition TRYG3D_INVALID_MOVE_TIME must be less or equal than -1
-#endif
-
-#if !defined TRYG3D_INVALID_MOVE_SPEED
-	#define TRYG3D_INVALID_MOVE_SPEED					(-1.0)
+    #define TRYG3D_PLAYER_SPEED_MULTIPLIER              (1.0)
 #endif
  
 #if !defined TRYG3D_DEFAULT_RANDOM_ACCURACY
-	#define TRYG3D_DEFAULT_RANDOM_ACCURACY				(4)
-#endif
-
-#if !defined TRYG3D_INVALID_VIRTUAL_WORLD
-	#define	TRYG3D_INVALID_VIRTUAL_WORLD				(-2000)
-#endif
-#if TRYG3D_INVALID_VIRTUAL_WORLD > -1
-	#error [ADM] Definition TRYG3D_INVALID_VIRTUAL_WORLD must be less than -1
+    #define TRYG3D_DEFAULT_RANDOM_ACCURACY              (4)
 #endif
 
 #if !defined TRYG3D_CHARACTER_GROUND_Z_DIFF
-	#define TRYG3D_CHARACTER_GROUND_Z_DIFF				(0.992288)
+    #define TRYG3D_CHARACTER_GROUND_Z_DIFF              (0.992288)
 #endif
 
 #if !defined VERTICAL_CAMERA_RADIUS
-	#define VERTICAL_CAMERA_RADIUS 						(55.0) // 27.5 * 2
+    #define VERTICAL_CAMERA_RADIUS                      (55.0) // 27.5 * 2
 #endif
 
 #if !defined HORIZONTAL_CAMERA_RADIUS
-	#define HORIZONTAL_CAMERA_RADIUS					(70.0) // 35.0 * 2
+    #define HORIZONTAL_CAMERA_RADIUS                    (70.0) // 35.0 * 2
 #endif
 
 #if !defined TRYG3D_MAX_AREA_CHECK
-	#define TRYG3D_MAX_AREA_CHECK						(256)
+    #define TRYG3D_MAX_AREA_CHECK                       (256)
 #endif
 #if TRYG3D_MAX_AREA_CHECK < 32
-	#error [ADM] Definition TRYG3D_MAX_AREA_CHECK must be greater or equal than 32
+    #error [ADM] Definition TRYG3D_MAX_AREA_CHECK must be greater or equal than 32
 #endif
 
-#define TRYG3D_MAX_MODULES_STRING						(400)
-#define TRYG3D_RANDOM_MAX_ANGLE 						(359.999999)
+#define TRYG3D_INVALID_ROTATION                         (-1000.0)
+#define TRYG3D_INVALID_VIRTUAL_WORLD                    (-2000)
+#define TRYG3D_INVALID_MOVE_TIME                        (-1)
+#define TRYG3D_INVALID_MOVE_SPEED                       (-1.0)
+#define TRYG3D_INVALID_ORIENTATION                      (-1)
+#define TRYG3D_MAX_MODULES_STRING                       (400)
+#define TRYG3D_RANDOM_MAX_ANGLE                         (359.999999)
+#define TRYG3D_VBTP                                     (0x7FFFFFFF)
+#define TRYG3D_VLTP                                     (0x80000000)
 
 /********************************
  * Enums                        *
@@ -377,7 +382,7 @@ stock Tryg3D::RecoilVector(&Float:vx, &Float:vy, &Float:vz, const Float:sx, cons
 }
 
 stock Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0){
-	new Float:T3D:dist = VecorSize(x,y,z);
+	new Float:T3D:dist = VectorSize(x,y,z);
 	if(T3D:dist <= 0.0) return 0.0;
 	Tryg3D::DivideValues(T3D:dist,x,y,z);
 	return T3D:dist;
@@ -718,12 +723,12 @@ stock Tryg3D::GetOrientation(const Float:angle){
 	} else if(315.0 <= angle < 360.0){
 		return o_front_right;
 	}
-	return -1;
+	return TRYG3D_INVALID_ORIENTATION;
 }
 
 stock bool: Tryg3D::GetOrientationName(orientation_name[], const Float:angle, bool:as_compass = false, maxdest = sizeof(orientation_name)){
 	new orientation = Tryg3D::GetOrientation(angle);
-	if(orientation == -1){
+	if(orientation == TRYG3D_INVALID_ORIENTATION){
 		format(orientation_name,maxdest,"Unknown");
 		return false;
 	}
@@ -1175,7 +1180,7 @@ stock bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Flo
 	
 	new Float:trx,Float:trz;
 	
-	if(!GetRotationFor2Point3D(x,y,z,px,py,pz,trx,trz)) return false;
+	if(!Tryg3D::GetRotationFor2Point3D(x,y,z,px,py,pz,trx,trz)) return false;
 	return (Tryg3D::RotationInRange(trx,rx-vrx,rx+vrx) && Tryg3D::RotationInRange(trz,rz-vrz,rz+vrz));
 }
 */
@@ -1254,7 +1259,7 @@ stock Tryg3D::GetRandomHit(const Float:x, const Float:y, const Float:z, const ra
 //Made by Crayder
 stock Tryg3D::GetPointInCircle(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty){
 	new Float:T3D:alfa = float(random(1000000)+1)/1000000.0, Float:T3D:beta = float(random(1000000)+1)/1000000.0;
-	if(T3D:beta < T3D:alfa) Tryg3D::SwapInt(T3D:alfa,T3D:beta);
+	if(T3D:beta < T3D:alfa) Tryg3D::SwapFloat(T3D:alfa,T3D:beta);
 	tx = x + (T3D:beta * radius * floatcos(2.0 * FLOAT_PI * T3D:alfa / T3D:beta));
 	ty = y + (T3D:beta * radius * floatsin(2.0 * FLOAT_PI * T3D:alfa / T3D:beta));
 }
@@ -1339,7 +1344,7 @@ stock Tryg3D::GetPointInEllipse(const Float:cx, const Float:cy, const Float:size
 	Tryg3D::GetPointInFront2D(cx,cy,omega,Tryg3D::RandomFloat(0.0,Tryg3D::GetEllipseRadius(size_x,size_y,omega),6),tx,ty);
 }
 
-stock Tryg3D::GetPointInEllipticalCyl2D(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, Float:size_y, &Float:tx, &Float:ty, &Float:tz){
+stock Tryg3D::GetPointInEllipticalCylinder(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, Float:size_y, &Float:tx, &Float:ty, &Float:tz){
 	new Float:omega = Tryg3D::RandomFloat(0.0,TRYG3D_RANDOM_MAX_ANGLE,6);
 	Tryg3D::GetPointInFront2D(cx,cy,omega,Tryg3D::RandomFloat(0.0,Tryg3D::GetEllipseRadius(size_x,size_y,omega),6),tx,ty);
 	tz = Tryg3D::RandomFloat(0.0,floatsqroot(floatpower(minz-maxz,2)),6)+minz;
@@ -1531,6 +1536,26 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
  * Player Functions             *
  ********************************/
 
+#if defined TRYG3D_MODULE_PLAYER
+
+#endif
+
+/********************************
+ * Vehicle Functions            *
+ ********************************/
+
+#if defined TRYG3D_MODULE_VEHICLE
+
+#endif
+
+/********************************
+ * Draw3D Functions             *
+ ********************************/
+
+#if defined TRYG3D_MODULE_DRAW3D
+
+#endif
+
 /********************************
  * Init Functions               *
  ********************************/
@@ -1553,21 +1578,13 @@ stock Tryg3D::Init(){
 			printf("[ADM] Info: Load %s Modules:%s",TRYG3D_LIBRARY_NAME,T3D:modules);
 		}
 	}
-	
-	if(TRYG3D_INVALID_ROTATION > -1.0){
-		print("[ADM] Error: Definition TRYG3D_INVALID_ROTATION must be less or equal -1.0");
-		Tryg3D::UpdateErrorCount();
-	}
+
 	if(TRYG3D_VEHICLE_SPEED_MULTIPLIER < 1.0){
 		print("[ADM] Error: Definition TRYG3D_VEHICLE_SPEED_MULTIPLIER must be greater or equal 1.0");
 		Tryg3D::UpdateErrorCount();
 	}
 	if(TRYG3D_PLAYER_SPEED_MULTIPLIER < 1.0){
 		print("[ADM] Error: Definition TRYG3D_PLAYER_SPEED_MULTIPLIER must be greater or equal 1.0");
-		Tryg3D::UpdateErrorCount();
-	}
-	if(TRYG3D_INVALID_MOVE_SPEED > 0.0){
-		print("[ADM] Error: Definition TRYG3D_INVALID_MOVE_SPEED must be less than 0.0");
 		Tryg3D::UpdateErrorCount();
 	}
 	if(VERTICAL_CAMERA_RADIUS < 1.0){
