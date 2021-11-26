@@ -44,8 +44,6 @@
 #define TRYG3D_PLATFORM_NAME							"RAW"
 #define TRYG3D_PLATFORM_VERSION							"1.0.0"
 
-//#pragma warning disable 200
-
 #define Tryg3D::										T3_
 
 #define T3D:											v3D
@@ -230,8 +228,9 @@ new const Float: Tryg3D::WeaponDamage[] = {
 
 const Tryg3D::EulerModes: T3D:euler_default = T3D:euler_zxy;
 
-new bool:Tryg3D::StateInit = true,
-	bool:Tryg3D::StateExit = true,
+new bool: Tryg3D::StateInit = true,
+	bool: Tryg3D::StateExit = true,
+	Float: Tryg3D::StreamDistance = 300.0,
 	Tryg3D::UpTime = 0;
 
 static const Float: Tryg3D::Cube3DOffset[Tryg3D::OrientationCube3D][3] = {
@@ -260,31 +259,13 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 
 #if !defined T3_OrientationNames
 	new Tryg3D::OrientationNames[10][] = {
-		"Left",
-		"Right",
-		"Up",
-		"Down",
-		"Front",
-		"Back",
-		"Front left",
-		"Front right",
-		"Back left",
-		"Back right"
+		"Left","Right","Up","Down","Front","Back","Front left","Front right","Back left","Back right"
 	};
 #endif
 
 #if !defined T3_OrientationCompass
 	new Tryg3D::OrientationCompass[10][] = {
-		"West",
-		"East",
-		"",
-		"",
-		"North",
-		"South",
-		"North West",
-		"North East",
-		"South West",
-		"South East"
+		"West","East","","","North","South","North West","North East","South West","South East"
 	};
 #endif
 
@@ -292,11 +273,11 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
  * Complementary Functions      *
  ********************************/
 
-#define abs(%0)												(((%0) < 0)?(-(%0)):((%0)))
-#define fabs(%0)											(((%0) < 0.0)?(-(%0)):((%0)))
-#define	sqrtN(%0,%1)										floatpower((%0),(1.0/(%1)))
-#define IsEven(%0)											((((%0) % 2) == 0)?(true):(false))
-#define power(%0,%1)										(floatround(floatpower((%0),(%1))))
+#define abs(%0)									(((%0) < 0)?(-(%0)):((%0)))
+#define fabs(%0)								(((%0) < 0.0)?(-(%0)):((%0)))
+#define	sqrtN(%0,%1)							floatpower((%0),(1.0/(%1)))
+#define IsEven(%0)								((((%0) % 2) == 0)?(true):(false))
+#define power(%0,%1)							(floatround(floatpower((%0),(%1))))
 
 /********************************
  * Internal Functions           *
@@ -323,8 +304,6 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 #define T3_AppendLineArguments3D(%0,%1,%2,%3) 	%0[0] = (%1), %0[0] = (%2), %0[0] = (%3)
 #define T3_DivideValues(%0,%1,%2,%3)			((%1) /= (%0)), ((%2) /= (%0)), ((%3) /= (%0))
 #define T3_RecoilFloat(%0,%1)					(((%0) >= 0.0)?((%0)+(%1)):((%0)-(%1)))
-#define T3_IsProbable(%0)						((random(100)+1) <= (%0))
-#define T3_IsProbableEx(%0,%1)					((random(%1)+1) <= (%0))
 #define T3_CalculatePercent(%0,%1)				(((%0)/(%1))*100.0)
 
 #define T3_GetActiveTime()						(GetTickCount()-Tryg3D::UpTime)
@@ -337,7 +316,7 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 
 #define T3_SetStreamDistance(%0)				Tryg3D::StreamDistance = (%0)
 #define T3_GetStreamDistance()					Tryg3D::StreamDistance
-#define T3_RandomValue(%0,%1)					(random((%1)-(%0)+1)+(%0))
+#define T3_RandomInteger(%0,%1)					(random((%1)-(%0)+1)+(%0))
 
 #define T3_KeyPressed(%0)						(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 #define T3_KeyReleased(%0)						(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
@@ -357,10 +336,16 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 stock Float: Tryg3D::RandomFloat(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
 	if(min >= max) return 0.0;
 	if(min < 0.0 || max < 0.0) return 0.0;
-	if(accuracy < 1 || accuracy > 6) accuracy = 4;
+	if(accuracy < 1) accuracy = 1;
+	if(accuracy > 6) accuracy = 6;
 	new T3D:divValue = floatround(floatpower(10.0,accuracy)), T3D:prefix = floatround(max)-floatround(min), Float:T3D:rand_prefix = 0.0;
 	if(T3D:prefix > 0) T3D:rand_prefix = 1.0 * random(T3D:prefix);
 	return T3D:rand_prefix + min + (1.0*random(T3D:divValue)/(T3D:divValue*1.0));
+}
+
+stock Float: Tryg3D::RandomFloatEx(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
+	if(min >= max) return 0.0;
+	return Tryg3D::RandomFloat(0.0,floatsqroot(floatpower(min-max,2.0)),accuracy) - min;
 }
 
 stock Float: Tryg3D::CompressRotation(const Float:rotation){
@@ -422,7 +407,6 @@ stock Tryg3D::QuatToEuler(&Float:rx, &Float:ry, &Float:rz, Float:qw, Float:qx, F
 	rz = Tryg3D::CompressRotation(-atan2(qx*qy+qz*qw,0.5-qx*qx-qz*qz));
 }
 
-//GetRotationMatrixFromEuler by Nero_3D
 stock Tryg3D::GetRotationMatrixEuler(Float:matrix[][], const Float:rx, const Float:ry, const Float:rz){
 	new Float:cosX = floatcos(rx,degrees), Float:cosY = floatcos(ry,degrees), Float:cosZ = floatcos(rz,degrees), Float:sinX = floatsin(rx,degrees), Float:sinY = floatsin(ry,degrees), Float:sinZ = floatsin(rz,degrees);
 	matrix[0][0] = cosZ * cosY - sinZ * sinX * sinY;
@@ -439,7 +423,6 @@ stock Tryg3D::GetRotationMatrixEuler(Float:matrix[][], const Float:rx, const Flo
 stock Tryg3D::GetRotationMatrixEulerEx(Float:matrix[][], const Float:rx, const Float:ry, const Float:rz, const Tryg3D::EulerModes: mode = T3D:euler_default){
 	new Float:cosX = floatcos(rx,degrees), Float:cosY = floatcos(ry,degrees), Float:cosZ = floatcos(rz,degrees), Float:sinX = floatsin(rx,degrees), Float:sinY = floatsin(ry,degrees), Float:sinZ = floatsin(rz,degrees);
 	switch(mode){
-		//Proper Euler angles - 1(rx), 2(ry), 3(rz)
 		case T3D:euler_xzx: {
 			matrix[0][0] = cosY;
 			matrix[0][1] = -cosZ * sinY;
@@ -506,7 +489,6 @@ stock Tryg3D::GetRotationMatrixEulerEx(Float:matrix[][], const Float:rx, const F
 			matrix[2][1] = cosZ * sinY;
 			matrix[2][2] = cosY;
 		}
-		//Tait-Bryan angles - X(rx), Y(ry), Z(rz)
 		case T3D:euler_xzy: {
 			matrix[0][0] = cosZ * cosY;
 			matrix[0][1] = -sinZ;
@@ -551,7 +533,7 @@ stock Tryg3D::GetRotationMatrixEulerEx(Float:matrix[][], const Float:rx, const F
 			matrix[2][1] = cosY * sinX + cosX * sinY * sinZ;
 			matrix[2][2] = cosY * cosX - sinY * sinZ * sinX;
 		}
-		case T3D:euler_zyx: { // pitch roll yaw
+		case T3D:euler_zyx: {
 			matrix[0][0] = cosZ * cosY;
 			matrix[0][1] = cosZ * sinY * sinX - cosX * sinZ;
 			matrix[0][2] = sinZ * sinX + cosZ * cosX * sinY;
@@ -562,7 +544,7 @@ stock Tryg3D::GetRotationMatrixEulerEx(Float:matrix[][], const Float:rx, const F
 			matrix[2][1] = cosY * sinX;
 			matrix[2][2] = cosY * cosX;
 		}
-		case T3D:euler_zxy: { // sa-mp
+		case T3D:euler_zxy: {
 			matrix[0][0] = cosZ * cosY - sinZ * sinX * sinY;
 			matrix[0][1] = -sinZ * cosX;
 			matrix[0][2] = cosZ * sinY + sinZ * sinX * cosY;
@@ -777,7 +759,7 @@ stock Float: Tryg3D::GetLineSize3D(const Float:points[][3], maxpoints = sizeof(p
 	return T3D:distance;
 }
 
-//Made by Zoutdaxv (modified version)
+//Made by Zoutdaxv
 stock Tryg3D::GetRotationFor2Point2D(const Float:x, const Float:y, const Float:tx, const Float:ty, &Float:rz){
 	rz = Tryg3D::CompressRotation(atan2(ty-y,tx-x)-90.0);
 }
@@ -834,7 +816,7 @@ stock Tryg3D::GetPointFor2Point3DEx(const Float:x1, const Float:y1, const Float:
 	Tryg3D::GetPointInFront3D(x1,y1,z1,rx,rz,distance,tx,ty,tz);
 }
 
-//DistanceFromPointToLine by Crayder
+//Made by Crayder
 stock Float: Tryg3D::GetDistancePointToLine(const Float:px, const Float:py, const Float:pz, const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:iX = 0.0, &Float:iY = 0.0, &Float:iZ = 0.0){
 	new Float:T3D:dist = Tryg3D::GetDistance3D(eX,eY,eZ,sX,sY,sZ);
 	if(T3D:dist <= 0.0) return -1.0;
@@ -846,7 +828,7 @@ stock Float: Tryg3D::GetDistancePointToLine(const Float:px, const Float:py, cons
 	return Tryg3D::GetDistance3D(iX,iY,iZ,px,py,pz);
 }
 
-//Original code by $continue$, Nero_3D
+//Made by $continue$, Nero_3D
 stock Float: Tryg3D::GetDistancePointToLineEx(const Float:px, const Float:py, const Float:pz, const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:iX = 0.0, &Float:iY = 0.0, &Float:iZ = 0.0){
 	new Float:T3D:v1x = eX - sX, Float:T3D:v1y = eY - sY, Float:T3D:v1z = eZ - sZ, Float:T3D:v2x = px - sX, Float:T3D:v2y = py - sY, Float:T3D:v2z = pz - sZ, Float:T3D:dist = VectorSize(T3D:v1x,T3D:v1y,T3D:v1z);
 	if(T3D:dist <= 0.0) return -1.0;
@@ -870,7 +852,7 @@ stock Float: Tryg3D::GetDistancePointToLineEx(const Float:px, const Float:py, co
 	}
 }
 
-//Original code by $continue$
+//Made by $continue$
 stock Tryg3D::GetNearest2DPointOnPolygon(const Float:polygon_points[], const Float:x, const Float:y, &Float:tx, &Float:ty, maxpoints = sizeof(polygon_points)){
 	if(!Tryg3D::IsValidPolygon(polygon_points,maxpoints)) return 0;
 	new Float:T3D:dist,Float:T3D:min_dist,Float:T3D:pX,Float:T3D:pY,Float:T3D:pZ,Float:T3D:sX,Float:T3D:sY,Float:T3D:eX = polygon_points[0],Float:T3D:eY = polygon_points[1];
@@ -954,6 +936,24 @@ stock Tryg3D::GetGangZone(const Float:x, const Float:y, const Float:radius, &Flo
 	maxy = y + radius;
 }
 
+stock bool: Tryg3D::IsProbable(Float:chance, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
+    if(chance <= 0.0) return false;
+    if(chance >= 100.0) return true;
+    return Tryg3D::RandomFloat(0.0,100.0,accuracy) <= chance;
+}
+
+stock Tryg3D::RandomItemFromArray(const items[][2], max_items = sizeof(items), accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
+	new Float:T3D:RNG = Tryg3D::RandomFloat(0.0,100.0,accuracy), Float:T3D:LootState = 0.0;
+	for(new i = 0; i < max_items; i++){
+		if(T3D:LootState <= T3D:RNG <= (T3D:LootState+items[i][1])){
+			return items[i][0];
+		} else {
+			T3D:LootState += items[i][1];
+		}
+	}
+	return -1;
+}
+
 /********************************
  * Converter Functions          *
  ********************************/
@@ -1033,7 +1033,7 @@ stock Tryg3D::ShiftPositionToOffset(const Float:x, const Float:y, const Float:z,
 	}
 }
 
-//By Crayder
+//Made by Crayder
 stock Tryg3D::ShiftLineRotation(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ){
 	eX -= sX, eY -= sY, eZ -= sZ;
 	new Float:T3D:matrix[3][3];
@@ -1041,7 +1041,7 @@ stock Tryg3D::ShiftLineRotation(const Float:sX, const Float:sY, const Float:sZ, 
 	Tryg3D::MatrixRotate(T3D:matrix,eX,eY,eZ,nX,nY,nZ);
 }
 
-//By Crayder
+//Made by Crayder
 stock bool: Tryg3D::ShiftLineRotationVector(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ){
 	eX -= sX, eY -= sY, eZ -= sZ;
 	new Float:T3D:dist = VectorSize(eX,eY,eZ);
@@ -1111,7 +1111,7 @@ stock Tryg3D::GetCube3DPoint(const Tryg3D::OrientationCube3D:orientation, const 
  * Area Functions               *
  ********************************/
 
-//IsPointInCylinder by Crayder
+//Made by Crayder
 stock bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius){
 	new Float:cylinder_length = Tryg3D::GetDistance3D(xA,yA,zA,xB,yB,zB);
 	if(cylinder_length <= 0.0) return false;
@@ -1121,7 +1121,6 @@ stock bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Fl
 	return (distance != -1.0 && distance <= tmp_radius);
 }
 
-//x,y,z - cube center point, rx,ry,rz - cube rotations
 stock bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z){
 	if(size_x <= 0.0 || size_y <= 0.0 || size_z <= 0.0) return false;
 	new Float:offset_x,Float:offset_y,Float:offset_z;
@@ -1130,7 +1129,7 @@ stock bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:
 	return Tryg3D::IsPointInCube(offset_x,offset_y,offset_z,-size_x,-size_y,-size_z,size_x,size_y,size_z);
 }
 
-//IsPointInCone by Crayder
+//Made by Crayder
 stock bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b){
 	new Float:cylinder_length = Tryg3D::GetDistance3D(xA,yA,zA,xB,yB,zB);
 	if(cylinder_length <= 0.0) return false;
@@ -1140,7 +1139,6 @@ stock bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:
 	return (distance != -1.0 && distance <= radius);
 }
 
-//Abyss Morgan Algorithm Circular Sector
 stock bool: Tryg3D::IsPointInCircularSector(const Float:px, Float:py, Float:x, Float:y, Float:rz, Float:radius, Float:view_angle){
 	if(Tryg3D::GetDistance2D(px,py,x,y) > radius) return false;
 	new Float:trz;
@@ -1149,7 +1147,6 @@ stock bool: Tryg3D::IsPointInCircularSector(const Float:px, Float:py, Float:x, F
 	return Tryg3D::RotationInRange(trz,rx-view_angle,rx+view_angle);
 }
 
-//Abyss Morgan Algorithm Spherical Sector
 stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz){
 	if(Tryg3D::GetDistance3D(px,py,pz,x,y,z) > radius) return false;
 	new Float:trx,Float:trz;
@@ -1160,7 +1157,6 @@ stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, con
 }
 
 /*
-//Abyss Morgan Algorithm Spherical Sector
 stock bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Float:x, Float:y, Float:z, Float:rx, Float:rz, Float:radius, Float:vrx, Float:vrz, ignore_vehicle = INVALID_VEHICLE_ID, ignore_player = INVALID_PLAYER_ID, ignore_actor = INVALID_ACTOR_ID, collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
 	if(Tryg3D::GetDistance3D(px,py,pz,x,y,z) > radius) return false;
 	
@@ -1197,7 +1193,7 @@ stock bool: Tryg3D::IsPointInEllipticalCylinder(const Float:px, const Float:py, 
 	return (Tryg3D::GetDistance2D(px,py,cx,cy) <= Tryg3D::GetEllipseRadius(size_x,size_y,rz));
 }
 
-//Polygon Test by RyDeR SRC:http://forum.sa-mp.com/showpost.php?p=1154971&postcount=1871 (Updated)
+//Made by RyDeR
 stock bool: Tryg3D::IsPointInPolygon(const Float:x, const Float:y, const Float:points[], maxpoints = sizeof(points)){
 	if(!Tryg3D::IsValidPolygon(points,maxpoints)) return false;
 	new polygon_Sides = ((maxpoints - 2) / 2), Float:polygon_Data[2][TRYG3D_MAX_POLYGON_POINTS], cross_Total = 0, idx = 0;
@@ -1255,7 +1251,7 @@ stock Tryg3D::GetRandomHit(const Float:x, const Float:y, const Float:z, const ra
 	tz = z + (random(range * 2 + 1) - range);
 }
 
-//Tryg3D::GetPointInCircle by Crayder
+//Made by Crayder
 stock Tryg3D::GetPointInCircle(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty){
 	new Float:T3D:alfa = float(random(1000000)+1)/1000000.0, Float:T3D:beta = float(random(1000000)+1)/1000000.0;
 	if(T3D:beta < T3D:alfa) Tryg3D::SwapInt(T3D:alfa,T3D:beta);
@@ -1263,13 +1259,12 @@ stock Tryg3D::GetPointInCircle(const Float:x, const Float:y, const Float:radius,
 	ty = y + (T3D:beta * radius * floatsin(2.0 * FLOAT_PI * T3D:alfa / T3D:beta));
 }
 
-//Tryg3D::GetPointInCylinder2D by Crayder
+//Made by Crayder
 stock Tryg3D::GetPointInCylinder2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius, &Float:tx, &Float:ty, &Float:tz){
 	Tryg3D::GetPointInCircle(x,y,radius,tx,ty);
 	tz = Tryg3D::RandomFloat(0.0,floatsqroot(floatpower(minz-maxz,2)))+minz;
 }
 
-//Tryg3D::GetPointInCylinder3D by Abyss Morgan
 stock bool: Tryg3D::GetPointInCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, &Float:tx, &Float:ty, &Float:tz){
 	new Float:trx,Float:trz;
 	if(!Tryg3D::GetRotationFor2Point3D(xA,yA,zA,xB,yB,zB,trx,trz)) return false;
@@ -1327,7 +1322,6 @@ stock Tryg3D::GetPointInCircularSector(const Float:x, const Float:y, const Float
 	Tryg3D::GetPointInFront2D(x,y,rand_rz,rand_rad,tx,ty);
 }
 
-//Beta Algorithm by Abyss Morgan
 stock Tryg3D::GetPointInSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, &Float:tx, &Float:ty, &Float:tz){
 	new Float:rand_rx = Tryg3D::CompressRotation(Tryg3D::RandomFloat(rx-vrx+360.0,rx+vrx+360.0,6)), Float:rand_rz = Tryg3D::CompressRotation(Tryg3D::RandomFloat(rz-vrz+360.0,rz+vrz+360.0,6)), Float:rand_rad = Tryg3D::RandomFloat(0.0,radius,6);
 	vrx /= 2.0;
@@ -1351,7 +1345,6 @@ stock Tryg3D::GetPointInEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 	tz = Tryg3D::RandomFloat(0.0,floatsqroot(floatpower(minz-maxz,2)),6)+minz;
 }
 
-//Abyss Morgan Algorithm Polygon
 stock Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, maxpoints = sizeof(points),  max_iterations = 10000){
 	if(!Tryg3D::IsValidPolygon(points,maxpoints)) return -1;
 	new Float:minx, Float:miny, Float:maxx, Float:maxy, recheck = 1;
@@ -1394,7 +1387,7 @@ stock Tryg3D::GetPointOnCylinder3D(const Float:xA, const Float:yA, const Float:z
 	Tryg3D::GetPointInFront3DEx(px,py,pz,Tryg3D::RandomFloat(0.0,TRYG3D_RANDOM_MAX_ANGLE),trx,Tryg3D::CompressRotation(trz+90.0),radius,tx,ty,tz);
 }
 
-//Tryg3D::GetPointOnSphere by Neil Lamoureux
+//Made by Neil Lamoureux
 stock Tryg3D::GetPointOnSphere(const Float:x, const Float:y, const Float:z, const Float:radius, &Float:tx, &Float:ty, &Float:tz){
 	new Float:T3D:theta = 2 * FLOAT_PI * (float(random(1000000)+1)/1000000.0), Float:T3D:phi = acos(2 * (float(random(1000000)+1)/1000000.0) - 1);
 	tx = x + (radius * floatsin(T3D:phi,degrees) * floatcos(T3D:theta,degrees));
@@ -1497,7 +1490,6 @@ stock Tryg3D::GetPointOnCube3D(const Float:x, const Float:y, const Float:z, cons
 	return 1;
 }
 
-//Tryg3D::GetPointOnCone3D by Abyss Morgan
 stock Tryg3D::GetPointOnCone3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b, &Float:tx, &Float:ty, &Float:tz){
 	new Float:px,Float:py,Float:pz,Float:trx,Float:trz, Float:T3D:dist = Tryg3D::GetDistance3D(xA,yA,zA,xB,yB,zB), Float:rand_dist = Tryg3D::RandomFloat(0.0,T3D:dist);
 	Tryg3D::GetRotationFor2Point3D(xA,yA,zA,xB,yB,zB,trx,trz);
@@ -1513,7 +1505,6 @@ stock Tryg3D::GetPointOnCircularSector(const Float:x, const Float:y, const Float
 	Tryg3D::GetPointInFront2D(x,y,rand_rz,radius,tx,ty);
 }
 
-//Beta Algorithm by Abyss Morgan
 stock Tryg3D::GetPointOnSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz, &Float:tx, &Float:ty, &Float:tz){
 	vrx /= 2.0;
 	vrz /= 2.0;
