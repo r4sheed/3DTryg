@@ -25,7 +25,7 @@ Float: Tryg3D::DeCompressRotation(Float:rotation);
 Tryg3D::SwapInt(&variable1, &variable2);
 Tryg3D::SwapFloat(&Float:variable1, &Float:variable2);
 Tryg3D::RecoilVector(&Float:vx, &Float:vy, &Float:vz, const Float:sx, const Float:sy, const Float:sz);
-Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0);
+Float: Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0);
 Float: Tryg3D::SingleClock(max_items,index);
 Float: Tryg3D::EvenClock(max_items,index);
 Float: Tryg3D::UnevenClock(max_items,index);
@@ -38,7 +38,7 @@ Tryg3D::NMTV(value, max);
 Float: Tryg3D::NLTVF(Float:value, Float:min);
 Float: Tryg3D::NMTVF(Float:value, Float:max);
 Tryg3D::GetWeaponDamage(weaponid);
-bool: Tryg3D::RotationInRange(Float:rotation, Float:min, Float:max);
+bool: Tryg3D::RotationInRange(const Float:rotation, Float:min, Float:max);
 Float: Tryg3D::RoundAccuracy(Float:value);
 Tryg3D::AppendLineArguments2D(Float:line[2], Float:x, Float:y);
 Tryg3D::AppendLineArguments3D(Float:line[3], Float:x, Float:y, Float:z);
@@ -112,10 +112,10 @@ Float: Tryg3D::ShiftRadianToDegreeEx(const Float:value);
 Float: Tryg3D::ShiftRadianToGrades(const Float:value);
 Float: Tryg3D::ShiftGradesToDegree(const Float:value);
 Float: Tryg3D::ShiftGradesToRadian(const Float:value);
-Tryg3D::ShiftRotationToVector(const Float:rx, const Float:rz, const Float:vx, const Float:vy, const Float:vz);
+Tryg3D::ShiftRotationToVector(const Float:rx, const Float:rz, &Float:vx, &Float:vy, &Float:vz);
 Tryg3D::ShiftVectorToRotation(const Float:vx, const Float:vy, const Float:vz, &Float:rx, &Float:rz);
 bool: Tryg3D::ShiftVectorRotation(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:tx, &Float:ty, &Float:tz);
-Tryg3D::ShiftOffsetToPosition(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:offset_x, const Float:offset_y, const Float:offset_z, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::ShiftOffsetToPosition(const Float:x, const Float:y, const Float:z, Float:rx, Float:ry, Float:rz, const Float:offset_x, const Float:offset_y, const Float:offset_z, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::ShiftPositionToOffset(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:offset_x, &Float:offset_y, &Float:offset_z, const Float:tx, const Float:ty, const Float:tz);
 Tryg3D::ShiftLineRotation(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ);
 bool: Tryg3D::ShiftLineRotationVector(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ);
@@ -131,7 +131,7 @@ Tryg3D::GetCube3DPoint(const Tryg3D::OrientationCube3D:orientation, const Float:
 bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius);
 bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z);
 bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b);
-bool: Tryg3D::IsPointInCircularSector(const Float:px, Float:py, Float:x, Float:y, Float:rz, Float:radius, Float:view_angle);
+bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, const Float:x, const Float:y, Float:rz, const Float:radius, Float:view_angle)
 bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz);
 //bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Float:x, Float:y, Float:z, Float:rx, Float:rz, Float:radius, Float:vrx, Float:vrz, ignore_vehicle = INVALID_VEHICLE_ID, ignore_player = INVALID_PLAYER_ID, ignore_actor = INVALID_ACTOR_ID, collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
 bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y);
@@ -155,8 +155,8 @@ Tryg3D::GetPointInCube(const Float:minx, const Float:miny, const Float:minz, con
 Tryg3D::GetPointInCube3D(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, Float:size_x, Float:size_y, Float:size_z, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointInCone2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointInCone3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b, &Float:tx, &Float:ty, &Float:tz);
-Tryg3D::GetPointInCircularSector(const Float:x, const Float:y, const Float:rz, const Float:radius, const Float:view_angle, &Float:tx, &Float:ty);
-Tryg3D::GetPointInSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInCircularSector(const Float:x, const Float:y, const Float:rz, const Float:radius, Float:view_angle, &Float:tx, &Float:ty);
+Tryg3D::GetPointInSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointInEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty);
 Tryg3D::GetPointInEllipticalCylinder(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, Float:size_y, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, const max_points = sizeof(points),  max_iterations = 10000);
@@ -471,8 +471,8 @@ new const Float: Tryg3D::OrientationRotation[Tryg3D::ElementOrientation][2] = {
 #define T3_NMTVF(%0,%1)                         (((%0) > (%1))?(%1):(%0))
 
 #define T3_GetWeaponDamage(%0)                  Tryg3D::WeaponDamage[(%0)]
-#define T3_RotationInRange(%0,%1,%2)            ((%0) >= (%1) && (%0) <= (%2))
 #define T3_RoundAccuracy(%0)                    (floatround((%0)*10000.0)/10000.0)
+#define T3_RoundAccuracy2(%0)                   (floatround((%0)*100.0)/100.0)
 #define T3_AppendLineArguments2D(%0,%1,%2)      %0[0] = (%1), %0[0] = (%2)
 #define T3_AppendLineArguments3D(%0,%1,%2,%3)   %0[0] = (%1), %0[0] = (%2), %0[0] = (%3)
 #define T3_DivideValues(%0,%1,%2,%3)            ((%1) /= (%0)), ((%2) /= (%0)), ((%3) /= (%0))
@@ -557,7 +557,7 @@ stock Tryg3D::RecoilVector(&Float:vx, &Float:vy, &Float:vz, const Float:sx, cons
 	vz = Tryg3D::RecoilFloat(vz,sz);
 }
 
-stock Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0){
+stock Float: Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0){
 	new Float:T3D:dist = VectorSize(x,y,z);
 	if(T3D:dist <= 0.0) return 0.0;
 	Tryg3D::DivideValues(T3D:dist,x,y,z);
@@ -1176,8 +1176,8 @@ stock Float: Tryg3D::ShiftGradesToRadian(const Float:value){
 	return Tryg3D::ShiftDegreeToRadian(Tryg3D::ShiftGradesToDegree(value));
 }
 
-stock Tryg3D::ShiftRotationToVector(const Float:rx, const Float:rz, const Float:vx, const Float:vy, const Float:vz){
-	return Tryg3D::GetPointInFront3D(0.0,0.0,0.0,rx,rz,1.0,vx,vy,vz);
+stock Tryg3D::ShiftRotationToVector(const Float:rx, const Float:rz, &Float:vx, &Float:vy, &Float:vz){
+	Tryg3D::GetPointInFront3D(0.0,0.0,0.0,rx,rz,1.0,vx,vy,vz);
 }
 
 stock Tryg3D::ShiftVectorToRotation(const Float:vx, const Float:vy, const Float:vz, &Float:rx, &Float:rz){
@@ -1187,17 +1187,15 @@ stock Tryg3D::ShiftVectorToRotation(const Float:vx, const Float:vy, const Float:
 
 stock bool: Tryg3D::ShiftVectorRotation(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:tx, &Float:ty, &Float:tz){
 	new Float:T3D:dist = VectorSize(x,y,z);
-	if(T3D:dist <= 0.0){
-		tx = x, ty = y, tz = z;
-		return false;
-	}
+	if(T3D:dist <= 0.0) return false;
 	new Float:T3D:matrix[3][3];
 	Tryg3D::GetRotationMatrixEuler(T3D:matrix,rx,ry,rz);
+	tx = ty = tz = 0.0;
 	Tryg3D::MatrixRotate(T3D:matrix,(x/T3D:dist),(y/T3D:dist),(z/T3D:dist),tx,ty,tz);
 	return true;
 }
 
-stock Tryg3D::ShiftOffsetToPosition(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:offset_x, const Float:offset_y, const Float:offset_z, &Float:tx, &Float:ty, &Float:tz){
+stock Tryg3D::ShiftOffsetToPosition(const Float:x, const Float:y, const Float:z, Float:rx, Float:ry, Float:rz, const Float:offset_x, const Float:offset_y, const Float:offset_z, &Float:tx, &Float:ty, &Float:tz){
 	new Float:px,Float:py,Float:pz;
 	if(!Tryg3D::ShiftVectorRotation(offset_x,offset_y,offset_z,rx,ry,rz,px,py,pz)){
 		tx = x, ty = y, tz = z;
@@ -1328,23 +1326,22 @@ stock bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:
 stock bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, const Float:x, const Float:y, Float:rz, const Float:radius, Float:view_angle){
 	new Float:T3D:dist = Tryg3D::GetDistance2D(px,py,x,y);
 	if(T3D:dist == 0.0) return true;
-	if(T3D:dist > radius) return false;
-	rz = Tryg3D::CompressRotation(rz);
+	if(Tryg3D::RoundAccuracy2(T3D:dist) > radius) return false;
 	view_angle /= 2.0;
-	new Float:trz, Float:T3D:min = (rz-view_angle), Float:T3D:max = (rz+view_angle);
+	new Float:trz, Float:T3D:min = -view_angle, Float:T3D:max = view_angle;
 	Tryg3D::GetRotationFor2Point2D(x,y,px,py,trz);
-	trz = Tryg3D::RoundAccuracy(trz);
+	trz = Tryg3D::RoundAccuracy2(Tryg3D::CompressRotation(trz-rz));
 	if(T3D:min <= 0.0){
 		T3D:min = floatabs(T3D:min);
 		T3D:max += T3D:min;
-		trz = Tryg3D::RoundAccuracy(Tryg3D::CompressRotation(trz+T3D:min));
+		trz = Tryg3D::RoundAccuracy2(Tryg3D::CompressRotation(trz+T3D:min));
 		T3D:min = 0.0;
 		if(trz == 360.0) trz = 0.0;
 	} else if(T3D:max > 360.0){
 		new Float:T3D:diff = -(360.0-T3D:max);
 		T3D:max = 360.0;
 		T3D:min -= T3D:diff;
-		trz = Tryg3D::RoundAccuracy(Tryg3D::CompressRotation(trz-Float:T3D:diff));
+		trz = Tryg3D::RoundAccuracy2(Tryg3D::CompressRotation(trz-Float:T3D:diff));
 		if(trz == 0.0) trz = 360.0;
 	}
 	return Tryg3D::RotationInRange(trz,T3D:min,T3D:max);
@@ -1518,25 +1515,27 @@ stock Tryg3D::GetPointInCone3D(const Float:xA, const Float:yA, const Float:zA, c
 
 stock Tryg3D::GetPointInCircularSector(const Float:x, const Float:y, const Float:rz, const Float:radius, Float:view_angle, &Float:tx, &Float:ty){
 	view_angle /= 2.0;
-	new Float:rand_rz = Tryg3D::CompressRotation(Tryg3D::RandomFloatEx(rz-view_angle+360.0,rz+view_angle+360.0,4)), Float:rand_rad = Tryg3D::RandomFloat(0.0,radius,4);
+	new Float:rand_rz = Tryg3D::RandomFloatEx(rz-view_angle,rz+view_angle,4), Float:rand_rad = Tryg3D::RandomFloat(0.0,radius,4);
 	if(rand_rad > radius) rand_rad = radius;
 	rand_rz = Tryg3D::NMTVF(rand_rz,(rz+view_angle));
 	rand_rz = Tryg3D::NLTVF(rand_rz,(rz-view_angle));
-	Tryg3D::GetPointInFront2D(x,y,rand_rz,rand_rad,tx,ty);
+	Tryg3D::GetPointInFront2D(x,y,Tryg3D::CompressRotation(rand_rz),rand_rad,tx,ty);
 }
 
 stock Tryg3D::GetPointInSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz, &Float:tx, &Float:ty, &Float:tz){
 	vrx /= 2.0, vrz /= 2.0;
-	new Float:rand_rx = Tryg3D::CompressRotation(Tryg3D::RandomFloatEx(rx-vrx,rx+vrx,4)), Float:rand_rz = Tryg3D::CompressRotation(Tryg3D::RandomFloatEx(rz-vrz,rz+vrz,4)), Float:rand_rad = Tryg3D::RandomFloat(0.0,radius,4);
+	new Float:rand_rx = Tryg3D::RandomFloatEx(-vrx,vrx,4), Float:rand_rz = Tryg3D::RandomFloatEx(-vrz,vrz,4), Float:rand_rad = Tryg3D::RandomFloat(0.0,radius,4);
 	if(rand_rad == 0.0){
 		tx = x, ty = y, tz = z;
 	} else {
+		new Float:offset_x,Float:offset_y,Float:offset_z;
 		if(rand_rad > radius) rand_rad = radius;
-		rand_rx = Tryg3D::NMTVF(rand_rx,(rx+vrx));
-		rand_rx = Tryg3D::NLTVF(rand_rx,(rx-vrx));
-		rand_rz = Tryg3D::NMTVF(rand_rz,(rz+vrz));
-		rand_rz = Tryg3D::NLTVF(rand_rz,(rz-vrz));
-		Tryg3D::GetPointInFront3D(x,y,z,rand_rx,rand_rz,rand_rad,tx,ty,tz);
+		rand_rx = Tryg3D::NMTVF(rand_rx,vrx);
+		rand_rx = Tryg3D::NLTVF(rand_rx,-vrx);
+		rand_rz = Tryg3D::NMTVF(rand_rz,vrz);
+		rand_rz = Tryg3D::NLTVF(rand_rz,-vrz);
+		Tryg3D::GetPointInFront3D(0.0,0.0,0.0,Tryg3D::CompressRotation(rand_rx),Tryg3D::CompressRotation(rand_rz),rand_rad,offset_x,offset_y,offset_z);
+		Tryg3D::ShiftOffsetToPosition(x,y,z,rx,0.0,rz,offset_x,offset_y,offset_z,tx,ty,tz);
 	}
 }
 
@@ -1713,12 +1712,13 @@ stock Tryg3D::GetPointOnCircularSector(const Float:x, const Float:y, const Float
 
 stock Tryg3D::GetPointOnSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz, &Float:tx, &Float:ty, &Float:tz){
 	vrx /= 2.0, vrz /= 2.0;
-	new Float:rand_rx = Tryg3D::CompressRotation(Tryg3D::RandomFloatEx(rx-vrx+360.0,rx+vrx+360.0,4)), Float:rand_rz = Tryg3D::CompressRotation(Tryg3D::RandomFloatEx(rz-vrz+360.0,rz+vrz+360.0,4));
-	rand_rx = Tryg3D::NMTVF(rand_rx,(rx+vrx));
-	rand_rx = Tryg3D::NLTVF(rand_rx,(rx-vrx));
-	rand_rz = Tryg3D::NMTVF(rand_rz,(rz+vrz));
-	rand_rz = Tryg3D::NLTVF(rand_rz,(rz-vrz));
-	Tryg3D::GetPointInFront3D(x,y,z,rand_rx,rand_rz,radius,tx,ty,tz);
+	new Float:rand_rx = Tryg3D::RandomFloatEx(-vrx,vrx,4), Float:rand_rz = Tryg3D::RandomFloatEx(-vrz,vrz,4), Float:offset_x, Float:offset_y, Float:offset_z;;
+	rand_rx = Tryg3D::NMTVF(rand_rx,vrx);
+	rand_rx = Tryg3D::NLTVF(rand_rx,-vrx);
+	rand_rz = Tryg3D::NMTVF(rand_rz,vrz);
+	rand_rz = Tryg3D::NLTVF(rand_rz,-vrz);	
+	Tryg3D::GetPointInFront3D(0.0,0.0,0.0,Tryg3D::CompressRotation(rand_rx),Tryg3D::CompressRotation(rand_rz),radius,offset_x,offset_y,offset_z);
+	Tryg3D::ShiftOffsetToPosition(x,y,z,rx,0.0,rz,offset_x,offset_y,offset_z,tx,ty,tz);
 }
 
 stock Tryg3D::GetPointOnEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty){
