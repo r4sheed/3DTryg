@@ -250,25 +250,209 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
  * Modules                      *
  ********************************/
 
-#if defined TRYG3D_MODULE_PLAYER
-    #error [ADM] Module already defined: TRYG3D_MODULE_PLAYER
+#if defined TRYG3D_MOD_PLAYER
+    #error [ADM] Module already defined: TRYG3D_MOD_PLAYER
 #endif
 #if defined TRYG3D_ENABLE_PLAYER
-	#define TRYG3D_MODULE_PLAYER                        "Player"
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable Player Module without initialized SA:MP Platform
+	#else
+		#define TRYG3D_MOD_PLAYER "Player"
+	#endif
 #endif
 
-#if defined TRYG3D_MODULE_VEHICLE
-    #error [ADM] Module already defined: TRYG3D_MODULE_VEHICLE
+#if defined TRYG3D_MOD_VEHICLE
+    #error [ADM] Module already defined: TRYG3D_MOD_VEHICLE
 #endif
 #if defined TRYG3D_ENABLE_VEHICLE
-	#define TRYG3D_MODULE_VEHICLE                       "Vehicle"
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable Vehicle Module without initialized SA:MP Platform
+	#else
+		#define TRYG3D_MOD_VEHICLE "Vehicle"
+	#endif
 #endif
 
-#if defined TRYG3D_MODULE_DRAW3D
-    #error [ADM] Module already defined: TRYG3D_MODULE_DRAW3D
+#if defined TRYG3D_MOD_OBJECT
+    #error [ADM] Module already defined: TRYG3D_MOD_OBJECT
+#endif
+#if defined TRYG3D_ENABLE_OBJECT
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable Object Module without initialized SA:MP Platform
+	#else
+		#define TRYG3D_MOD_OBJECT "Object"
+	#endif
+#endif
+
+//Detect foreach
+#if defined _FoX_Foreach
+	#define T3_Foreach(%0) FoxForeach(%0,Character)
+	#define TRYG3D_MOD_FOREACH_FOX "foreach:fox"
+#elseif defined _FOREACH_LOCAL_VERSION
+	#define T3_Foreach(%0) foreach(new %0 : Character)
+	#define TRYG3D_MOD_FOREACH_STANDALONE "foreach:standalone"
+#elseif defined _Y_ITERATE_LOCAL_VERSION
+	#define T3_Foreach(%0) foreach(new %0 : Character)
+	#define TRYG3D_MOD_FOREACH_YSI "foreach:ysi"
+#else
+	#define T3_Foreach(%0) for(new %0 = 0, p_%0 = GetPlayerPoolSize(); %0 <= p_%0; %0++) if(IsPlayerConnected(%0))
+#endif
+
+//Detect SA:MP ColAndreas Plugin
+#if defined TRYG3D_MOD_COLANDREAS
+    #error [ADM] Module already defined: TRYG3D_MOD_COLANDREAS
+#endif
+#if defined TRYG3D_ENABLE_COLANDREAS
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable ColAndreas Module without initialized SA:MP Platform
+	#elseif !defined _colandreas_included
+		#error [ADM] Trying to enable ColAndreas Module without ColAndreas
+	#else
+		#define TRYG3D_MOD_COLANDREAS "ColAndreas v1.5.0"
+		#define TRYG3D_VER_COLANDREAS (10500)
+		#if !defined COLANDREAS_VERSION
+			#error [ADM] Update your ColAndreas to v1.5.0 (github.com/Pottus/ColAndreas/releases)
+		#elseif COLANDREAS_VERSION < TRYG3D_VER_COLANDREAS
+			#error [ADM] Update your ColAndreas to v1.5.0 (github.com/Pottus/ColAndreas/releases)
+		#endif
+	#endif
+#endif
+
+//Detect SA:MP Streamer Plugin
+#if defined TRYG3D_MOD_STREAMER
+    #error [ADM] Module already defined: TRYG3D_MOD_STREAMER
+#endif
+#if defined TRYG3D_ENABLE_STREAMER
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable Streamer Module without initialized SA:MP Platform
+	#elseif !defined Streamer_AppendArrayData
+		#error [ADM] Trying to enable Streamer Module without Streamer
+	#else
+		#define TRYG3D_MOD_STREAMER "Streamer v2.9.5"
+		#define TRYG3D_VER_STREAMER (0x295)
+		#if ((!defined Streamer_GetItemPos) || (!defined INVALID_STREAMER_ID) || (!defined STREAMER_TYPE_ACTOR) || (!defined RemoveDynamicObjectMaterialText))
+			#error [ADM] Update your Streamer to v2.9.5 (github.com/samp-incognito/samp-streamer-plugin/releases)
+		#endif
+	#endif
+#endif
+
+//Detect SA:MP FCNPC Plugin
+#if defined TRYG3D_MOD_FCNPC
+    #error [ADM] Module already defined: TRYG3D_MOD_FCNPC
+#endif
+#if defined TRYG3D_ENABLE_FCNPC
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable FCNPC Module without initialized SA:MP Platform
+	#elseif !defined _FCNPC_included
+		#error [ADM] Trying to enable FCNPC Module without FCNPC
+	#else
+		#define TRYG3D_MOD_FCNPC "FCNPC v2.0.0"
+		#define TRYG3D_VER_FCNPC (200)
+		#if !defined FCNPC_INCLUDE_VERSION
+			#error [ADM] Update your FCNPC to v2.0.0 (github.com/ziggi/FCNPC/releases)
+		#elseif (FCNPC_INCLUDE_VERSION < TRYG3D_VER_FCNPC)
+			#error [ADM] Update your FCNPC to v2.0.0 (github.com/ziggi/FCNPC/releases)
+		#endif
+	#endif
+#endif
+
+//Detect Actor Module
+#if defined TRYG3D_MOD_ACTOR
+    #error [ADM] Module already defined: TRYG3D_MOD_ACTOR
+#endif
+#if defined TRYG3D_ENABLE_ACTOR
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable Actor Module without initialized SA:MP Platform
+	#elseif defined _actor_included
+		#define TRYG3D_MOD_ACTOR "Actor"
+	#endif
+#endif
+
+//Detect Grenade Module
+#if defined TRYG3D_MOD_GRENADEDETECTION
+    #error [ADM] Module already defined: TRYG3D_MOD_GRENADEDETECTION
+#endif
+#if defined TRYG3D_ENABLE_GRENADEDETECTION
+	#if !defined TRYG3D_MOD_COLANDREAS
+		#error [ADM] Trying to enable Grenade Detection without ColAndreas Module
+	#else
+		#define TRYG3D_MOD_GRENADEDETECTION "GrenadeDetection"
+	#endif
+#endif
+
+//Detect VehicleCollision Modules
+#if defined TRYG3D_MOD_VEHICLECOLLISION
+    #error [ADM] Module already defined: TRYG3D_MOD_VEHICLECOLLISION
+#endif
+#if defined TRYG3D_ENABLE_VEHICLECOL
+	#if !defined TRYG3D_MOD_STREAMER
+		#error [ADM] Trying to enable VehicleCollision Module without Streamer Module
+	#elseif !defined TRYG3D_MOD_COLANDREAS
+		#error [ADM] Trying to enable VehicleCollision Module without ColAndreas Module
+	#else
+		#define TRYG3D_MOD_VEHICLECOLLISION "VehicleCollision"
+	#endif
+#endif
+
+//Detect PlayerCollision Module
+#if defined TRYG3D_MOD_PLAYERCOLLISION
+    #error [ADM] Module already defined: TRYG3D_MOD_PLAYERCOLLISION
+#endif
+#if defined TRYG3D_ENABLE_PLAYERCOL
+	#if !defined TRYG3D_MOD_STREAMER
+		#error [ADM] Trying to enable PlayerCollision Module without Streamer Module
+	#elseif !defined TRYG3D_MOD_COLANDREAS
+		#error [ADM] Trying to enable PlayerCollision Module without ColAndreas Module
+	#else
+		#define TRYG3D_MOD_PLAYERCOLLISION "PlayerCollision"
+	#endif
+#endif
+
+//Detect ActorCollision Module
+#if defined TRYG3D_MOD_ACTORCOLLISION
+    #error [ADM] Module already defined: TRYG3D_MOD_ACTORCOLLISION
+#endif
+#if defined TRYG3D_ENABLE_ACTORCOL
+	#if !defined TRYG3D_MOD_ACTOR
+		#error [ADM] Trying to enable ActorCollision Module without Actor Module
+	#elseif !defined TRYG3D_MOD_STREAMER
+		#error [ADM] Trying to enable ActorCollision Module without Streamer Module
+	#elseif !defined TRYG3D_MOD_COLANDREAS
+		#error [ADM] Trying to enable ActorCollision Module without ColAndreas Module
+	#else
+		#define TRYG3D_MOD_ACTORCOLLISION "ActorCollision"
+	#endif
+#endif
+
+//Detect Universal Module
+#if defined TRYG3D_MOD_UNIVERSAL
+    #error [ADM] Module already defined: TRYG3D_MOD_UNIVERSAL
+#endif
+#if defined TRYG3D_ENABLE_UNIVERSAL
+	#if !defined TRYG3D_MOD_PLAYER && !defined TRYG3D_MOD_VEHICLE && !defined TRYG3D_MOD_OBJECT && !defined TRYG3D_MOD_ACTOR && !defined TRYG3D_MOD_STREAMER && !defined TRYG3D_MOD_FCNPC
+		#error [ADM] Trying to enable Universal Module without initialized any of supported elements
+	#else
+		#define TRYG3D_MOD_UNIVERSAL "Universal"
+	#endif
+#endif
+
+//Detect Draw3D Module
+#if defined TRYG3D_MOD_DRAW3D
+    #error [ADM] Module already defined: TRYG3D_MOD_DRAW3D
 #endif
 #if defined TRYG3D_ENABLE_DRAW3D
-	#define TRYG3D_MODULE_DRAW3D                        "Draw3D"
+	#define TRYG3D_MOD_DRAW3D "Draw3D"
+#endif
+
+//Detect CatchItems Module
+#if defined TRYG3D_MOD_CATCHITEMS
+    #error [ADM] Module already defined: TRYG3D_MOD_CATCHITEMS
+#endif
+#if defined TRYG3D_ENABLE_CATCHITEMS
+	#if !defined TRYG3D_MOD_UNIVERSAL
+		#error [ADM] Trying to enable CatchItems Module without Universal Module
+	#else
+		#define TRYG3D_MOD_CATCHITEMS "CatchItems"
+	#endif
 #endif
  
 /********************************
