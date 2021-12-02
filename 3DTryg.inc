@@ -216,8 +216,31 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
 #define TRYG3D_LIBRARY_NAME                             "3DTryg"
 #define TRYG3D_AUTHOR_NAME                              "Abyss Morgan"
 
-#define TRYG3D_PLATFORM_NAME                            "RAW"
-#define TRYG3D_PLATFORM_VERSION                         "1.0.0"
+#define TRYG3D_PLATFORM_PAWN                            0x01
+#define TRYG3D_PLATFORM_SAMP                            0x02
+#define TRYG3D_PLATFORM_TRILOGYMP						0x03
+#define TRYG3D_PLATFORM_SADEMP							0x04
+
+#if defined _samp_included
+	#if (!defined GetPlayerPoolSize || !defined GetSVarInt)
+		#error [ADM] This include requires SA:MP version 0.3.7
+	#endif
+	
+	#define TRYG3D_PLATFORM_NAME                        "SA:MP"
+	#if defined GetPlayerCustomSkin
+		#define TRYG3D_PLATFORM_VERSION                 "0.3 DL"
+	#else
+		#define TRYG3D_PLATFORM_VERSION                 "0.3.7"
+	#endif
+	
+	#define TRYG3D_PLATFORM_CODE                        TRYG3D_PLATFORM_SAMP
+#endif
+
+#if !defined TRYG3D_PLATFORM_CODE
+	#define TRYG3D_PLATFORM_CODE                        TRYG3D_PLATFORM_PAWN
+	#define TRYG3D_PLATFORM_NAME                        "Pawn"
+	#define TRYG3D_PLATFORM_VERSION                     "3.0"
+#endif
 
 #define Tryg3D::                                        T3_
 
