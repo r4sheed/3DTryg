@@ -245,6 +245,7 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
 #define Tryg3D::                                        T3_
 
 #define T3D:                                            v3D
+#define v3Dfunction%0(%1)                               forward %0(%1); public %0(%1)
 
 /********************************
  * Modules                      *
@@ -458,6 +459,10 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
 /********************************
  * Definitions                  *
  ********************************/
+ 
+#if !defined TRYG3D_ELEMENT_TAG
+	#define TRYG3D_ELEMENT_TAG							{Text3D,DynamicObject,DynamicPickup,DynamicCP,DynamicRaceCP,DynamicMapIcon,DynamicText3D,DynamicArea,DynamicActor,DynamicVehicle,_}
+#endif
 
 #if !defined FLOAT_PI
     #define FLOAT_PI                                    (3.14159265358979323846)
@@ -517,6 +522,26 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
     #error [ADM] Definition TRYG3D_MAX_AREA_CHECK must be greater or equal than 32
 #endif
 
+#if !defined C_IN_GAME_X
+	#define C_IN_GAME_X                                 (0.7)
+#endif
+
+#if !defined C_IN_GAME_Y
+	#define C_IN_GAME_Y                                 (0.525)
+#endif
+
+#if !defined C_IN_GAME_YW
+	#define C_IN_GAME_YW                                (0.4) // Widescreen
+#endif
+
+#if !defined C_ON_SCREEN_X
+	#define C_ON_SCREEN_X                               (640.0)
+#endif
+
+#if !defined C_ON_SCREEN_Y
+	#define C_ON_SCREEN_Y                               (448.0)
+#endif
+
 #define TRYG3D_INVALID_ROTATION                         (-1000.0)
 #define TRYG3D_INVALID_VIRTUAL_WORLD                    (-2000)
 #define TRYG3D_INVALID_MOVE_TIME                        (-1)
@@ -526,6 +551,63 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
 #define TRYG3D_RANDOM_MAX_ANGLE                         (359.999999)
 #define TRYG3D_VBTP                                     (0x7FFFFFFF)
 #define TRYG3D_VLTP                                     (0x80000000)
+
+#define TRYG3D_EXTRA_DATA_FLAG_VEHICLE                  (0xBABA0001)
+#define TRYG3D_EXTRA_DATA_FLAG_PLAYER                   (0xBABA0002)
+#define TRYG3D_EXTRA_DATA_FLAG_ACTOR                    (0xBABA0003)
+
+#define WEAPON_DYNAMIC_EXPLOSION_DMG                    (109)
+#define WEAPON_DYNAMIC_EXPLOSION_RANGE                  (110)
+
+#define TRYG3D_COLLISION_FLAG_NONE                      (0b0000000000000000)
+#define TRYG3D_COLLISION_FLAG_OBJECT                    (0b0000000000000001)
+#define TRYG3D_COLLISION_FLAG_VEHICLE                   (0b0000000000000010)
+#define TRYG3D_COLLISION_FLAG_PLAYER                    (0b0000000000000100)
+#define TRYG3D_COLLISION_FLAG_ACTOR                     (0b0000000000001000)
+#define TRYG3D_COLLISION_FLAG_ALL                       (0b0000000000001111)
+
+//Player Position Flag
+#if defined TRYG3D_COLANDREAS
+	#define POSITION_FLAG_WORLD                         (0b0000000000000001)
+	#define POSITION_FLAG_INTERIOR                      (0b0000000000000010)
+	#define POSITION_FLAG_AIR                           (0b0000000000000100)
+	#define POSITION_FLAG_GROUND                        (0b0000000000001000)
+	#define POSITION_FLAG_WATER                         (0b0000000000010000)
+	#define POSITION_FLAG_UNDERWATER                    (0b0000000000100000)
+	#define POSITION_FLAG_UNDERGROUND                   (0b0000000001000000)
+#endif
+
+#if defined TRYG3D_MOD_VEHICLE
+	
+	//Vehicle Flags
+	#define VF_STREET                                   (0b0000000000000001)
+	#define VF_AIRBORNE                                 (0b0000000000000010)
+	#define VF_NATATORIAL                               (0b0000000000000100)
+	#define VF_MILITARY                                 (0b0000000000001000)
+	#define VF_TRAIN                                    (0b0000000000010000)
+	#define VF_RC                                       (0b0000000000100000)
+	#define VF_CARRIAGE                                 (0b0000000001000000)
+	#define VF_AIRPLANE                                 (0b0000000010000000)
+	#define VF_HELICOPTER                               (0b0000000100000000)
+	#define VF_BIKES                                    (0b0000001000000000)
+	#define VF_TRAILER                                  (0b0000010000000000)
+	#define VF_TOWABLE                                  (0b0000100000000000)
+	#define VF_POLICE                                   (0b0001000000000000)
+
+	#if !defined VEHICLE_PART_RFTIRE
+		#define VEHICLE_PART_RFTIRE                     (1) // Right Front tire
+		#define VEHICLE_PART_LFTIRE                     (2) // Left Front tire
+		#define VEHICLE_PART_RRTIRE                     (3) // Right Rear tire
+		#define VEHICLE_PART_LRTIRE                     (4) // Left Rear tire
+		#define VEHICLE_PART_HOOD                       (5) // In Front
+		#define VEHICLE_PART_TRUNK                      (6) // Behind
+	#endif
+
+	#define VEHICLE_PART_ROOF                           (7) // Roof
+	#define VEHICLE_PART_CHASSIS                        (8) // Chassis
+	#define VEHICLE_PART_PETROLCAP                      (9) // Petrolcap
+	
+#endif
 
 /********************************
  * Enums                        *
@@ -597,6 +679,53 @@ enum LongFloat3D {
 	T3D:VW, T3D:INT, Float:T3D:SPEED
 }
 
+#if defined TRYG3D_MOD_UNIVERSAL
+	enum Item3D {
+		item_player,
+		item_npc,
+		item_actor,
+		item_object,
+		item_vehicle,
+		item_dynamic_object,
+		item_dynamic_pickup,
+		item_dynamic_cp,
+		item_dynamic_racecp,
+		item_dynamic_mapicon,
+		item_dynamic_3dtext,
+		item_dynamic_actor,
+		item_dynamic_vehicle,
+		item_fcnpc
+	}
+#endif
+
+#if defined TRYG3D_MOD_CATCHITEMS
+	enum StreamType {
+		s_invalid,
+		s_circle,
+		s_cylinder2d,
+		s_cylinder3d,
+		s_sphere,
+		s_rectangle,
+		s_cube2d,
+		s_cube3d,
+		s_polygon,
+		s_circularsector,
+		s_sphericalsector,
+		s_cone2d,
+		s_cone3d,
+		s_ellipse,
+		s_ellipticalcyl2d,
+		a_sphericalsectorex
+	}
+
+	enum Stream3D {
+		StreamType:	T3D:type,
+		Float:		T3D:Poly[TRYG3D_MAX_POLYGON_POINTS * 2],
+					T3D:INT,
+					T3D:VW
+	}
+#endif
+
 /********************************
  * Variables                    *
  ********************************/
@@ -608,10 +737,36 @@ new const Float: Tryg3D::WeaponDamage[] = {
 
 const EulerModes: T3D:euler_default = T3D:euler_zxy;
 
-new bool: Tryg3D::StateInit = true,
-	bool: Tryg3D::StateExit = true,
-	Float: Tryg3D::StreamDistance = 300.0,
+new Float: Tryg3D::StreamDistance = 300.0,
+	Tryg3D::ErrorLevel = 0,
 	Tryg3D::UpTime = 0;
+	
+#if defined TRYG3D_MOD_PLAYER
+	new Tryg3D::DeatchTick[MAX_PLAYERS];
+#endif
+
+#if defined TRYG3D_MOD_GRENADEDETECTION
+	new Tryg3D::ExplosionTime = 2200;
+#endif
+
+#if defined TRYG3D_MOD_VEHICLE
+	//Values getting from GenerateVehicleDefaultFlags
+	new const Tryg3D::VehicleFlagsDefault[212] = {
+		2049,2049,2049,1,2049,2049,1,4097,1,2049,2049,2049,2049,2049,2049,2049,6145,258,2049,2049,2049,2049,2049,2049,2049,266,2049,6145,2049,2049,4,1,9,1,2049,1025,2049,1,2049,2049,2049,33,2049,
+		1,2049,2049,4,262,513,17,3073,2049,4,4,4,2049,2049,2049,2049,2049,134,513,513,513,33,33,2049,2049,513,258,2049,513,4,4,2049,2049,130,2049,2049,2049,2049,513,2049,2049,4,2049,2049,258,258,
+		2049,6145,2049,2049,4,2049,2049,2049,258,2049,2049,2049,33,2049,2049,2049,2049,2049,2049,2049,513,513,130,130,130,1,1,2049,2049,2049,130,138,513,513,4609,1,2049,2049,2049,2049,2049,2049,
+		2049,1,2049,2049,2049,2049,17,17,7,2049,2049,2049,2049,4097,2049,2049,2049,258,2049,2049,2049,2049,130,2049,2049,2049,2049,2049,2049,2049,2049,2049,258,33,2049,2049,2049,2049,65,65,2049,
+		2049,2049,2049,2049,2049,130,2049,2049,2049,513,2049,2049,3073,2049,513,2049,2049,2049,3137,3073,130,130,33,4,6145,6145,6145,6145,2049,2049,2049,2049,2049,2049,3073,3073,3073,2049,3073,3073
+	};
+
+	new Tryg3D::VehicleFlagsCurrent[212] = {
+		2049,2049,2049,1,2049,2049,1,4097,1,2049,2049,2049,2049,2049,2049,2049,6145,258,2049,2049,2049,2049,2049,2049,2049,266,2049,6145,2049,2049,4,1,9,1,2049,1025,2049,1,2049,2049,2049,33,2049,
+		1,2049,2049,4,262,513,17,3073,2049,4,4,4,2049,2049,2049,2049,2049,134,513,513,513,33,33,2049,2049,513,258,2049,513,4,4,2049,2049,130,2049,2049,2049,2049,513,2049,2049,4,2049,2049,258,258,
+		2049,6145,2049,2049,4,2049,2049,2049,258,2049,2049,2049,33,2049,2049,2049,2049,2049,2049,2049,513,513,130,130,130,1,1,2049,2049,2049,130,138,513,513,4609,1,2049,2049,2049,2049,2049,2049,
+		2049,1,2049,2049,2049,2049,17,17,7,2049,2049,2049,2049,4097,2049,2049,2049,258,2049,2049,2049,2049,130,2049,2049,2049,2049,2049,2049,2049,2049,2049,258,33,2049,2049,2049,2049,65,65,2049,
+		2049,2049,2049,2049,2049,130,2049,2049,2049,513,2049,2049,3073,2049,513,2049,2049,2049,3137,3073,130,130,33,4,6145,6145,6145,6145,2049,2049,2049,2049,2049,2049,3073,3073,3073,2049,3073,3073
+	};
+#endif
 
 static const Float: Tryg3D::Cube3DOffset[OrientationCube3D][3] = {
 	{-1.0,-1.0,-1.0},	//left - back - down
@@ -714,10 +869,9 @@ new const Float: Tryg3D::OrientationRotation[ElementOrientation][2] = {
 #define T3_GetActiveTime()                      (GetTickCount()-Tryg3D::UpTime)
 #define T3_GetVersion(%0)                       ((%0) / 10000),(((%0) % 10000) / 100),(((%0) % 10000) % 100)
 
-#define T3_GetActiveCount()                     GetSVarInt("ADM:3DTryg:ACTIVE")
-#define T3_GetErrorCount()                      GetSVarInt("ADM:3DTryg:Error")
-#define T3_ResetErrorCount()                    SetSVarInt("ADM:3DTryg:Error",0)
-#define T3_UpdateErrorCount()                   SetSVarInt("ADM:3DTryg:Error",Tryg3D::GetErrorCount()+1)
+#define T3_GetErrorCount()                      Tryg3D::ErrorLevel
+#define T3_ResetErrorCount()                    Tryg3D::ErrorLevel = 0
+#define T3_UpdateErrorCount()                   Tryg3D::ErrorLevel++
 
 #define T3_SetStreamDistance(%0)                Tryg3D::StreamDistance = (%0)
 #define T3_GetStreamDistance()                  Tryg3D::StreamDistance
@@ -2455,7 +2609,6 @@ stock Tryg3D::Exit(){
 #pragma unused T3_OrientationRotation
 #pragma unused T3_UpTime
 
-//#undef T3_UpdateErrorCount
 
 #if defined TRYG3D_MOD_GRENADEDETECTION
 	#pragma unused T3_ExplosionTime
