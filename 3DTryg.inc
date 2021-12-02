@@ -660,6 +660,32 @@ new const Float: Tryg3D::OrientationRotation[ElementOrientation][2] = {
 #define power(%0,%1)                            (floatround(floatpower((%0),(%1))))
 
 /********************************
+ * Platform Functions           *
+ ********************************/
+
+#if TRYG3D_PLATFORM_CODE == TRYG3D_PLATFORM_PAWN
+	stock Float: VectorSize(const Float:x, const Float:y, const Float:z){
+		return floatsqroot(floatpower(x,2.0)+floatpower(y,2.0)+floatpower(z,2.0));
+	}
+#endif
+
+#if TRYG3D_PLATFORM_CODE == TRYG3D_PLATFORM_SAMP
+
+	#if !defined isnull
+		#define isnull(%1) 									((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
+	#endif
+
+	#if !defined CreateExplosionForPlayer
+		native CreateExplosionForPlayer(playerid,Float:X,Float:Y,Float:Z,type,Float:Radius);
+	#endif
+
+	#if !defined IsValidVehicle
+		native IsValidVehicle(vehicleid);
+	#endif
+	
+#endif
+
+/********************************
  * Internal Functions           *
  ********************************/
 
@@ -1065,15 +1091,15 @@ stock Tryg3D::GetQuatUpVector(const Float:qw, const Float:qx, const Float:qy, co
  ********************************/
 
 stock Float: Tryg3D::GetDistance1D(const Float:x1, const Float:x2){
-	return VectorSize(x1-x2,0.0,0.0);
+	return floatsqroot(floatpower(x1-x2,2.0));
 }
 
 stock Float: Tryg3D::GetDistance2D(const Float:x1, const Float:y1, const Float:x2, const Float:y2){
-	return VectorSize(x1-x2,y1-y2,0.0);
+	return floatsqroot(floatpower(x1-x2,2.0)+floatpower(y1-y2,2.0));
 }
 
 stock Float: Tryg3D::GetDistance3D(const Float:x1, const Float:y1, const Float:z1, const Float:x2, const Float:y2, const Float:z2){
-	return VectorSize(x1-x2,y1-y2,z1-z2);
+	return floatsqroot(floatpower(x1-x2,2.0)+floatpower(y1-y2,2.0)+floatpower(z1-z2,2.0));
 }
 
 stock bool: Tryg3D::IsPolygonClosed(const Float:points[], const max_points = sizeof(points)){
@@ -1571,7 +1597,7 @@ stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, con
 stock bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Float:x, Float:y, Float:z, Float:rx, Float:rz, Float:radius, Float:vrx, Float:vrz, ignore_vehicle = INVALID_VEHICLE_ID, ignore_player = INVALID_PLAYER_ID, ignore_actor = INVALID_ACTOR_ID, collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
 	if(Tryg3D::GetDistance3D(px,py,pz,x,y,z) > radius) return false;
 	
-	#if defined TRYG3D_COLANDREAS
+	#if defined TRYG3D_MOD_COLANDREAS
 		new Item3D_Type:item_type,element_id,Float:T3D:x,Float:T3D:y,Float:T3D:z;
 		if(Tryg3D::CollisionCheck(x,y,z,px,py,pz,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags)) return false;
 	#else
@@ -1951,15 +1977,14 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
  * Player Functions             *
  ********************************/
 
-#if defined TRYG3D_MODULE_PLAYER
-
+#if defined TRYG3D_MOD_PLAYER
 #endif
 
 /********************************
  * Vehicle Functions            *
  ********************************/
 
-#if defined TRYG3D_MODULE_VEHICLE
+#if defined TRYG3D_MOD_VEHICLE
 
 #endif
 
@@ -1967,7 +1992,7 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
  * Draw3D Functions             *
  ********************************/
 
-#if defined TRYG3D_MODULE_DRAW3D
+#if defined TRYG3D_MOD_DRAW3D
 	
 	stock Tryg3D::DrawCircle3D(const Float:x, const Float:y, const Float:z, const Float:radius, Float:points[][3], const max_sector = 36, const Float:rx = 90.0, const Float:ry = 0.0, const max_points = sizeof(points)){
 		new idx = 0, Float:mercury = (360.0 / max_sector), Float:px, Float:py, Float:pz;
@@ -2278,21 +2303,17 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 
 stock Tryg3D::Init(){
 	Tryg3D::UpTime = GetTickCount();
-	SetSVarInt("ADM:3DTryg:ACTIVE",Tryg3D::GetActiveCount()+1);
 	
 	new T3D:modules[TRYG3D_MAX_MODULES_STRING];
 	/* todo */
 	
 	new T3D:ver_name[16];
 	format(T3D:ver_name,sizeof(T3D:ver_name),"%d.%d.%d",Tryg3D::GetVersion(TRYG3D_VERSION));
-	if(GetSVarInt("TRYG3D:REMASTERED:INIT") == 0){
-		SetSVarInt("TRYG3D:REMASTERED:INIT",1);
-		printf("[ADM] Info: Load %s Gen. 2 v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
-		new T3D:len = strlen(T3D:modules);
-		if(T3D:len > 0){
-			T3D:modules[T3D:len-1] = EOS;
-			printf("[ADM] Info: Load %s Modules:%s",TRYG3D_LIBRARY_NAME,T3D:modules);
-		}
+	printf("[ADM] Info: Load %s Gen. 2 v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
+	new T3D:len = strlen(T3D:modules);
+	if(T3D:len > 0){
+		T3D:modules[T3D:len-1] = EOS;
+		printf("[ADM] Info: Load %s Modules:%s",TRYG3D_LIBRARY_NAME,T3D:modules);
 	}
 
 	if(TRYG3D_VEHICLE_SPEED_MULTIPLIER < 1.0){
@@ -2321,105 +2342,107 @@ stock Tryg3D::Init(){
 }
 
 stock Tryg3D::Exit(){
-	SetSVarInt("ADM:3DTryg:ACTIVE",Tryg3D::GetActiveCount()-1);
 	new T3D:ver_name[16];
 	format(T3D:ver_name,sizeof(T3D:ver_name),"%d.%d.%d",Tryg3D::GetVersion(TRYG3D_VERSION));
-	if(Tryg3D::GetActiveCount() == 0){
-		SetSVarInt("TRYG3D:REMASTERED:INIT",0);
-		printf("[ADM] Info: Unload %s Gen. 2 v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
-	}
+	printf("[ADM] Info: Unload %s Gen. 2 v%s for %s %s by %s",TRYG3D_LIBRARY_NAME,T3D:ver_name,TRYG3D_PLATFORM_NAME,TRYG3D_PLATFORM_VERSION,TRYG3D_AUTHOR_NAME);
 }
 
 /********************************
  * Hooks                        *
  ********************************/
 
-//Hook: OnFilterScriptInit
-public OnFilterScriptInit(){
-	if(Tryg3D::StateInit){
-		Tryg3D::StateInit = false;
-		Tryg3D::Init();
+#if TRYG3D_PLATFORM_CODE == TRYG3D_PLATFORM_SAMP
+
+	new bool: Tryg3D::StateInit = true, bool: Tryg3D::StateExit = true;
+	
+	//Hook: OnFilterScriptInit
+	public OnFilterScriptInit(){
+		if(Tryg3D::StateInit){
+			Tryg3D::StateInit = false;
+			Tryg3D::Init();
+		}
+		#if defined T3_OnFilterScriptInit
+			T3_OnFilterScriptInit();	
+		#endif
+		return 1;
 	}
+
+	#if defined _ALS_OnFilterScriptInit
+		#undef OnFilterScriptInit
+	#else
+		#define _ALS_OnFilterScriptInit
+	#endif
+	#define OnFilterScriptInit T3_OnFilterScriptInit
 	#if defined T3_OnFilterScriptInit
-		T3_OnFilterScriptInit();	
+		forward T3_OnFilterScriptInit();
 	#endif
-	return 1;
-}
 
-#if defined _ALS_OnFilterScriptInit
-	#undef OnFilterScriptInit
-#else
-	#define _ALS_OnFilterScriptInit
-#endif
-#define OnFilterScriptInit T3_OnFilterScriptInit
-#if defined T3_OnFilterScriptInit
-	forward T3_OnFilterScriptInit();
-#endif
-
-//Hook: OnGameModeInit
-public OnGameModeInit(){
-	if(Tryg3D::StateInit){
-		Tryg3D::StateInit = false;
-		Tryg3D::Init();
+	//Hook: OnGameModeInit
+	public OnGameModeInit(){
+		if(Tryg3D::StateInit){
+			Tryg3D::StateInit = false;
+			Tryg3D::Init();
+		}
+		#if defined T3_OnGameModeInit
+			T3_OnGameModeInit();
+		#endif
+		return 1;
 	}
+
+	#if defined _ALS_OnGameModeInit
+		#undef OnGameModeInit
+	#else
+		#define _ALS_OnGameModeInit
+	#endif
+	#define OnGameModeInit T3_OnGameModeInit
 	#if defined T3_OnGameModeInit
-		T3_OnGameModeInit();
+		forward T3_OnGameModeInit();
 	#endif
-	return 1;
-}
 
-#if defined _ALS_OnGameModeInit
-	#undef OnGameModeInit
-#else
-	#define _ALS_OnGameModeInit
-#endif
-#define OnGameModeInit T3_OnGameModeInit
-#if defined T3_OnGameModeInit
-	forward T3_OnGameModeInit();
-#endif
-
-//Hook: OnFilterScriptExit
-public OnFilterScriptExit(){
-	if(Tryg3D::StateExit){
-		Tryg3D::StateExit = false;
-		Tryg3D::Exit();
+	//Hook: OnFilterScriptExit
+	public OnFilterScriptExit(){
+		if(Tryg3D::StateExit){
+			Tryg3D::StateExit = false;
+			Tryg3D::Exit();
+		}
+		#if defined T3_OnFilterScriptExit
+			T3_OnFilterScriptExit();
+		#endif
+		return 1;
 	}
+
+	#if defined _ALS_OnFilterScriptExit
+		#undef OnFilterScriptExit
+	#else
+		#define _ALS_OnFilterScriptExit
+	#endif
+	#define OnFilterScriptExit T3_OnFilterScriptExit
 	#if defined T3_OnFilterScriptExit
-		T3_OnFilterScriptExit();
+		forward T3_OnFilterScriptExit();
 	#endif
-	return 1;
-}
 
-#if defined _ALS_OnFilterScriptExit
-	#undef OnFilterScriptExit
-#else
-	#define _ALS_OnFilterScriptExit
-#endif
-#define OnFilterScriptExit T3_OnFilterScriptExit
-#if defined T3_OnFilterScriptExit
-	forward T3_OnFilterScriptExit();
-#endif
-
-//Hook: OnGameModeExit
-public OnGameModeExit(){
-	if(Tryg3D::StateExit){
-		Tryg3D::StateExit = false;
-		Tryg3D::Exit();
+	//Hook: OnGameModeExit
+	public OnGameModeExit(){
+		if(Tryg3D::StateExit){
+			Tryg3D::StateExit = false;
+			Tryg3D::Exit();
+		}
+		#if defined T3_OnGameModeExit
+			T3_OnGameModeExit();
+		#endif
+		return 1;
 	}
-	#if defined T3_OnGameModeExit
-		T3_OnGameModeExit();
-	#endif
-	return 1;
-}
 
-#if defined _ALS_OnGameModeExit
-	#undef OnGameModeExit
-#else
-	#define _ALS_OnGameModeExit
-#endif
-#define OnGameModeExit T3_OnGameModeExit
-#if defined T3_OnGameModeExit
-	forward T3_OnGameModeExit();
+	#if defined _ALS_OnGameModeExit
+		#undef OnGameModeExit
+	#else
+		#define _ALS_OnGameModeExit
+	#endif
+	#define OnGameModeExit T3_OnGameModeExit
+	#if defined T3_OnGameModeExit
+		forward T3_OnGameModeExit();
+	#endif
+
 #endif
 
 /********************************
@@ -2428,11 +2451,16 @@ public OnGameModeExit(){
 
 #pragma unused T3_WeaponDamage
 #pragma unused T3_StreamDistance
-//#pragma unused T3_DeatchTick
+#pragma unused T3_ErrorLevel
 #pragma unused T3_OrientationRotation
-//#pragma unused T3_ExplosionTime
 #pragma unused T3_UpTime
 
 //#undef T3_UpdateErrorCount
 
+#if defined TRYG3D_MOD_GRENADEDETECTION
+	#pragma unused T3_ExplosionTime
+#endif
+#if defined TRYG3D_MOD_PLAYER
+	#pragma unused T3_DeatchTick
+#endif
 //EOF
