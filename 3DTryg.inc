@@ -244,6 +244,7 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
 
 #define Tryg3D::                                        T3_
 #define ColAndreas::									CA_
+#define FCNPC::											FCNPC_
 
 #define T3D:                                            v3D
 #define v3Dfunction%0(%1)                               forward %0(%1); public %0(%1)
@@ -1593,13 +1594,13 @@ stock Tryg3D::GetGangZone(const Float:x, const Float:y, const Float:radius, &Flo
 	maxy = y + radius;
 }
 
-stock bool: Tryg3D::IsProbable(Float:chance, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
+stock bool: Tryg3D::IsProbable(const Float:chance, const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
     if(chance <= 0.0) return false;
     if(chance >= 100.0) return true;
     return Tryg3D::RandomFloat(0.0,100.0,accuracy) <= chance;
 }
 
-stock Tryg3D::RandomItemFromArray(const items[][LootArray], const max_items = sizeof(items), accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
+stock Tryg3D::RandomItemFromArray(const items[][LootArray], const max_items = sizeof(items), const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
 	new Float:T3D:RNG = Tryg3D::RandomFloat(0.0,100.0,accuracy), Float:T3D:LootState = 0.0;
 	for(new i = 0; i < max_items; i++){
 		if(T3D:LootState <= T3D:RNG <= (T3D:LootState+items[i][ItemChance])){
@@ -1822,21 +1823,20 @@ stock bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, cons
 	return Tryg3D::RotationInRange(trz,T3D:min,T3D:max);
 }
 
-stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:cx, const Float:cy, const Float:cz, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz){
-	new Float:dist = VectorSize(px-cx,py-cy,pz-cz);
+stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz){
+	new Float:dist = VectorSize(px-x,py-y,pz-z);
 	if(dist == 0.0) return true;
 	if(dist > radius) return false;
 	new Float:matrix[3][3], Float:tx, Float:ty, Float:tz, Float:trx, Float:trz;
 	Tryg3D::GetRotationMatrixEuler(matrix,rx,0.0,rz);
-	Tryg3D::MatrixRotateReverse(matrix,px-cx,py-cy,pz-cz,tx,ty,tz);
+	Tryg3D::MatrixRotateReverse(matrix,px-x,py-y,pz-z,tx,ty,tz);
 	Tryg3D::GetRotationFor2Point3D(0.0,0.0,0.0,tx,ty,tz,trx,trz);
 	if(trx > 180.0) trx -= 360.0;
 	if(trz > 180.0) trz -= 360.0;
 	return floatabs(trx) < (vrx / 2.0) && floatabs(trz) < (vrz / 2.0);
 }
 
-/*
-stock bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Float:x, Float:y, Float:z, Float:rx, Float:rz, Float:radius, Float:vrx, Float:vrz, ignore_vehicle = INVALID_VEHICLE_ID, ignore_player = INVALID_PLAYER_ID, ignore_actor = INVALID_ACTOR_ID, collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
+stock bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
 	if(Tryg3D::GetDistance3D(px,py,pz,x,y,z) > radius) return false;
 	
 	#if defined TRYG3D_MOD_COLANDREAS
@@ -1849,15 +1849,8 @@ stock bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Flo
 		#pragma unused collision_flags
 	#endif
 	
-	vrx /= 2.0;
-	vrz /= 2.0;
-	
-	new Float:trx,Float:trz;
-	
-	if(!Tryg3D::GetRotationFor2Point3D(x,y,z,px,py,pz,trx,trz)) return false;
-	return (Tryg3D::RotationInRange(trx,rx-vrx,rx+vrx) && Tryg3D::RotationInRange(trz,rz-vrz,rz+vrz));
+	return Tryg3D::IsPointInSphericalSector(px,py,pz,x,y,z,rx,rz,radius,vrx,vrz);
 }
-*/
 
 stock bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y){
 	new Float:rz;
@@ -2052,7 +2045,7 @@ stock Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, cons
 	return recheck;
 }
 
-stock Float:Tryg3D::GetPointOnClock(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty, &Float:trz, Float:rz = TRYG3D_INVALID_ROTATION){
+stock Float: Tryg3D::GetPointOnClock(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty, &Float:trz, Float:rz = TRYG3D_INVALID_ROTATION){
 	if(rz == TRYG3D_INVALID_ROTATION) rz = Tryg3D::RandomFloat(0.0,TRYG3D_RANDOM_MAX_ANGLE);
 	Tryg3D::GetPointInFront2D(x,y,rz,radius,tx,ty);
 	trz = Tryg3D::CompressRotation(rz-180.0);
