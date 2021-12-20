@@ -243,6 +243,7 @@ Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const F
 #endif
 
 #define Tryg3D::                                        T3_
+#define ColAndreas::									CA_
 
 #define T3D:                                            v3D
 #define v3Dfunction%0(%1)                               forward %0(%1); public %0(%1)
@@ -677,6 +678,11 @@ enum LongFloat3D {
 	Float:T3D:VecX, Float:T3D:VecY, Float:T3D:VecZ,
 	
 	T3D:VW, T3D:INT, Float:T3D:SPEED
+}
+
+enum LootArray {
+	ItemID,
+	Float:ItemChance
 }
 
 #if defined TRYG3D_MOD_UNIVERSAL
@@ -1137,6 +1143,12 @@ stock Tryg3D::MatrixRotate(const Float:matrix[][], const Float:oX, const Float:o
 	z += oX * matrix[2][0] + oY * matrix[2][1] + oZ * matrix[2][2];
 }
 
+stock Tryg3D::MatrixRotateReverse(const Float:matrix[][], const Float:oX, const Float:oY, const Float:oZ, &Float:x, &Float:y, &Float:z){
+    x += oX * matrix[0][0] + oY * matrix[1][0] + oZ * matrix[2][0];
+    y += oX * matrix[0][1] + oY * matrix[1][1] + oZ * matrix[2][1];
+    z += oX * matrix[0][2] + oY * matrix[1][2] + oZ * matrix[2][2];
+}
+
 stock Tryg3D::GetQuatFromEuler(Float:rx, Float:ry, Float:rz, &Float:qw, &Float:qx, &Float:qy, &Float:qz, EulerModes: mode = T3D:euler_default){
 	Tryg3D::DivideValues(2.0,rx,ry,rz);
 	new	Float:cosX = floatcos(rx,degrees), Float:cosY = floatcos(ry,degrees), Float:cosZ = floatcos(rz,degrees), Float:sinX = floatsin(rx,degrees), Float:sinY = floatsin(ry,degrees), Float:sinZ = floatsin(rz,degrees);
@@ -1239,6 +1251,78 @@ stock Tryg3D::GetQuatUpVector(const Float:qw, const Float:qx, const Float:qy, co
 	vy = 2.0*(qz*qy-qx*qw);
 	vz = 1.0-(2.0*(qx*qx+qy*qy));
 }
+
+/********************************
+ * Screen Functions             *
+ ********************************/
+ 
+//Provided by Nero_3D, updated by Crayder, Ralfie
+stock Tryg3D::NormCrossProduct(&Float:x, &Float:y, &Float:z, Float:v1x, Float:v1y, Float:v1z, Float:v2x, Float:v2y, Float:v2z){
+	x = v1y * v2z - v2y * v1z;
+	y = v1z * v2x - v2z * v1x;
+	z = v1x * v2y - v2x * v1y;
+	v1x = VectorSize(x,y,z);
+	x /= v1x;
+	y /= v1x;
+	z /= v1x;
+}
+
+#if defined TRYG3D_MOD_PLAYER
+
+	stock Tryg3D::ScreenToWorld(const playerid, const Float:screenX, const Float:screenY, &Float:vX, &Float:vY, &Float:vZ){
+		if((0.0 <= screenX <= C_ON_SCREEN_X) && (0.0 <= screenY <= C_ON_SCREEN_Y) && GetPlayerCameraFrontVector(playerid,vX,vY,vZ)){
+			new Float:pX = ((screenX / C_ON_SCREEN_X) - 0.5) * 2.0 * C_IN_GAME_X,
+				Float:pZ = ((screenY / C_ON_SCREEN_Y) - 0.5) * 2.0 * ((GetPlayerCameraAspectRatio(playerid) > 1.375) ? C_IN_GAME_YW : C_IN_GAME_Y),
+				Float:nXx, Float:nYx, Float:nZx, Float:nXz, Float:nYz, Float:nZz;
+			Tryg3D::NormCrossProduct(nXx,nYx,nZx,vX,vY,vZ,0.0,0.0,1.0);
+			Tryg3D::NormCrossProduct(nXz,nYz,nZz,vX,vY,vZ,nXx,nYx,nZx);
+			vX += nXx * pX + nXz * pZ;
+			vY += nYx * pX + nYz * pZ;
+			vZ += nZx * pX + nZz * pZ;
+			return 1;
+		}
+		return 0;
+	}
+
+	stock Tryg3D::WorldToScreen(const playerid, Float:x, Float:y, Float:z, &Float:screenX, &Float:screenY){
+		new Float:vX, Float:vY, Float:vZ, Float:cX, Float:cY, Float:cZ, Float:nXx, Float:nYx, Float:nZx, Float:nXz, Float:nYz, Float:nZz;
+		
+		if(GetPlayerCameraPos(playerid,cX,cY,cZ)){
+			GetPlayerCameraFrontVector(playerid,vX,vY,vZ);
+
+			Tryg3D::NormCrossProduct(nXx,nYx,nZx,vX,vY,vZ,0.0,0.0,1.0);
+			Tryg3D::NormCrossProduct(nXz,nYz,nZz,vX,vY,vZ,nXx,nYx,nZx);
+			
+			// Distance, can be both positive and negative
+			screenX = (vX * (x - cX) + vY * (y - cY) + vZ * (z - cZ) ) / ((vX * vX) + (vY * vY) + (vZ * vZ));
+
+			if((_: screenX & (1 << (cellbits - 1))) == 0) { // only positive values
+				z = (((z - cZ) / screenX) - vZ) / nZz;
+				x = (((x - cX) / screenX) - vX - (z * nXz)) / nXx;
+
+				screenX = ((x / (C_IN_GAME_X * 2.0)) + 0.5) * C_ON_SCREEN_X;
+				screenY = ((z / (((GetPlayerCameraAspectRatio(playerid) > 1.375) ? C_IN_GAME_YW : C_IN_GAME_Y) * 2.0)) + 0.5) * C_ON_SCREEN_Y;
+				return ((0.0 <= screenX <= C_ON_SCREEN_X) && (0.0 <= screenY <= C_ON_SCREEN_Y));
+			}
+		}
+		return 0;
+	}
+	
+	#if defined TRYG3D_MOD_COLANDREAS
+		stock Tryg3D::ScreenToWorldCol(const playerid, const Float:distance, const Float:screenX, const Float:screenY, &Float:wX, &Float:wY, &Float:wZ){
+			if(Tryg3D::ScreenToWorld(playerid,screenX,screenY,wX,wY,wZ)){
+				new Float:cX,Float:cY,Float:cZ;
+				GetPlayerCameraPos(playerid,cX,cY,cZ);
+				wX = cX + (wX * distance);
+				wY = cY + (wY * distance);
+				wZ = cZ + (wZ * distance);
+				return ColAndreas::RayCastLine(cX,cY,cZ,wX,wY,wZ+0.001,wX,wY,wZ) + 1;
+			}
+			return 0;
+		}
+	#endif
+	
+#endif
 
 /********************************
  * General Functions            *
@@ -1515,13 +1599,13 @@ stock bool: Tryg3D::IsProbable(Float:chance, accuracy = TRYG3D_DEFAULT_RANDOM_AC
     return Tryg3D::RandomFloat(0.0,100.0,accuracy) <= chance;
 }
 
-stock Tryg3D::RandomItemFromArray(const items[][2], const max_items = sizeof(items), accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
+stock Tryg3D::RandomItemFromArray(const items[][LootArray], const max_items = sizeof(items), accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY){
 	new Float:T3D:RNG = Tryg3D::RandomFloat(0.0,100.0,accuracy), Float:T3D:LootState = 0.0;
 	for(new i = 0; i < max_items; i++){
-		if(T3D:LootState <= T3D:RNG <= (T3D:LootState+items[i][1])){
-			return items[i][0];
+		if(T3D:LootState <= T3D:RNG <= (T3D:LootState+items[i][ItemChance])){
+			return items[i][ItemID];
 		} else {
-			T3D:LootState += items[i][1];
+			T3D:LootState += items[i][ItemChance];
 		}
 	}
 	return -1;
@@ -1738,13 +1822,17 @@ stock bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, cons
 	return Tryg3D::RotationInRange(trz,T3D:min,T3D:max);
 }
 
-stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz){
-	if(Tryg3D::GetDistance3D(px,py,pz,x,y,z) > radius) return false;
-	new Float:trx,Float:trz;
-	vrx /= 2.0;
-	vrz /= 2.0;
-	if(!Tryg3D::GetRotationFor2Point3D(x,y,z,px,py,pz,trx,trz)) return false;
-	return (Tryg3D::RotationInRange(trx,rx-vrx,rx+vrx) && Tryg3D::RotationInRange(trz,rz-vrz,rz+vrz));
+stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:cx, const Float:cy, const Float:cz, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz){
+	new Float:dist = VectorSize(px-cx,py-cy,pz-cz);
+	if(dist == 0.0) return true;
+	if(dist > radius) return false;
+	new Float:matrix[3][3], Float:tx, Float:ty, Float:tz, Float:trx, Float:trz;
+	Tryg3D::GetRotationMatrixEuler(matrix,rx,0.0,rz);
+	Tryg3D::MatrixRotateReverse(matrix,px-cx,py-cy,pz-cz,tx,ty,tz);
+	Tryg3D::GetRotationFor2Point3D(0.0,0.0,0.0,tx,ty,tz,trx,trz);
+	if(trx > 180.0) trx -= 360.0;
+	if(trz > 180.0) trz -= 360.0;
+	return floatabs(trx) < (vrx / 2.0) && floatabs(trz) < (vrz / 2.0);
 }
 
 /*
