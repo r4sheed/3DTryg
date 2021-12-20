@@ -2,7 +2,7 @@
 
 3DTryg.inc
 Copyright © 2021 Abyss Morgan. All rights reserved.
-Contributors: Crayder, IllidanS4, Nero_3D, RyDeR, Zoutdaxv, hesambia, Neil Lamoureux, Ivan_Ino, Ralfie, Unrea1, $continue$, Mr.Reus, Switel12
+Contributors: Nero_3D, Crayder, IllidanS4, RyDeR, Zoutdaxv, hesambia, Neil Lamoureux, Ivan_Ino, Ralfie, Unrea1, $continue$, Mr.Reus, Switel12
 
 Website: N/A
 
