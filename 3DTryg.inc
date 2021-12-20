@@ -142,7 +142,6 @@ bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:pz, co
 bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b);
 bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, const Float:x, const Float:y, Float:rz, const Float:radius, Float:view_angle);
 bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz);
-bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
 bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInEllipticalCylinder(const Float:px, const Float:py, const Float:pz, const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInPolygon(const Float:x, const Float:y, const Float:points[], const max_points = sizeof(points));
@@ -192,12 +191,44 @@ Tryg3D::DrawCone3D(const Float:xA, const Float:yA, const Float:zA, const Float:x
 Tryg3D::DrawRectangle2D(const Float:minx, const Float:miny, const Float:maxx, const Float:maxy, Float:points[][2], const points_per_wall = 36, const max_points = sizeof(points));
 Tryg3D::DrawPolygon2D(const Float:polygon_points[], Float:points[][2], const points_per_line = 36, const max_polygon_points = sizeof(polygon_points), const max_points = sizeof(points));
 Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz, Float:points[][3], const points_per_wall = 36, const max_points = sizeof(points));
-	
+
+# Vehicle Functions
+Tryg3D::GetVehicleFlags(vehicleid)
+Tryg3D::IsVehicleFlag(vehicleid, flag)
+Tryg3D::GetVehicleRotation(const vehicleid, &Float:rx, &Float:ry, &Float:rz);
+Tryg3D::GetPartPos(const modelid, const partid, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:tx, &Float:ty, &Float:tz, Float:offset_x = 0.0, Float:offset_y = 0.0, Float:offset_z = 0.0);
+Tryg3D::GetVehiclePartPos(const vehicleid, const partid, &Float:tx, &Float:ty, &Float:tz, Float:offset_x = 0.0, Float:offset_y = 0.0, Float:offset_z = 0.0);
+Tryg3D::GenerateVehicleFlags(const modelid);
+Tryg3D::GetVehicleModelDefaultFlags(const modelid);	
+Tryg3D::GetVehicleModelFlags(const modelid);
+Tryg3D::SetVehicleModelFlags(const modelid, const value);
+Tryg3D::ToggleVehicleModelFlag(const modelid, const flag, const bool:toggle);
+Tryg3D::IsVehicleInRangeOfPoint(const vehicleid, const Float:range, const Float:x, const Float:y, const Float:z);
+Tryg3D::CountVisibleVehicles(const playerid);
+Float: Tryg3D::GetVehicleSpeed(const vehicleid);
+Tryg3D::SetVehicleSpeed(const vehicleid, const Float:speed);
+Float: Tryg3D::GetPointInFrontOfVehicle2D(const vehicleid, &Float:tx, &Float:ty, const Float:radius);
+Tryg3D::GetPointInFrontOfVehicle3D(const vehicleid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+
+# Actor Functions
+Tryg3D::CountActors();
+Tryg3D::CountVisibleActors(playerid);
+
+# ColAndreas Functions
+bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
 
 # Player Functions
-Tryg3D::IsPlayerSpawned(const playerid);
-Tryg3D::GivePlayerDamage(const targetid, Float:amount, const playerid, const weaponid, const bodypart);
-Tryg3D::IsPlayerSpawned(const playerid);
+bool: Tryg3D::IsPlayerSpawned(const playerid);
+bool: Tryg3D::IsPlayerSkydiving(playerid);
+bool: Tryg3D::IsPlayerUsingParachute(playerid);
+bool: Tryg3D::IsPlayerFall(playerid);
+bool: Tryg3D::IsPlayerAiming(playerid);
+bool: Tryg3D::IsPlayerStay(playerid);
+bool: Tryg3D::IsPlayerSwim(playerid);
+bool: Tryg3D::IsPlayerJump(playerid);
+bool: Tryg3D::IsPlayerParaFall(playerid);
+bool: Tryg3D::IsPlayerParaGlide(playerid);
+bool: Tryg3D::IsPlayerRunning(playerid);
 Tryg3D::GivePlayerDamage(const targetid, Float:amount, const playerid, const weaponid, const bodypart);
 Tryg3D::CountPlayers(const bool:isplayer = true, const bool:isnpc = true);
 Tryg3D::CountVisiblePlayers(const playerid, const bool:isplayer = true, const bool:isnpc = true);
@@ -1880,22 +1911,6 @@ stock bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, con
 	return floatabs(trx) < (vrx / 2.0) && floatabs(trz) < (vrz / 2.0);
 }
 
-stock bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
-	if(Tryg3D::GetDistance3D(px,py,pz,x,y,z) > radius) return false;
-	
-	#if defined TRYG3D_MOD_COLANDREAS
-		new Item3D_Type:item_type,element_id,Float:T3D:x,Float:T3D:y,Float:T3D:z;
-		if(Tryg3D::CollisionCheck(x,y,z,px,py,pz,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags)) return false;
-	#else
-		#pragma unused ignore_vehicle
-		#pragma unused ignore_player
-		#pragma unused ignore_actor
-		#pragma unused collision_flags
-	#endif
-	
-	return Tryg3D::IsPointInSphericalSector(px,py,pz,x,y,z,rx,rz,radius,vrx,vrz);
-}
-
 stock bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y){
 	new Float:rz;
 	Tryg3D::GetRotationFor2Point2D(cx,cy,px,py,rz);
@@ -2253,15 +2268,96 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 }
 
 /********************************
+ * Actor Functions              *
+ ********************************/
+
+#if defined TRYG3D_MOD_ACTOR
+
+	stock Tryg3D::CountActors(){
+		new T3D:count = 0;
+		for(new i = 0, j = GetActorPoolSize(); i <= j; i++) if(IsValidActor(i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountVisibleActors(playerid){
+		new T3D:count = 0;
+		for(new i = 0, j = GetActorPoolSize(); i <= j; i++) if(IsValidActor(i) && IsActorStreamedIn(i,playerid)) T3D:count++;
+		return T3D:count;
+	}
+	
+#endif
+
+/********************************
  * Player Functions             *
  ********************************/
 
 #if defined TRYG3D_MOD_PLAYER
 
-	stock Tryg3D::IsPlayerSpawned(const playerid){
+	stock bool: Tryg3D::IsPlayerSpawned(const playerid){
 		new T3D:pstate = GetPlayerState(playerid);
 		if(T3D:pstate != 1 && T3D:pstate != 2 && T3D:pstate != 3) return false;
 		return true;
+	}
+	
+	stock bool: Tryg3D::IsPlayerSkydiving(playerid){
+		return 958 <= GetPlayerAnimationIndex(playerid) <= 962;
+	}
+
+	stock bool: Tryg3D::IsPlayerUsingParachute(playerid){
+		return 963 <= GetPlayerAnimationIndex(playerid) <= 979;
+	}
+
+	stock bool: Tryg3D::IsPlayerFall(playerid){
+		return GetPlayerAnimationIndex(playerid) == 1130;
+	}
+
+	stock bool: Tryg3D::IsPlayerAiming(playerid){
+		switch(GetPlayerAnimationIndex(playerid)){
+			case 1160..1163,1167,1365,1643,1453,220: return true;
+		}
+		return false;
+	}
+
+	stock bool: Tryg3D::IsPlayerStay(playerid){
+		switch(GetPlayerAnimationIndex(playerid)){
+			case 1189,1133: return true;
+		}
+		return false;
+	}
+
+	stock bool: Tryg3D::IsPlayerSwim(playerid){
+		switch(GetPlayerAnimationIndex(playerid)){
+			case 1538,1539,1541,1544: return true;
+		}
+		return false;
+	}
+
+	stock bool: Tryg3D::IsPlayerJump(playerid){
+		switch(GetPlayerAnimationIndex(playerid)){
+			case 1195,1198: return true;
+		}
+		return false;
+	}
+
+	stock bool: Tryg3D::IsPlayerParaFall(playerid){
+		switch(GetPlayerAnimationIndex(playerid)){
+			case 958,959,961,962,1134: return true;
+		}
+		return false;
+	}
+
+	stock bool: Tryg3D::IsPlayerParaGlide(playerid){
+		switch(GetPlayerAnimationIndex(playerid)){
+			case 963,965,971,976,978: return true;
+		}
+		return false;
+	}
+
+	stock bool: Tryg3D::IsPlayerRunning(playerid){
+		switch(GetPlayerAnimationIndex(playerid)){
+			case 1231,1266,1196: return true;
+		}
+		return false;
 	}
 	
 	stock Tryg3D::GivePlayerDamage(const targetid, Float:amount, const playerid, const weaponid, const bodypart){
@@ -2472,6 +2568,202 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 
 #if defined TRYG3D_MOD_VEHICLE
 
+	#define T3_GetVehicleFlags(%0)    Tryg3D::GetVehicleModelFlags(GetVehicleModel(%0))
+	#define T3_IsVehicleFlag(%0,%1)   ((%0) & (%1))
+
+	//Made by IllidanS4
+	stock Tryg3D::GetVehicleRotation(const vehicleid, &Float:rx, &Float:ry, &Float:rz){
+		new Float:qw,Float:qx,Float:qy,Float:qz;
+		GetVehicleRotationQuat(vehicleid,qw,qx,qy,qz);
+		Tryg3D::QuatToEuler(rx,ry,rz,qw,qx,qy,qz);
+	}
+	
+	#if !defined GetVehicleRotation
+		#define GetVehicleRotation Tryg3D::GetVehicleRotation
+	#endif
+
+	//Made by Ivan_Ino
+	//SRC:https://github.com/Ino42O/VehiclePartPosition/blob/master/VehiclePartPosition.inc
+	stock Tryg3D::GetPartPos(const modelid, const partid, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:tx, &Float:ty, &Float:tz, Float:offset_x = 0.0, Float:offset_y = 0.0, Float:offset_z = 0.0){
+		new Float:ox,Float:oy,Float:oz;
+		switch(partid){
+			case VEHICLE_PART_RFTIRE: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_WHEELSFRONT,ox,oy,oz);
+			}
+			case VEHICLE_PART_LFTIRE: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_WHEELSFRONT,ox,oy,oz);
+				ox *= (-1);
+				offset_x *= (-1);
+			}
+			case VEHICLE_PART_RRTIRE: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_WHEELSREAR,ox,oy,oz);
+			}
+			case VEHICLE_PART_LRTIRE: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_WHEELSREAR,ox,oy,oz);
+				ox *= (-1);
+				offset_x *= (-1);
+			}
+			case VEHICLE_PART_HOOD: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_SIZE,ox,oy,oz);
+				oy /= 2.0;
+				ox = oz = 0.0;
+			}
+			case VEHICLE_PART_TRUNK: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_SIZE,ox,oy,oz);
+				oy /= (-2.0);
+				offset_y *= (-1);
+				ox = oz = 0.0;
+			}
+			case VEHICLE_PART_ROOF: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_SIZE,ox,oy,oz);
+				oz /= 2.0;
+				ox = oy = 0.0;
+			}
+			case VEHICLE_PART_CHASSIS: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_SIZE,ox,oy,oz);
+				oz /= (-2.0);
+				offset_z *= (-1);
+				ox = oy = 0.0;
+			}
+			case VEHICLE_PART_PETROLCAP: {
+				GetVehicleModelInfo(modelid,VEHICLE_MODEL_INFO_PETROLCAP,ox,oy,oz);
+			}
+		}
+		ox += offset_x;
+		oy += offset_y;
+		oz += offset_z;
+		Tryg3D::ShiftOffsetToPosition(x,y,z,rx,ry,rz,ox,oy,oz,tx,ty,tz);
+		return !(ox == 0.0 && oy == 0.0 && oz == 0.0);
+	}
+
+	//Made by Ivan_Ino Updated by Abyss Morgan 
+	stock Tryg3D::GetVehiclePartPos(const vehicleid, const partid, &Float:tx, &Float:ty, &Float:tz, Float:offset_x = 0.0, Float:offset_y = 0.0, Float:offset_z = 0.0){
+		new Float:x,Float:y,Float:z,Float:rx,Float:ry,Float:rz;
+		GetVehiclePos(vehicleid,x,y,z);
+		Tryg3D::GetVehicleRotation(vehicleid,rx,ry,rz);
+		GetVehicleZAngle(vehicleid,rz);
+		return Tryg3D::GetPartPos(GetVehicleModel(vehicleid),partid,x,y,z,rx,ry,rz,tx,ty,tz,offset_x,offset_y,offset_z);
+	}
+	
+	stock Tryg3D::GenerateVehicleFlags(const modelid){
+		new flag_value = 0;
+		switch(modelid){
+			case 425,548,417,487,497,563,469,447,488: flag_value += VF_AIRBORNE + VF_HELICOPTER;
+			case 460,476,511,512,520,593,592,553,519,513,577: flag_value += VF_AIRBORNE + VF_AIRPLANE;
+			case 539: flag_value += VF_AIRBORNE;
+		}
+		switch(modelid){
+			case 425,520,432: flag_value += VF_MILITARY;
+		}
+		switch(modelid){
+			case 472,473,493,595,484,430,453,452,446,454,539,447,460: flag_value += VF_NATATORIAL;
+		}
+		switch(modelid){
+			case 441,464,465,501,564,594: flag_value += VF_RC;
+		}
+		switch(modelid){
+			case 471,468,586,463,523,521,461,522,581,448,462,510,481,509: flag_value += VF_BIKES;
+		}
+		switch(modelid){
+			case 435,450,584,590,591,606,607,608,610,611: flag_value += VF_TRAILER;
+		}
+		switch(modelid){
+			case 449,537,538: flag_value += VF_TRAIN;
+		}
+		switch(modelid){
+			case 569,570,590: flag_value += VF_CARRIAGE;
+		}
+		if(modelid == 539 || ((flag_value & VF_NATATORIAL != VF_NATATORIAL) && (flag_value & VF_AIRBORNE != VF_AIRBORNE))) flag_value += VF_STREET;
+		switch(modelid){
+			case 437,544,431,407,408,570,569,538,537,449,532,524,403,514,515,443,435,433,432,406: {	}
+			default: {
+				if(flag_value&VF_NATATORIAL!=VF_NATATORIAL && flag_value&VF_AIRBORNE!=VF_AIRBORNE && flag_value&VF_RC!=VF_RC && flag_value&VF_BIKES!=VF_BIKES){
+					flag_value += VF_TOWABLE;
+				}
+			}
+		}
+		switch(modelid){
+			case 416,523,427,490,407,544,596,598,597,599: flag_value += VF_POLICE;
+		}
+		return flag_value;
+	}
+	
+	stock Tryg3D::GetVehicleModelDefaultFlags(const modelid){	
+		if(!(400 <= modelid <= 611)) return 0;
+		return Tryg3D::VehicleFlagsDefault[modelid - 400];
+	}
+
+	stock Tryg3D::GetVehicleModelFlags(const modelid){
+		if(!(400 <= modelid <= 611)) return 0;
+		return Tryg3D::VehicleFlagsCurrent[modelid - 400];
+	}
+
+	stock Tryg3D::SetVehicleModelFlags(const modelid, const value){
+		if(!(400 <= modelid <= 611)) return 0;
+		Tryg3D::VehicleFlagsCurrent[modelid - 400] = value;
+		return 1;
+	}
+
+	stock Tryg3D::ToggleVehicleModelFlag(const modelid, const flag, const bool:toggle){
+		if(!(400 <= modelid <= 611)) return 0;
+		if(toggle){
+			Tryg3D::VehicleFlagsCurrent[modelid - 400] |= flag;
+		} else {
+			Tryg3D::VehicleFlagsCurrent[modelid - 400] &= ~flag;
+		}
+		return 1;
+	}
+	
+	stock Tryg3D::IsVehicleInRangeOfPoint(const vehicleid, const Float:range, const Float:x, const Float:y, const Float:z){
+		return GetVehicleDistanceFromPoint(vehicleid,x,y,z) <= range;
+	}
+
+	stock Tryg3D::CountVisibleVehicles(const playerid){
+		new T3D:count = 0;
+		for(new i = 0, j = GetVehiclePoolSize(); i <= j; i++) if(IsValidVehicle(i) && IsVehicleStreamedIn(i,playerid)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Float: Tryg3D::GetVehicleSpeed(const vehicleid){
+		new Float:x,Float:y,Float:z;
+		GetVehicleVelocity(vehicleid,x,y,z);
+		return floatmul(VectorSize(x,y,z),TRYG3D_VEHICLE_SPEED_MULTIPLIER);
+	}
+
+	stock Tryg3D::SetVehicleSpeed(const vehicleid, const Float:speed){
+		new Float:rx,Float:ry,Float:rz,Float:vx,Float:vy,Float:vz;
+		Tryg3D::GetVehicleRotation(vehicleid,rx,ry,rz);
+		Tryg3D::GetPointInFront3DEx(0.0,0.0,0.0,rx,ry,rz,(speed / TRYG3D_VEHICLE_SPEED_MULTIPLIER),vx,vy,vz);
+		SetVehicleVelocity(vehicleid,vx,vy,vz);
+	}
+
+	stock Float: Tryg3D::GetPointInFrontOfVehicle2D(const vehicleid, &Float:tx, &Float:ty, const Float:radius){
+		new Float:rz,Float:x,Float:y;
+		GetVehiclePos(vehicleid,x,y,rz);
+		GetVehicleZAngle(vehicleid,rz);
+		Tryg3D::GetPointInFront2D(x,y,rz,radius,tx,ty);
+		return rz;
+	}
+
+	stock Tryg3D::GetPointInFrontOfVehicle3D(const vehicleid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0){
+		new Float:ry,Float:x,Float:y,Float:z;
+		GetVehiclePos(vehicleid,x,y,z);
+		Tryg3D::GetVehicleRotation(vehicleid,rx,ry,rz);
+		Tryg3D::GetPointInFront3D(x,y,z,rx,rz,radius,tx,ty,tz);
+	}
+
+#endif
+
+/********************************
+ * ColAndreas Functions         *
+ ********************************/
+ 
+#if defined TRYG3D_MOD_COLANDREAS
+	stock bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
+		new Item3D_Type:item_type,element_id,Float:T3D:x,Float:T3D:y,Float:T3D:z;
+		if(Tryg3D::CollisionCheck(x,y,z,px,py,pz,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags)) return false;		
+		return Tryg3D::IsPointInSphericalSector(px,py,pz,x,y,z,rx,rz,radius,vrx,vrz);
+	}
 #endif
 
 /********************************
