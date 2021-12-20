@@ -62,11 +62,18 @@ Tryg3D::QuatToEuler(&Float:rx, &Float:ry, &Float:rz, Float:qw, Float:qx, Float:q
 Tryg3D::GetRotationMatrixEuler(Float:matrix[][], const Float:rx, const Float:ry, const Float:rz);
 Tryg3D::GetRotationMatrixEulerEx(Float:matrix[][], const Float:rx, const Float:ry, const Float:rz, const EulerModes: mode = T3D:euler_default);
 Tryg3D::MatrixRotate(const Float:matrix[][], const Float:oX, const Float:oY, const Float:oZ, &Float:x, &Float:y, &Float:z);
+Tryg3D::MatrixRotateReverse(const Float:matrix[][], const Float:oX, const Float:oY, const Float:oZ, &Float:x, &Float:y, &Float:z);
 Tryg3D::GetQuatFromEuler(Float:rx, Float:ry, Float:rz, &Float:qw, &Float:qx, &Float:qy, &Float:qz, EulerModes: mode = T3D:euler_default);
 Tryg3D::QuatRotate(const Float:qw, const Float:qx, const Float:qy, const Float:qz, const Float:oX, const Float:oY, const Float:oZ, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::EulerRotate(Float:rx, Float:ry, Float:rz, Float:oX, Float:oY, Float:oZ, &Float:tx,&Float:ty,&Float:tz);
 Tryg3D::EulerRotateEx(Float:rx, Float:ry, Float:rz, Float:oX, Float:oY, Float:oZ, &Float:tx, &Float:ty, &Float:tz, EulerModes: mode = T3D:euler_default);
 Tryg3D::GetQuatUpVector(const Float:qw, const Float:qx, const Float:qy, const Float:qz, &Float:vx, &Float:vy, &Float:vz);
+
+# Screen Functions
+Tryg3D::NormCrossProduct(&Float:x, &Float:y, &Float:z, Float:v1x, Float:v1y, Float:v1z, Float:v2x, Float:v2y, Float:v2z);
+Tryg3D::ScreenToWorld(const playerid, const Float:screenX, const Float:screenY, &Float:vX, &Float:vY, &Float:vZ);
+Tryg3D::WorldToScreen(const playerid, Float:x, Float:y, Float:z, &Float:screenX, &Float:screenY);
+Tryg3D::ScreenToWorldCol(const playerid, const Float:distance, const Float:screenX, const Float:screenY, &Float:wX, &Float:wY, &Float:wZ);
 
 # General Functions
 Float: Tryg3D::GetDistance1D(const Float:x1, const Float:x2);
@@ -91,7 +98,7 @@ Tryg3D::GetPointFor2Point3DEx(const Float:x1, const Float:y1, const Float:z1, co
 Float: Tryg3D::GetDistancePointToLine(const Float:px, const Float:py, const Float:pz, const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:iX = 0.0, &Float:iY = 0.0, &Float:iZ = 0.0);
 Float: Tryg3D::GetDistancePointToLineEx(const Float:px, const Float:py, const Float:pz, const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:iX = 0.0, &Float:iY = 0.0, &Float:iZ = 0.0);
 Tryg3D::GetNearest2DPointOnPolygon(const Float:polygon_points[], const Float:x, const Float:y, &Float:tx, &Float:ty, const max_points = sizeof(polygon_points));
-Float: Tryg3D::GetLineCosTheta2D(const Float:StartLine1[3], const Float:EndLine1[3], const Float:StartLine2[3], const Float:EndLine2[3]);
+Float: Tryg3D::GetLineCosTheta2D(const Float:StartLine1[2], const Float:EndLine1[2], const Float:StartLine2[2], const Float:EndLine2[2]);
 Float: Tryg3D::GetLineCosTheta3D(const Float:StartLine1[3], const Float:EndLine1[3], const Float:StartLine2[3], const Float:EndLine2[3]);
 bool: Tryg3D::IsLinesParallel2D(const Float:StartLine1[2], const Float:EndLine1[2], const Float:StartLine2[2], const Float:EndLine2[2]);
 bool: Tryg3D::IsLinesParallel3D(const Float:StartLine1[3], const Float:EndLine1[3], const Float:StartLine2[3], const Float:EndLine2[3]);
@@ -100,8 +107,9 @@ bool: Tryg3D::IsLinesPerpendicular3D(const Float:StartLine1[3], const Float:EndL
 bool: Tryg3D::IsPointBetween2Points2D(const Float:px, const Float:py, const Float:x1, const Float:y1, const Float:x2, const Float:y2);
 bool: Tryg3D::IsPointBetween2Points3D(const Float:px, const Float:py, const Float:pz, const Float:x1, const Float:y1, const Float:z1, const Float:x2, const Float:y2, const Float:z2);
 Tryg3D::GetGangZone(const Float:x, const Float:y, const Float:radius, &Float:minx, &Float:miny, &Float:maxx, &Float:maxy);
-bool: Tryg3D::IsProbable(Float:chance, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
-Tryg3D::RandomItemFromArray(const items[][2], const max_items = sizeof(items), accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
+bool: Tryg3D::IsProbable(const Float:chance, const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
+Tryg3D::RandomItemFromArray(const items[][LootArray], const max_items = sizeof(items), const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
+Tryg3D::GetWeaponShotPos(playerid, hittype, &Float:fx, &Float:fy, &Float:fz);
 
 # Converter Functions
 Float: Tryg3D::ShiftDegreeToRadian(const Float:value);
@@ -120,20 +128,21 @@ Tryg3D::ShiftPositionToOffset(const Float:x, const Float:y, const Float:z, const
 Tryg3D::ShiftLineRotation(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ);
 bool: Tryg3D::ShiftLineRotationVector(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ);
 Tryg3D::ShiftSpeedToMoveTime(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, const Float:speed);
-Tryg3D::ShiftMoveTimeToSpeed(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, const movement_time);
+Float: Tryg3D::ShiftMoveTimeToSpeed(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, const movement_time);
 
 # Extended Functions
 bool: Tryg3D::IsPointToPointVector(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, &Float:vx, &Float:vy, &Float:vz);
-Tryg3D::GetArcPoints3D(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, const Float:ry, const Float:height, Float:points[][3], const max_points = sizeof(points));
+Tryg3D::GetArcPoints3D(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, Float:ry, const Float:height, Float:points[][3], const max_points = sizeof(points));
 Tryg3D::GetCube3DPoint(const OrientationCube3D:orientation, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z, &Float:tx, &Float:ty, &Float:tz);
 
 # Area Functions
 bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius);
-bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z);
+bool: Tryg3D::IsPointInCube(const Float:px, const Float:py, const Float:pz, const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz);
+bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, Float:size_x, Float:size_y, Float:size_z);
 bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b);
-bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, const Float:x, const Float:y, Float:rz, const Float:radius, Float:view_angle)
-bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz);
-//bool: Tryg3D::IsPointInSphericalSectorEx(Float:px, Float:py, Float:pz, Float:x, Float:y, Float:z, Float:rx, Float:rz, Float:radius, Float:vrx, Float:vrz, ignore_vehicle = INVALID_VEHICLE_ID, ignore_player = INVALID_PLAYER_ID, ignore_actor = INVALID_ACTOR_ID, collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
+bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, const Float:x, const Float:y, Float:rz, const Float:radius, Float:view_angle);
+bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz);
+bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
 bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInEllipticalCylinder(const Float:px, const Float:py, const Float:pz, const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInPolygon(const Float:x, const Float:y, const Float:points[], const max_points = sizeof(points));
@@ -160,7 +169,8 @@ Tryg3D::GetPointInSphericalSector(const Float:x, const Float:y, const Float:z, c
 Tryg3D::GetPointInEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty);
 Tryg3D::GetPointInEllipticalCylinder(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, Float:size_y, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, const max_points = sizeof(points),  max_iterations = 10000);
-Float:Tryg3D::GetPointOnClock(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty, &Float:trz, Float:rz = TRYG3D_INVALID_ROTATION);
+Float: Tryg3D::GetPointOnClock(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty, &Float:trz, Float:rz = TRYG3D_INVALID_ROTATION);
+Tryg3D::GetPointOnCircle(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty);
 Tryg3D::GetPointOnCylinder2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointOnCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointOnSphere(const Float:x, const Float:y, const Float:z, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
@@ -173,6 +183,7 @@ Tryg3D::GetPointOnSphericalSector(const Float:x, const Float:y, const Float:z, c
 Tryg3D::GetPointOnEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty);
 Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty, &Float:tz);
 
+
 # Draw3D Functions
 Tryg3D::DrawCircle3D(const Float:x, const Float:y, const Float:z, const Float:radius, Float:points[][3], const max_sector = 36, const Float:rx = 90.0, const Float:ry = 0.0, const max_points = sizeof(points));
 Tryg3D::DrawCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, Float:points[][3], const max_sector = 36, const max_circles = 5, const max_points = sizeof(points));
@@ -182,6 +193,30 @@ Tryg3D::DrawRectangle2D(const Float:minx, const Float:miny, const Float:maxx, co
 Tryg3D::DrawPolygon2D(const Float:polygon_points[], Float:points[][2], const points_per_line = 36, const max_polygon_points = sizeof(polygon_points), const max_points = sizeof(points));
 Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz, Float:points[][3], const points_per_wall = 36, const max_points = sizeof(points));
 	
+
+# Player Functions
+Tryg3D::IsPlayerSpawned(const playerid);
+Tryg3D::GivePlayerDamage(const targetid, Float:amount, const playerid, const weaponid, const bodypart);
+Tryg3D::IsPlayerSpawned(const playerid);
+Tryg3D::GivePlayerDamage(const targetid, Float:amount, const playerid, const weaponid, const bodypart);
+Tryg3D::CountPlayers(const bool:isplayer = true, const bool:isnpc = true);
+Tryg3D::CountVisiblePlayers(const playerid, const bool:isplayer = true, const bool:isnpc = true);
+Float: Tryg3D::GetPointInFrontOfPlayer(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Tryg3D::GetPlayerCameraRotation(const playerid, &Float:rx, &Float:rz);
+Tryg3D::GetPlayerCameraZAngle(const playerid, &Float:z_angle);
+Float: Tryg3D::GetPointInFrontOfCamera2D(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Float: Tryg3D::GetPlayerSpeed(const playerid);
+Tryg3D::GetPlayerTargetAngle(const playerid, const Float:x, const Float:y, &Float:rz);
+Tryg3D::SetPlayerTargetAngle(const playerid, const Float:x, const Float:y, &Float:rz = 0.0);
+Tryg3D::GetPlayerTargetPlayerAngle(const playerid, const targetid, &Float:rz);
+Tryg3D::SetPlayerTargetPlayerAngle(const playerid, const targetid, &Float:rz = 0.0);
+Tryg3D::GetPointInFrontOfCamera3D(const playerid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+Tryg3D::IsPlayerLookAtSky(const playerid);
+Tryg3D::IsPlayerFakeSpectating(const playerid, const bool:force_disable = true);
+Float: Tryg3D::GetCameraTargetDistance(const Float:CamX, const Float:CamY, const Float:CamZ, const Float:ObjX, const Float:ObjY, const Float:ObjZ, const Float:FrX, const Float:FrY, const Float:FrZ);
+Tryg3D::IsPlayerAimingAt(const playerid, const Float:x, const Float:y, const Float:z, const Float:radius);
+Tryg3D::GetPlayerCameraLookAt(const playerid, &Float:x, &Float:y, &Float:z);
+
 */
 
 /********************************
@@ -1612,6 +1647,15 @@ stock Tryg3D::RandomItemFromArray(const items[][LootArray], const max_items = si
 	return -1;
 }
 
+stock Tryg3D::GetWeaponShotPos(playerid, hittype, &Float:fx, &Float:fy, &Float:fz){
+	new Float:ox,Float:oy,Float:oz;
+	switch(hittype){
+		case BULLET_HIT_TYPE_VEHICLE, BULLET_HIT_TYPE_OBJECT, BULLET_HIT_TYPE_PLAYER_OBJECT, BULLET_HIT_TYPE_PLAYER: {
+			GetPlayerLastShotVectors(playerid,ox,oy,oz,fx,fy,fz);
+		}
+	}
+}
+
 /********************************
  * Converter Functions          *
  ********************************/
@@ -2213,6 +2257,213 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
  ********************************/
 
 #if defined TRYG3D_MOD_PLAYER
+
+	stock Tryg3D::IsPlayerSpawned(const playerid){
+		new T3D:pstate = GetPlayerState(playerid);
+		if(T3D:pstate != 1 && T3D:pstate != 2 && T3D:pstate != 3) return false;
+		return true;
+	}
+	
+	stock Tryg3D::GivePlayerDamage(const targetid, Float:amount, const playerid, const weaponid, const bodypart){
+		if(targetid == INVALID_PLAYER_ID) return 0;
+		if(Tryg3D::DeatchTick[targetid] != 0 && GetTickCount() < Tryg3D::DeatchTick[targetid]) return 0;
+		#if defined TRYG3D_MOD_FCNPC
+			if(IsPlayerNPC(targetid) && FCNPC::IsValid(targetid)){
+				new Float:T3D:health,Float:T3D:armour;
+				T3D:health = FCNPC::GetHealth(targetid);
+				T3D:armour = FCNPC::GetArmour(targetid);
+				CallRemoteFunction("FCNPC_OnGiveDamage","ddddf",targetid,playerid,amount,weaponid,bodypart);
+				CallRemoteFunction("FCNPC_OnTakeDamage","ddddf",targetid,playerid,amount,weaponid,bodypart);
+				if(T3D:armour >= amount){
+					FCNPC::SetArmour(targetid,T3D:armour-amount);
+				} else if(T3D:armour < amount){
+					amount -= T3D:armour;
+					FCNPC::SetArmour(targetid,0.0);
+					if(T3D:health-amount <= 0.0){
+						CallRemoteFunction("OnPlayerDeath","ddd",targetid,playerid,weaponid);
+						CallRemoteFunction("FCNPC_OnDeath","ddd",targetid,playerid,weaponid);
+						Tryg3D::DeatchTick[targetid] = GetTickCount()+200;
+						FCNPC::Respawn(targetid);
+					} else {
+						FCNPC::SetHealth(targetid,T3D:health-amount);
+					}
+				} else {
+					if(T3D:health-amount <= 0.0){
+						CallRemoteFunction("OnPlayerDeath","ddd",targetid,playerid,weaponid);
+						CallRemoteFunction("FCNPC_OnDeath","ddd",targetid,playerid,weaponid);
+						Tryg3D::DeatchTick[targetid] = GetTickCount()+200;
+						FCNPC::Respawn(targetid);
+					} else {
+						FCNPC::SetHealth(targetid,T3D:health-amount);
+					}
+				}
+			} else {
+		#endif
+			new Float:T3D:health,Float:T3D:armour;
+			GetPlayerArmour(targetid,T3D:armour);
+			GetPlayerHealth(targetid,T3D:health);
+			CallRemoteFunction("OnPlayerGiveDamage","ddfdd",playerid,targetid,amount,weaponid,bodypart);
+			CallRemoteFunction("OnPlayerTakeDamage","ddfdd",targetid,playerid,amount,weaponid,bodypart);
+			if(T3D:armour >= amount){
+				SetPlayerArmour(targetid,T3D:armour-amount);
+			} else if(T3D:armour < amount){
+				amount -= T3D:armour;
+				SetPlayerArmour(targetid,0.0);
+				if(T3D:health-amount <= 0.0){
+					CallRemoteFunction("OnPlayerDeath","ddd",targetid,playerid,weaponid);
+					Tryg3D::DeatchTick[targetid] = GetTickCount()+200;
+					SpawnPlayer(targetid);
+				} else {
+					SetPlayerHealth(targetid,T3D:health-amount);
+				}
+			} else {
+				if(T3D:health-amount <= 0.0){
+					CallRemoteFunction("OnPlayerDeath","ddd",targetid,playerid,weaponid);
+					Tryg3D::DeatchTick[targetid] = GetTickCount()+200;
+					SpawnPlayer(targetid);
+				} else {
+					SetPlayerHealth(targetid,T3D:health-amount);
+				}
+			}
+		#if defined TRYG3D_MOD_FCNPC
+			}
+		#endif
+		return 1;
+	}
+
+	stock Tryg3D::CountPlayers(const bool:isplayer = true, const bool:isnpc = true){
+		new T3D:count = 0;
+		Tryg3D::Foreach(i){
+			if(IsPlayerNPC(i)){
+				if(isnpc) T3D:count++;
+			} else {
+				if(isplayer) T3D:count++;
+			}
+		}
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountVisiblePlayers(const playerid, const bool:isplayer = true, const bool:isnpc = true){
+		new T3D:count = 0;
+		Tryg3D::Foreach(i){
+			if(i != playerid && IsPlayerStreamedIn(i,playerid)){
+				if(IsPlayerNPC(i)){
+					if(isnpc) T3D:count++;
+				} else {
+					if(isplayer) T3D:count++;
+				}
+			}
+		}
+		return T3D:count;
+	}
+
+	stock Float: Tryg3D::GetPointInFrontOfPlayer(const playerid, &Float:tx, &Float:ty, const Float:radius){
+		new Float:rz,T3D:vid = GetPlayerVehicleID(playerid);
+		GetPlayerPos(playerid,tx,ty,rz);
+		if(T3D:vid != 0){
+			GetVehicleZAngle(T3D:vid,rz);
+		} else {
+			GetPlayerFacingAngle(playerid,rz);
+		}
+		Tryg3D::GetPointInFront2D(tx,ty,rz,radius,tx,ty);
+		return rz;
+	}
+
+	stock Tryg3D::GetPlayerCameraRotation(const playerid, &Float:rx, &Float:rz){
+		new Float:mx,Float:my,Float:mz;
+		GetPlayerCameraFrontVector(playerid,mx,my,mz);
+		rx = Tryg3D::CompressRotation(-(acos(mz)-90.0));
+		rz = Tryg3D::CompressRotation((atan2(my,mx)-90.0));
+	}
+
+	stock Tryg3D::GetPlayerCameraZAngle(const playerid, &Float:z_angle){
+		new Float:mx,Float:my,Float:mz;
+		GetPlayerCameraFrontVector(playerid,mx,my,mz);
+		z_angle = Tryg3D::CompressRotation((atan2(my,mx)-90.0));
+	}
+
+	stock Float: Tryg3D::GetPointInFrontOfCamera2D(const playerid, &Float:tx, &Float:ty, const Float:radius){
+		new Float:x,Float:y,Float:rz;
+		GetPlayerCameraPos(playerid,x,y,rz);
+		Tryg3D::GetPlayerCameraZAngle(playerid,rz);
+		Tryg3D::GetPointInFront2D(x,y,rz,radius,tx,ty);
+		return rz;
+	}
+
+	stock Float: Tryg3D::GetPlayerSpeed(const playerid){
+		new Float:x,Float:y,Float:z;
+		GetPlayerVelocity(playerid,x,y,z);
+		return floatmul(VectorSize(x,y,z),TRYG3D_PLAYER_SPEED_MULTIPLIER);
+	}
+
+	stock Tryg3D::GetPlayerTargetAngle(const playerid, const Float:x, const Float:y, &Float:rz){
+		new Float:mx,Float:my;
+		GetPlayerPos(playerid,mx,my,rz);
+		Tryg3D::GetRotationFor2Point2D(mx,my,x,y,rz);
+	}
+
+	stock Tryg3D::SetPlayerTargetAngle(const playerid, const Float:x, const Float:y, &Float:rz = 0.0){
+		new Float:mx,Float:my;
+		GetPlayerPos(playerid,mx,my,rz);
+		Tryg3D::GetRotationFor2Point2D(mx,my,x,y,rz);
+		SetPlayerFacingAngle(playerid,rz);
+	}
+
+	stock Tryg3D::GetPlayerTargetPlayerAngle(const playerid, const targetid, &Float:rz){
+		new Float:mx,Float:my,Float:x,Float:y;
+		GetPlayerPos(playerid,mx,my,rz);
+		GetPlayerPos(targetid,x,y,rz);
+		Tryg3D::GetRotationFor2Point2D(mx,my,x,y,rz);
+	}
+
+	stock Tryg3D::SetPlayerTargetPlayerAngle(const playerid, const targetid, &Float:rz = 0.0){
+		new Float:mx,Float:my,Float:x,Float:y;
+		GetPlayerPos(playerid,mx,my,rz);
+		GetPlayerPos(targetid,x,y,rz);
+		Tryg3D::GetRotationFor2Point2D(mx,my,x,y,rz);
+		SetPlayerFacingAngle(playerid,rz);
+	}
+
+	stock Tryg3D::GetPointInFrontOfCamera3D(const playerid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0){
+		new Float:x,Float:y,Float:z;
+		GetPlayerCameraPos(playerid,x,y,z);
+		Tryg3D::GetPlayerCameraRotation(playerid,rx,rz);
+		Tryg3D::GetPointInFront3D(x,y,z,rx,rz,radius,tx,ty,tz);
+	}
+
+	stock Tryg3D::IsPlayerLookAtSky(const playerid){
+		new Float:rx,Float:rz;
+		Tryg3D::GetPlayerCameraRotation(playerid,rx,rz);
+		return (rx > 0.0 && rx <= 90.0);
+	}
+
+	stock Tryg3D::IsPlayerFakeSpectating(const playerid, const bool:force_disable = true){
+		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && IsPlayerAdmin(playerid)) return 0;
+		if(GetPlayerCameraMode(playerid) != 4) return 0; 
+		new Float:px,Float:py,Float:pz,Float:cx,Float:cy,Float:cz;
+		GetPlayerPos(playerid,px,py,pz);
+		GetPlayerCameraPos(playerid,cx,cy,cz);
+		if(Tryg3D::GetDistance3D(px,py,pz,cx,cy,cz) < 20.0) return 0;
+		if(force_disable) SetCameraBehindPlayer(playerid);
+		return 1;
+	}
+
+	stock Float: Tryg3D::GetCameraTargetDistance(const Float:CamX, const Float:CamY, const Float:CamZ, const Float:ObjX, const Float:ObjY, const Float:ObjZ, const Float:FrX, const Float:FrY, const Float:FrZ){
+		new Float:T3D:dist = Tryg3D::GetDistance3D(CamX,CamY,CamZ,ObjX,ObjY,ObjZ);
+		return Tryg3D::GetDistance3D(ObjX,ObjY,ObjZ,(FrX * T3D:dist + CamX),(FrY * T3D:dist + CamY),(FrZ * T3D:dist + CamZ));
+	}
+
+	stock Tryg3D::IsPlayerAimingAt(const playerid, const Float:x, const Float:y, const Float:z, const Float:radius){
+		new Float:cx,Float:cy,Float:cz,Float:fx,Float:fy,Float:fz;
+		GetPlayerCameraPos(playerid,cx,cy,cz);
+		GetPlayerCameraFrontVector(playerid,fx,fy,fz);
+		return (radius >= Tryg3D::GetCameraTargetDistance(cx,cy,cz,x,y,z,fx,fy,fz));
+	}
+	
+	stock Tryg3D::GetPlayerCameraLookAt(const playerid, &Float:x, &Float:y, &Float:z){
+		Tryg3D::GetPointInFrontOfCamera3D(playerid,x,y,z,5.0);
+	}
+
 #endif
 
 /********************************
