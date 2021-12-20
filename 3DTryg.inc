@@ -145,12 +145,11 @@ bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Flo
 bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInEllipticalCylinder(const Float:px, const Float:py, const Float:pz, const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y);
 bool: Tryg3D::IsPointInPolygon(const Float:x, const Float:y, const Float:points[], const max_points = sizeof(points));
-bool: Tryg3D::PointInCylinder2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius);
-bool: Tryg3D::PointInCone2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b);
-bool: Tryg3D::PointInCircle(const Float:px, const Float:py, const Float:x, const Float:y, const Float:radius);
-bool: Tryg3D::PointInSphere(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:radius);
-bool: Tryg3D::PointInRectangle(const Float:px, const Float:py, const Float:minx, const Float:miny, const Float:maxx, const Float:maxy);
-bool: Tryg3D::PointInCube(const Float:px, const Float:py, const Float:pz, const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz);
+bool: Tryg3D::IsPointInCylinder2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius);
+bool: Tryg3D::IsPointInCone2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b);
+bool: Tryg3D::IsPointInCircle(const Float:px, const Float:py, const Float:x, const Float:y, const Float:radius);
+bool: Tryg3D::IsPointInSphere(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:radius);
+bool: Tryg3D::IsPointInRectangle(const Float:px, const Float:py, const Float:minx, const Float:miny, const Float:maxx, const Float:maxy);
 
 # Random Functions
 Tryg3D::GetRandomHit(const Float:x, const Float:y, const Float:z, const range, &Float:tx, &Float:ty, &Float:tz);
@@ -1948,28 +1947,24 @@ stock bool: Tryg3D::IsPointInPolygon(const Float:x, const Float:y, const Float:p
 	return (cross_Total & 0x1) == 1;
 }
 
-stock bool: Tryg3D::PointInCylinder2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius){
+stock bool: Tryg3D::IsPointInCylinder2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius){
 	return Tryg3D::IsPointInCylinder3D(px,py,pz,x,y,minz,x,y,maxz,radius);
 }
 
-stock bool: Tryg3D::PointInCone2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b){
+stock bool: Tryg3D::IsPointInCone2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b){
 	return Tryg3D::IsPointInCone3D(px,py,pz,x,y,minz,x,y,maxz,radius_a,radius_b);
 }
 
-stock bool: Tryg3D::PointInCircle(const Float:px, const Float:py, const Float:x, const Float:y, const Float:radius){
+stock bool: Tryg3D::IsPointInCircle(const Float:px, const Float:py, const Float:x, const Float:y, const Float:radius){
 	return Tryg3D::GetDistance2D(px,py,x,y) <= radius;
 }
 
-stock bool: Tryg3D::PointInSphere(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:radius){
+stock bool: Tryg3D::IsPointInSphere(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:radius){
 	return Tryg3D::GetDistance3D(px,py,pz,x,y,z) <= radius;
 }
 
-stock bool: Tryg3D::PointInRectangle(const Float:px, const Float:py, const Float:minx, const Float:miny, const Float:maxx, const Float:maxy){
+stock bool: Tryg3D::IsPointInRectangle(const Float:px, const Float:py, const Float:minx, const Float:miny, const Float:maxx, const Float:maxy){
 	return (px >= minx && px <= maxx) && (py >= miny && py <= maxy);
-}
-
-stock bool: Tryg3D::PointInCube(const Float:px, const Float:py, const Float:pz, const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz){
-	return (px >= minx && px <= maxx) && (py >= miny && py <= maxy) && (pz >= minz && pz <= maxz);
 }
 
 /********************************
@@ -2761,7 +2756,7 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 #if defined TRYG3D_MOD_COLANDREAS
 	stock bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
 		new Item3D_Type:item_type,element_id,Float:T3D:x,Float:T3D:y,Float:T3D:z;
-		if(Tryg3D::CollisionCheck(x,y,z,px,py,pz,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags)) return false;		
+		if(Tryg3D::CollisionCheck(x,y,z,px,py,pz,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags)) return false;
 		return Tryg3D::IsPointInSphericalSector(px,py,pz,x,y,z,rx,rz,radius,vrx,vrz);
 	}
 #endif
