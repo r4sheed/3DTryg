@@ -181,7 +181,6 @@ Tryg3D::GetPointOnSphericalSector(const Float:x, const Float:y, const Float:z, c
 Tryg3D::GetPointOnEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty);
 Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty, &Float:tz);
 
-
 # Draw3D Functions
 Tryg3D::DrawCircle3D(const Float:x, const Float:y, const Float:z, const Float:radius, Float:points[][3], const max_sector = 36, const Float:rx = 90.0, const Float:ry = 0.0, const max_points = sizeof(points));
 Tryg3D::DrawCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, Float:points[][3], const max_sector = 36, const max_circles = 5, const max_points = sizeof(points));
@@ -2803,10 +2802,10 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 	stock Tryg3D::DrawCircle3D(const Float:x, const Float:y, const Float:z, const Float:radius, Float:points[][3], const max_sector = 36, const Float:rx = 90.0, const Float:ry = 0.0, const max_points = sizeof(points)){
 		new idx = 0, Float:mercury = (360.0 / max_sector), Float:px, Float:py, Float:pz;
 		for(new Float:rz = 0.0; rz < 360.0; rz += mercury){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(0.0,0.0,0.0,0.0,rz,radius,px,py,pz);
 			Tryg3D::ShiftOffsetToPosition(x,y,z,Tryg3D::CompressRotation(rx-90.0),ry,0.0,px,py,pz,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		return idx;
 	}
@@ -2819,10 +2818,10 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 		for(new i = 0; i < max_circles; i++){
 			Tryg3D::GetPointInFront3D(xA,yA,zA,trx,trz,dist*i,tx,ty,tz);
 			for(new Float:rz = 0.0; rz < 360.0; rz += mercury){
-				if(idx > max_points) return idx;
 				Tryg3D::GetPointInFront3D(0.0,0.0,0.0,0.0,rz,radius,px,py,pz);
 				Tryg3D::ShiftOffsetToPosition(tx,ty,tz,Tryg3D::CompressRotation(trx-90.0),0.0,Tryg3D::CompressRotation(trz),px,py,pz,points[idx][0],points[idx][1],points[idx][2]);
 				idx++;
+				if(idx >= max_points) return idx;
 			}
 		}
 		return idx;
@@ -2839,7 +2838,7 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 		points[idx][1] = yA;
 		points[idx][2] = zA;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		new Float:tx, Float:ty, Float:tz, Float:px, Float:py, Float:pz, Float:point_dist = Tryg3D::GetDistance3D(xA,yA,zA,xB,yB,zB), Float:dist = point_dist/(max_circles+1), Float:omega;
 		for(new i = 0; i <= max_circles+1; i++){
@@ -2852,10 +2851,10 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 			}
 			omega = (point_dist / 2) - Tryg3D::GetDistance3D(x,y,z,tx,ty,tz);
 			for(new Float:rz = 0.0; rz < 360.0; rz += mercury){
-				if(idx > max_points) return idx;
 				Tryg3D::GetPointInFront3D(0.0,0.0,0.0,0.0,rz,(floatsqroot((2*omega*radius)-floatpower(omega,2))),px,py,pz);
 				Tryg3D::ShiftOffsetToPosition(tx,ty,tz,Tryg3D::CompressRotation(trx-90.0),0.0,Tryg3D::CompressRotation(trz),px,py,pz,points[idx][0],points[idx][1],points[idx][2]);
 				idx++;
+				if(idx >= max_points) return idx;
 			}
 		}
 		
@@ -2876,17 +2875,17 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 		points[idx][1] = yA;
 		points[idx][2] = zA;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		new Float:tx, Float:ty, Float:tz, Float:px, Float:py, Float:pz, Float:point_dist = Tryg3D::GetDistance3D(xA,yA,zA,xB,yB,zB), Float:dist = point_dist/(max_circles+1), Float:stage_percent;
 		for(new i = 1; i <= max_circles+1; i++){
 			Tryg3D::GetPointInFront3D(xA,yA,zA,trx,trz,dist*i,tx,ty,tz);
 			stage_percent = Tryg3D::GetDistance3D(xA,yA,zA,tx,ty,tz) / point_dist;
 			for(new Float:rz = 0.0; rz < 360.0; rz += mercury){
-				if(idx > max_points) return idx;
 				Tryg3D::GetPointInFront3D(0.0,0.0,0.0,0.0,rz,(stage_percent*radius*2),px,py,pz);
 				Tryg3D::ShiftOffsetToPosition(tx,ty,tz,Tryg3D::CompressRotation(trx-90.0),0.0,Tryg3D::CompressRotation(trz),px,py,pz,points[idx][0],points[idx][1],points[idx][2]);
 				idx++;
+				if(idx >= max_points) return idx;
 			}
 		}
 		
@@ -2906,44 +2905,44 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 		points[idx][0] = minx;
 		points[idx][1] = miny;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		part_size = Tryg3D::GetDistance2D(minx,miny,minx,maxy) / (points_per_wall - 1);
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront2D(minx,miny,0.0,part_size*i,points[idx][0],points[idx][1]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		
 		points[idx][0] = minx;
 		points[idx][1] = maxy;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		part_size = Tryg3D::GetDistance2D(minx,maxy,maxx,maxy) / (points_per_wall - 1);
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront2D(minx,maxy,270.0,part_size*i,points[idx][0],points[idx][1]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		
 		points[idx][0] = maxx;
 		points[idx][1] = maxy;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		part_size = Tryg3D::GetDistance2D(maxx,maxy,maxx,miny) / (points_per_wall - 1);
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront2D(maxx,maxy,180.0,part_size*i,points[idx][0],points[idx][1]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		
 		points[idx][0] = maxx;
 		points[idx][1] = miny;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		part_size = Tryg3D::GetDistance2D(maxx,miny,minx,miny) / (points_per_wall - 1);
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront2D(maxx,miny,90.0,part_size*i,points[idx][0],points[idx][1]);
+			if(idx >= max_points) return idx;
 			idx++;
 		}
 		
@@ -2958,13 +2957,13 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 			points[idx][0] = polygon_points[p];
 			points[idx][1] = polygon_points[p+1];
 			idx++;
-			if(idx > max_points) return idx;
+			if(idx >= max_points) return idx;
 			part_size = Tryg3D::GetDistance2D(polygon_points[p],polygon_points[p+1],polygon_points[p+2],polygon_points[p+3]) / (points_per_line - 1);
 			Tryg3D::GetRotationFor2Point2D(polygon_points[p],polygon_points[p+1],polygon_points[p+2],polygon_points[p+3],rz);
 			for(new i = 1; i < points_per_line-1; i++){
-				if(idx > max_points) return idx;
 				Tryg3D::GetPointInFront2D(polygon_points[p],polygon_points[p+1],rz,part_size*i,points[idx][0],points[idx][1]);
 				idx++;
+				if(idx >= max_points) return idx;
 			}
 		}
 		if(!Tryg3D::IsPolygonClosed(polygon_points,max_polygon_points)){
@@ -2972,13 +2971,13 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 			points[idx][0] = polygon_points[p];
 			points[idx][1] = polygon_points[p+1];
 			idx++;
-			if(idx > max_points) return idx;
+			if(idx >= max_points) return idx;
 			part_size = Tryg3D::GetDistance2D(polygon_points[p],polygon_points[p+1],polygon_points[0],polygon_points[1]) / (points_per_line - 1);
 			Tryg3D::GetRotationFor2Point2D(polygon_points[p],polygon_points[p+1],polygon_points[0],polygon_points[1],rz);
 			for(new i = 1; i < points_per_line-1; i++){
-				if(idx > max_points) return idx;
 				Tryg3D::GetPointInFront2D(polygon_points[p],polygon_points[p+1],rz,part_size*i,points[idx][0],points[idx][1]);
 				idx++;
+				if(idx >= max_points) return idx;
 			}
 		}
 		return idx;
@@ -2993,108 +2992,108 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 		points[idx][1] = miny;
 		points[idx][2] = minz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		points[idx][0] = minx;
 		points[idx][1] = miny;
 		points[idx][2] = maxz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		part_size_x = Tryg3D::GetDistance1D(minx,maxx) / (points_per_wall - 1);
 		part_size_y = Tryg3D::GetDistance1D(miny,maxy) / (points_per_wall - 1);
 		part_size_z = Tryg3D::GetDistance1D(minz,maxz) / (points_per_wall - 1);
 		
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(minx,miny,minz,0.0,0.0,part_size_y*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(minx,miny,maxz,0.0,0.0,part_size_y*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(minx,miny,minz,90.0,0.0,part_size_z*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		
 		points[idx][0] = minx;
 		points[idx][1] = maxy;
 		points[idx][2] = minz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		points[idx][0] = minx;
 		points[idx][1] = maxy;
 		points[idx][2] = maxz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(minx,maxy,minz,0.0,270.0,part_size_x*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(minx,maxy,maxz,0.0,270.0,part_size_x*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(minx,maxy,minz,90.0,270.0,part_size_z*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		
 		points[idx][0] = maxx;
 		points[idx][1] = maxy;
 		points[idx][2] = minz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		points[idx][0] = maxx;
 		points[idx][1] = maxy;
 		points[idx][2] = maxz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(maxx,maxy,minz,0.0,180.0,part_size_y*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(maxx,maxy,maxz,0.0,180.0,part_size_y*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(maxx,maxy,minz,90.0,180.0,part_size_z*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		
 		points[idx][0] = maxx;
 		points[idx][1] = miny;
 		points[idx][2] = minz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		points[idx][0] = maxx;
 		points[idx][1] = miny;
 		points[idx][2] = maxz;
 		idx++;
-		if(idx > max_points) return idx;
+		if(idx >= max_points) return idx;
 		
 		for(new i = 1; i < points_per_wall-1; i++){
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(maxx,miny,minz,0.0,90.0,part_size_x*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(maxx,miny,maxz,0.0,90.0,part_size_x*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 			
-			if(idx > max_points) return idx;
 			Tryg3D::GetPointInFront3D(maxx,miny,minz,90.0,90.0,part_size_z*i,points[idx][0],points[idx][1],points[idx][2]);
 			idx++;
+			if(idx >= max_points) return idx;
 		}
 		
 		
