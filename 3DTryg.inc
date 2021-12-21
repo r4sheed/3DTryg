@@ -135,6 +135,35 @@ bool: Tryg3D::IsPointToPointVector(const Float:x, const Float:y, const Float:z, 
 Tryg3D::GetArcPoints3D(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, Float:ry, const Float:height, Float:points[][3], const max_points = sizeof(points));
 Tryg3D::GetCube3DPoint(const OrientationCube3D:orientation, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z, &Float:tx, &Float:ty, &Float:tz);
 
+# ColAndreas Functions
+Tryg3D::IsCollisionFlag(const value, const flag);
+Tryg3D::IsPointInUnderwater(const Float:x, const Float:y, const Float:z);
+Tryg3D::FindGroundZ(const Float:x, const Float:y, const Float:z, &Float:gZ);
+Tryg3D::MovePointCol(const Float:StartX, const Float:StartY, const Float:StartZ, const Float:EndX, const Float:EndY, const Float:EndZ, &Float:x, &Float:y, &Float:z);
+Tryg3D::MovePointColCutLine(const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:x, &Float:y, &Float:z, const Float:cut_size = 0.0);
+Tryg3D::GetPointInFront3DCol(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInFront3DColEx(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Float: Tryg3D::GetPointInFrontOfPlayerCol(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Float: Tryg3D::GetPointInFrontOfCamera2DCol(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Tryg3D::GetPointInFrontOfCamera3DCol(const playerid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+Tryg3D::GetPointInFrontOfVehicleCol(const vehicleid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+Tryg3D::UndergroundFindZ(const Float:x, const Float:y, &Float:z);
+Tryg3D::InteriorFindZ(const Float:px, const Float:py, const Float:pz, const Float:size = 2.0, &Float:z = 0.0);
+bool: Tryg3D::IsPointInWater(const Float:x, const Float:y, const Float:z = 0.0);
+bool: Tryg3D::IsPointInUnderground(const Float:x, const Float:y, const Float:z);
+bool: Tryg3D::IsPointInAir(const Float:x, const Float:y, const Float:z, const bool:interior = false, const Float:max_distance = 2.2);
+bool: Tryg3D::IsPointInGround(const Float:x, const Float:y, const Float:z, const bool:interior = false, const Float:max_distance = 2.2);
+Tryg3D::GetPointCollisionFlags(const Float:x, const Float:y, const Float:z, const interiorid = 0);
+Tryg3D::IsBetweenPlayersIsWall(const playerid, const targetid);
+Tryg3D::IsBetweenPlayerToPointIsWall(const playerid, const Float:x, const Float:y, const Float:z);
+bool: Tryg3D::GetPointInWallForPoint(const Float:x, const Float:y, const Float:z, const Float:radius, &Float:tx, &Float:ty, &Float:tz, const Float:sector = 90.0);
+Tryg3D::SetCameraDirectionLookAt(const playerid, const Float:x, const Float:y, const Float:z, const Float:distance = 5.0, const Float:rx = 20.0, const Float:sector = 90.0);
+bool: Tryg3D::CollisionCheck(const Float:StartX, const Float:StartY, const Float:StartZ, const Float:EndX, const Float:EndY, const Float:EndZ, &Float:x, &Float:y, &Float:z, &Item3D:item_type = Item3D:0, &element_id = 0, const Float:cut_size = 0.0, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL);
+bool: Tryg3D::GetWallRotation(const Float:sx, const Float:sy, const Float:sz, const Float:ex, const Float:ey, const Float:ez, &Float:rx, &Float:rz, &Float:px = 0.0, &Float:py = 0.0, &Float:pz = 0.0, const Float:size = 1.0, const Float:cut_size = 0.0);
+Tryg3D::GetGroundRotation(const Float:x, const Float:y, const Float:size, &Float:rx, &Float:ry);
+bool: Tryg3D::IsPointInWaterFrontOfPlayer(const playerid, const Float:radius);
+bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
+
 # Area Functions
 bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius);
 bool: Tryg3D::IsPointInCube(const Float:px, const Float:py, const Float:pz, const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz);
@@ -211,9 +240,6 @@ Tryg3D::GetPointInFrontOfVehicle3D(const vehicleid, &Float:tx, &Float:ty, &Float
 # Actor Functions
 Tryg3D::CountActors();
 Tryg3D::CountVisibleActors(playerid);
-
-# ColAndreas Functions
-bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
 
 # Player Functions
 bool: Tryg3D::IsPlayerSpawned(const playerid);
@@ -2817,11 +2843,387 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
  ********************************/
  
 #if defined TRYG3D_MOD_COLANDREAS
+ 
+	#define T3_IsCollisionFlag(%0,%1)        ((%0) & (%1))
+	#define T3_IsPointInUnderwater(%1,%2,%3) (Tryg3D::IsPointInWater((%1),(%2),(%3)) && ((%3) < -1.0))
+
+	stock Tryg3D::FindGroundZ(const Float:x, const Float:y, const Float:z, &Float:gZ){
+		new Float:gX,Float:gY;
+		return ColAndreas::RayCastLine(x,y,z,x,y,z-1000.0,gX,gY,gZ);
+	}
+
+	stock Tryg3D::MovePointCol(const Float:StartX, const Float:StartY, const Float:StartZ, const Float:EndX, const Float:EndY, const Float:EndZ, &Float:x, &Float:y, &Float:z){
+		new objectid;
+		x = y = z = FLOAT_INFINITY;
+		objectid = ColAndreas::RayCastLine(StartX,StartY,StartZ,EndX,EndY,EndZ,x,y,z);
+		if(x == FLOAT_INFINITY) x = EndX;
+		if(y == FLOAT_INFINITY) y = EndY;
+		if(z == FLOAT_INFINITY) z = EndZ;
+		return objectid;
+	}
+
+	stock Tryg3D::MovePointColCutLine(const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:x, &Float:y, &Float:z, const Float:cut_size = 0.0){
+		new objectid, Float:radius, Float:rx, Float:rz;
+		x = y = z = FLOAT_INFINITY;
+		objectid = ColAndreas::RayCastLine(sX,sY,sZ,eX,eY,eZ,x,y,z);
+		if(x == FLOAT_INFINITY) x = eX;
+		if(y == FLOAT_INFINITY) y = eY;
+		if(z == FLOAT_INFINITY) z = eZ;
+		if((radius = Tryg3D::GetDistance3D(sX,sY,sZ,x,y,z)) <= 0.0) return objectid;
+		rx = Tryg3D::CompressRotation(-(acos((z-sZ)/radius)-90.0));
+		rz = Tryg3D::CompressRotation((atan2(y-sY,x-sX)-90.0));
+		if((radius-cut_size > cut_size) && (radius-cut_size > 0.0)){
+			radius -= cut_size;
+		} else {
+			radius = FLOAT_DEFECT;
+		}
+		Tryg3D::GetPointInFront3D(sX,sY,sZ,rx,rz,radius,x,y,z);
+		return objectid;
+	}
+
+	stock Tryg3D::GetPointInFront3DCol(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz){
+		return Tryg3D::MovePointCol(x,y,z,(x - (radius * floatcos(rx,degrees) * floatsin(rz,degrees))),(y + (radius * floatcos(rx,degrees) * floatcos(rz,degrees))),(z + (radius * floatsin(rx,degrees))),tx,ty,tz);
+	}
+
+	stock Tryg3D::GetPointInFront3DColEx(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz){
+		new Float:vx,Float:vy,Float:vz,Float:trx,Float:trz;
+		Tryg3D::EulerRotate(rx,ry,rz,0.0,1.0,0.0,vx,vy,vz);
+		Tryg3D::GetRotationFor2Point3D(0.0,0.0,0.0,vx,vy,vz,trx,trz);
+		return Tryg3D::GetPointInFront3DCol(x,y,z,trx,trz,radius,tx,ty,tz);
+	}
+
+	stock Float: Tryg3D::GetPointInFrontOfPlayerCol(const playerid, &Float:tx, &Float:ty, const Float:radius){
+		new Float:rz,Float:z,T3D:vid = GetPlayerVehicleID(playerid);
+		GetPlayerPos(playerid,tx,ty,z);
+		if(T3D:vid != 0){
+			GetVehicleZAngle(T3D:vid,rz);
+		} else {
+			GetPlayerFacingAngle(playerid,rz);
+		}
+		Tryg3D::GetPointInFront3DCol(tx,ty,z,0.0,rz,radius,tx,ty,z);
+		return rz;
+	}
+
+	stock Float: Tryg3D::GetPointInFrontOfCamera2DCol(const playerid, &Float:tx, &Float:ty, const Float:radius){
+		new Float:x,Float:y,Float:z,Float:rz;
+		GetPlayerCameraPos(playerid,x,y,z);
+		GetPlayerCameraZAngle(playerid,rz);
+		Tryg3D::GetPointInFront3DCol(x,y,z,0.0,rz,radius,tx,ty,z);
+		return rz;
+	}
+
+	stock Tryg3D::GetPointInFrontOfCamera3DCol(const playerid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0){
+		new Float:x,Float:y,Float:z;
+		GetPlayerCameraPos(playerid,x,y,z);
+		Tryg3D::GetPlayerCameraRotation(playerid,rx,rz);
+		Tryg3D::GetPointInFront3DCol(x,y,z,rx,rz,radius,tx,ty,tz);
+	}
+	
+	#if defined TRYG3D_MOD_VEHICLE
+
+		stock Tryg3D::GetPointInFrontOfVehicleCol(const vehicleid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0){
+			new Float:ry,Float:x,Float:y,Float:z;
+			GetVehiclePos(vehicleid,x,y,z);
+			Tryg3D::GetVehicleRotation(vehicleid,rx,ry,rz);
+			Tryg3D::GetPointInFront3DCol(x,y,z,rx,rz,radius,tx,ty,tz);
+		}
+		
+	#endif
+
+	stock Tryg3D::UndergroundFindZ(const Float:x, const Float:y, &Float:z){
+		z = 0.0;
+		return ColAndreas::RayCastLine(x,y,-0.002,x,y,-100.0,x,y,z);
+	}
+
+	stock Tryg3D::InteriorFindZ(const Float:px, const Float:py, const Float:pz, const Float:size = 2.0, &Float:z = 0.0){
+		z = 0.0;
+		return ColAndreas::RayCastLine(px,py,pz+size,px,py,pz-100.0,px,py,z);
+	}
+
+	stock bool: Tryg3D::IsPointInWater(const Float:x, const Float:y, const Float:z = 0.0){
+		new Float:tmp_float;
+		return (ColAndreas::RayCastLine(x,y,z+10.0,x,y,z-100.0,tmp_float,tmp_float,tmp_float) == WATER_OBJECT);
+	}
+
+	stock bool: Tryg3D::IsPointInUnderground(const Float:x, const Float:y, const Float:z){
+		new Float:tmpzA;
+		ColAndreas::FindZ_For2DCoord(x,y,tmpzA);
+		return (z < tmpzA && !IsPointInWater(x,y,z));
+	}
+
+	stock bool: Tryg3D::IsPointInAir(const Float:x, const Float:y, const Float:z, const bool:interior = false, const Float:max_distance = 2.2){
+		new Float:tmpzA;
+		if(interior){
+			Tryg3D::InteriorFindZ(x,y,z,2.0,tmpzA);
+		} else {
+			ColAndreas::FindZ_For2DCoord(x,y,tmpzA);
+		}
+		return (z >= tmpzA+max_distance);
+	}
+
+	stock bool: Tryg3D::IsPointInGround(const Float:x, const Float:y, const Float:z, const bool:interior = false, const Float:max_distance = 2.2){
+		if(z <= 0.0) return false;
+		new Float:tmpzA;
+		if(interior){
+			Tryg3D::InteriorFindZ(x,y,z,2.0,tmpzA);
+		} else {
+			ColAndreas::FindZ_For2DCoord(x,y,tmpzA);
+		}
+		return (z <= tmpzA+max_distance);
+	}
+
+	stock Tryg3D::GetPointCollisionFlags(const Float:x, const Float:y, const Float:z, const interiorid = 0){
+		new bool:isinterior = false, flag_value;
+		if(interiorid != 0){
+			flag_value |= POSITION_FLAG_INTERIOR;
+			isinterior = true;
+		} else {
+			flag_value |= POSITION_FLAG_WORLD;
+		}
+		if(Tryg3D::IsPointInUnderwater(x,y,z)){
+			flag_value |= POSITION_FLAG_WATER;
+			flag_value |= POSITION_FLAG_UNDERWATER;
+		} else if(Tryg3D::IsPointInWater(x,y,z)){
+			flag_value |= POSITION_FLAG_WATER;
+		} else if(Tryg3D::IsPointInAir(x,y,z,isinterior,2.2)){
+			flag_value |= POSITION_FLAG_AIR;
+		} else if(Tryg3D::IsPointInUnderground(x,y,z)){
+			flag_value |= POSITION_FLAG_UNDERGROUND;
+		} else {
+			flag_value |= POSITION_FLAG_GROUND;
+		}
+		return flag_value;
+	}
+
+	stock Tryg3D::IsBetweenPlayersIsWall(const playerid, const targetid){
+		new Float:xA,Float:yA,Float:zA,Float:xB,Float:yB,Float:zB,Float:T3D:tmp;
+		GetPlayerPos(playerid,xA,yA,zA);
+		GetPlayerPos(targetid,xB,yB,zB);
+		return ColAndreas::RayCastLine(xA,yA,zA,xB,yB,zB,T3D:tmp,T3D:tmp,T3D:tmp);
+	}
+
+	stock Tryg3D::IsBetweenPlayerToPointIsWall(const playerid, const Float:x, const Float:y, const Float:z){
+		new Float:xA,Float:yA,Float:zA,Float:T3D:tmp;
+		GetPlayerPos(playerid,xA,yA,zA);
+		return ColAndreas::RayCastLine(xA,yA,zA,x,y,z,T3D:tmp,T3D:tmp,T3D:tmp);
+	}
+
+	stock bool: Tryg3D::GetPointInWallForPoint(const Float:x, const Float:y, const Float:z, const Float:radius, &Float:tx, &Float:ty, &Float:tz, const Float:sector = 90.0){
+		if(sector <= 0.0 || sector > 360.0) return false;
+		new Float:px,Float:py,Float:pz,Float:tmp_dist,Float:near_dist = cellmax,sec_cnt = floatround(360.0/sector);
+		if(sec_cnt > 360) sec_cnt = 360;
+		for(new i = 0; i < sec_cnt; i++){
+			Tryg3D::GetPointInFront3DCol(x,y,z,0.0,Tryg3D::CompressRotation(sector*i),radius,px,py,pz);
+			tmp_dist = Tryg3D::GetDistance3D(x,y,z,px,py,pz);
+			if(tmp_dist < near_dist){
+				near_dist = tmp_dist;
+				tx = px;
+				ty = py;
+				tz = pz;
+			}
+		}
+		return true;
+	}
+
+	stock Tryg3D::SetCameraDirectionLookAt(const playerid, const Float:x, const Float:y, const Float:z, const Float:distance = 5.0, const Float:rx = 20.0, const Float:sector = 90.0){
+		new Float:tx,Float:ty,Float:tz, Float:ox,Float:oy,Float:oz,Float:z_angle;
+		Tryg3D::GetPointInWallForPoint(x,y,z,distance,ox,oy,oz,sector);
+		Tryg3D::GetRotationFor2Point2D(x,y,ox,oy,z_angle);
+		Tryg3D::GetPointInFront3D(x,y,z,rx,Tryg3D::CompressRotation(z_angle+180.0),distance,tx,ty,tz);
+		SetPlayerCameraPos(playerid,tx,ty,tz);
+		SetPlayerCameraLookAt(playerid,x,y,z);
+	}
+	
+	stock bool: Tryg3D::CollisionCheck(const Float:StartX, const Float:StartY, const Float:StartZ, const Float:EndX, const Float:EndY, const Float:EndZ, &Float:x, &Float:y, &Float:z, &Item3D:item_type = Item3D:0, &element_id = 0, const Float:cut_size = 0.0, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL){
+		item_type = item_object;
+		element_id = 0;
+		x = y = z = FLOAT_INFINITY;
+		if(Tryg3D::IsCollisionFlag(collision_flags,TRYG3D_COLLISION_FLAG_OBJECT)){
+			element_id = ColAndreas::RayCastLine(StartX,StartY,StartZ,EndX,EndY,EndZ,x,y,z);
+		}
+		if(x == FLOAT_INFINITY) x = EndX;
+		if(y == FLOAT_INFINITY) y = EndY;
+		if(z == FLOAT_INFINITY) z = EndZ;
+		#if ((defined TRYG3D_MOD_VEHICLECOLLISION) || (defined TRYG3D_MOD_PLAYERCOLLISION) || (defined TRYG3D_MOD_ACTORCOLLISION))
+			new STREAMER_TAG_AREA:Tryg3D::Area[TRYG3D_MAX_AREA_CHECK], Float:T3D:dist, Tryg3D::AreaCount, Tryg3D::ExtraArray[2],
+				Float:T3D:LastDistVehicle = cellmax, Float:T3D:LastDistPlayer = cellmax, Float:T3D:LastDistActor = cellmax,
+				T3D:NearestVehicle = INVALID_VEHICLE_ID, T3D:NearestPlayer = INVALID_PLAYER_ID, T3D:NearestActor = INVALID_ACTOR_ID,
+				Float:vx, Float:vy, Float:vz, Float:tx, Float:ty, Float:tz;
+				
+			Tryg3D::AreaCount = GetNumberDynamicAreasForLine(StartX,StartY,StartZ,x,y,z);
+			if(Tryg3D::AreaCount > 0){
+				GetDynamicAreasForLine(StartX,StartY,StartZ,x,y,z,Tryg3D::Area,sizeof(Tryg3D::Area));
+				for(new k = 0; k < Tryg3D::AreaCount; k++){
+					if(Tryg3D::AreaCount > TRYG3D_MAX_AREA_CHECK) break;
+					Tryg3D::ExtraArray[0] = Tryg3D::ExtraArray[1] = 0;
+					Streamer::GetArrayData(STREAMER_TYPE_AREA,Tryg3D::Area[k],E_STREAMER_EXTRA_ID,Tryg3D::ExtraArray);
+					
+					#if defined TRYG3D_MOD_VEHICLECOLLISION
+						if(Tryg3D::VehicleCollisionSystem && Tryg3D::IsCollisionFlag(collision_flags,TRYG3D_COLLISION_FLAG_VEHICLE) && Tryg3D::ExtraArray[0] == TRYG3D_EXTRA_DATA_FLAG_VEHICLE){
+							if(IsValidVehicle(Tryg3D::ExtraArray[1]) && Tryg3D::ExtraArray[1] != ignore_vehicle){
+								if(Tryg3D::Area[k] == Tryg3D::VehicleCollisionZone[Tryg3D::ExtraArray[1]] && Tryg3D::VehicleCollisionUsed[Tryg3D::ExtraArray[1]]){
+									GetVehiclePos(Tryg3D::ExtraArray[1],vx,vy,vz);
+									if((T3D:dist = Tryg3D::GetDistance3D(StartX,StartY,StartZ,vx,vy,vz)) < T3D:LastDistVehicle){
+										T3D:LastDistVehicle = T3D:dist;
+										T3D:NearestVehicle = Tryg3D::ExtraArray[1];
+									}
+								}
+							}
+						}
+					#else
+						#pragma unused ignore_vehicle
+					#endif
+					#if defined TRYG3D_MOD_PLAYERCOLLISION
+						if(Tryg3D::PlayerCollisionSystem && Tryg3D::IsCollisionFlag(collision_flags,TRYG3D_COLLISION_FLAG_PLAYER) && Tryg3D::ExtraArray[0] == TRYG3D_EXTRA_DATA_FLAG_PLAYER){
+							if(IsPlayerConnected(Tryg3D::ExtraArray[1]) && Tryg3D::ExtraArray[1] != ignore_player){
+								if(Tryg3D::Area[k] == Tryg3D::PlayerCollisionZone[Tryg3D::ExtraArray[1]] && Tryg3D::PlayerCollisionUsed[Tryg3D::ExtraArray[1]]){
+									GetPlayerPos(Tryg3D::ExtraArray[1],vx,vy,vz);
+									if((T3D:dist = Tryg3D::GetDistance3D(StartX,StartY,StartZ,vx,vy,vz)) < T3D:LastDistPlayer){
+										T3D:LastDistPlayer = T3D:dist;
+										T3D:NearestPlayer = Tryg3D::ExtraArray[1];
+									}
+								}
+							}
+						}
+					#else
+						#pragma unused ignore_player
+					#endif
+					#if defined TRYG3D_MOD_ACTORCOLLISION
+						if(Tryg3D::ActorCollisionSystem && Tryg3D::IsCollisionFlag(collision_flags,TRYG3D_COLLISION_FLAG_ACTOR) && Tryg3D::ExtraArray[0] == TRYG3D_EXTRA_DATA_FLAG_ACTOR){
+							if(IsValidActor(Tryg3D::ExtraArray[1]) && Tryg3D::ExtraArray[1] != ignore_actor){
+								if(Tryg3D::Area[k] == Tryg3D::ActorCollisionZone[Tryg3D::ExtraArray[1]] && Tryg3D::ActorCollisionUsed[Tryg3D::ExtraArray[1]]){
+									GetActorPos(Tryg3D::ExtraArray[1],vx,vy,vz);
+									if((T3D:dist = Tryg3D::GetDistance3D(StartX,StartY,StartZ,vx,vy,vz)) < T3D:LastDistActor){
+										T3D:LastDistActor = T3D:dist;
+										T3D:NearestActor = Tryg3D::ExtraArray[1];
+									}
+								}
+							}
+						}
+					#else
+						#pragma unused ignore_actor
+					#endif
+				}
+			}
+			if(T3D:NearestVehicle != INVALID_VEHICLE_ID && T3D:LastDistVehicle < T3D:LastDistPlayer && T3D:LastDistVehicle < T3D:LastDistActor){
+				new Float:T3D:sx, Float:T3D:sy, Float:T3D:sz;
+				item_type = item_vehicle;
+				element_id = T3D:NearestVehicle;
+				GetVehiclePos(T3D:NearestVehicle,vx,vy,vz);
+				GetVehicleModelInfo(GetVehicleModel(T3D:NearestVehicle),VEHICLE_MODEL_INFO_SIZE,T3D:sx,T3D:sy,T3D:sz);
+				Tryg3D::GetPointFor2Point3DEx(StartX,StartY,StartZ,vx,vy,vz,Tryg3D::GetDistance3D(StartX,StartY,StartZ,vx,vy,vz)-VectorSize((T3D:sx/2.0),(T3D:sy/2.0),(T3D:sz/2.0)),tx,ty,tz);
+				if(cut_size > 0.0){
+					Tryg3D::GetPointFor2Point3DEx(StartX,StartY,StartZ,tx,ty,tz,(Tryg3D::GetDistance3D(StartX,StartY,StartZ,tx,ty,tz)-cut_size),x,y,z);
+				} else {
+					x = tx;
+					y = ty;
+					z = tz;
+				}
+				return true;
+			} else if(T3D:NearestPlayer != INVALID_PLAYER_ID && T3D:LastDistPlayer < T3D:LastDistVehicle && T3D:LastDistPlayer < T3D:LastDistActor){
+				item_type = item_player;
+				element_id = T3D:NearestPlayer;
+				GetPlayerPos(T3D:NearestPlayer,tx,ty,tz);
+				if(cut_size > 0.0){
+					Tryg3D::GetPointFor2Point3DEx(StartX,StartY,StartZ,tx,ty,tz,(Tryg3D::GetDistance3D(StartX,StartY,StartZ,tx,ty,tz)-cut_size),x,y,z);
+				} else {
+					x = tx;
+					y = ty;
+					z = tz;
+				}
+				return true;
+			} else if(T3D:NearestActor != INVALID_PLAYER_ID && T3D:LastDistActor < T3D:LastDistVehicle && T3D:LastDistActor < T3D:LastDistPlayer){
+				item_type = item_actor;
+				element_id = T3D:NearestActor;
+				GetActorPos(T3D:NearestActor,tx,ty,tz);
+				if(cut_size > 0.0){
+					Tryg3D::GetPointFor2Point3DEx(StartX,StartY,StartZ,tx,ty,tz,(Tryg3D::GetDistance3D(StartX,StartY,StartZ,tx,ty,tz)-cut_size),x,y,z);
+				} else {
+					x = tx;
+					y = ty;
+					z = tz;
+				}
+				return true;
+			}
+		#else
+			if(cut_size > 0.0){
+				Tryg3D::GetPointFor2Point3DEx(StartX,StartY,StartZ,EndX,EndY,EndZ,(Tryg3D::GetDistance3D(StartX,StartY,StartZ,EndX,EndY,EndZ)-cut_size),x,y,z);
+			} else {
+				x = EndX;
+				y = EndY;
+				z = EndZ;
+			}
+			#pragma unused ignore_vehicle
+			#pragma unused ignore_player
+			#pragma unused ignore_actor
+		#endif
+		return element_id > 0;
+	}
+
+	stock bool: Tryg3D::GetWallRotation(const Float:sx, const Float:sy, const Float:sz, const Float:ex, const Float:ey, const Float:ez, &Float:rx, &Float:rz, &Float:px = 0.0, &Float:py = 0.0, &Float:pz = 0.0, const Float:size = 1.0, const Float:cut_size = 0.0){
+		new Float:line_rx, Float:line_rz, Float:T3D:tmp;
+		if(!Tryg3D::GetRotationFor2Point3D(sx,sy,sz,ex,ey,ez,line_rx,line_rz)) return false;
+		
+		new VecStart[4][Vectors3D], VecEnd[4][Vectors3D], VecProduct[4][Vectors3D];
+		
+		//Start: Right -> Left
+		Tryg3D::GetPointInFront3D(sx,sy,sz,line_rx,Tryg3D::CompressRotation(line_rz-90.0),size,VecStart[0][T3D:X],VecStart[0][T3D:Y],VecStart[0][T3D:Z]);
+		Tryg3D::GetPointInFront3D(sx,sy,sz,line_rx,Tryg3D::CompressRotation(line_rz+90.0),size,VecStart[1][T3D:X],VecStart[1][T3D:Y],VecStart[1][T3D:Z]);
+		
+		//Start: Down -> Up
+		Tryg3D::GetPointInFront3D(sx,sy,sz,Tryg3D::CompressRotation(line_rx-90.0),line_rz,size,VecStart[2][T3D:X],VecStart[2][T3D:Y],VecStart[2][T3D:Z]);
+		Tryg3D::GetPointInFront3D(sx,sy,sz,Tryg3D::CompressRotation(line_rx+90.0),line_rz,size,VecStart[3][T3D:X],VecStart[3][T3D:Y],VecStart[3][T3D:Z]);
+		
+		//End: Right -> Left
+		Tryg3D::GetPointInFront3D(ex,ey,ez,line_rx,Tryg3D::CompressRotation(line_rz-90.0),size,VecEnd[0][T3D:X],VecEnd[0][T3D:Y],VecEnd[0][T3D:Z]);
+		Tryg3D::GetPointInFront3D(ex,ey,ez,line_rx,Tryg3D::CompressRotation(line_rz+90.0),size,VecEnd[1][T3D:X],VecEnd[1][T3D:Y],VecEnd[1][T3D:Z]);
+		
+		//End: Down -> Up
+		Tryg3D::GetPointInFront3D(ex,ey,ez,Tryg3D::CompressRotation(line_rx-90.0),line_rz,size,VecEnd[2][T3D:X],VecEnd[2][T3D:Y],VecEnd[2][T3D:Z]);
+		Tryg3D::GetPointInFront3D(ex,ey,ez,Tryg3D::CompressRotation(line_rx+90.0),line_rz,size,VecEnd[3][T3D:X],VecEnd[3][T3D:Y],VecEnd[3][T3D:Z]);
+
+		for(new i = 0; i < 4; i++){
+			Tryg3D::GetPointFor2Point3DEx(VecStart[1][T3D:X],VecStart[1][T3D:Y],VecStart[1][T3D:Z],VecEnd[i][T3D:X],VecEnd[i][T3D:Y],VecEnd[i][T3D:Z],20000.0,VecEnd[i][T3D:X],VecEnd[i][T3D:Y],VecEnd[i][T3D:Z]);
+			Tryg3D::MovePointCol(VecStart[i][T3D:X],VecStart[i][T3D:Y],VecStart[i][T3D:Z],VecEnd[i][T3D:X],VecEnd[i][T3D:Y],VecEnd[i][T3D:Z],VecProduct[i][T3D:X],VecProduct[i][T3D:Y],VecProduct[i][T3D:Z]);
+		}
+		
+		Tryg3D::MovePointColCutLine(sx,sy,sz,ex,ey,ez,px,py,pz,cut_size);
+		
+		if(!Tryg3D::GetRotationFor2Point3D(VecProduct[0][T3D:X],VecProduct[0][T3D:Y],VecProduct[0][T3D:Z],VecProduct[1][T3D:X],VecProduct[1][T3D:Y],VecProduct[1][T3D:Z],T3D:tmp,rz)) return false;
+		if(!Tryg3D::GetRotationFor2Point3D(VecProduct[2][T3D:X],VecProduct[2][T3D:Y],VecProduct[2][T3D:Z],VecProduct[3][T3D:X],VecProduct[3][T3D:Y],VecProduct[3][T3D:Z],rx,T3D:tmp)) return false;
+		return true;
+	}
+	
+	stock Tryg3D::GetGroundRotation(const Float:x, const Float:y, const Float:size, &Float:rx, &Float:ry){
+		new Float:tpx1,Float:tpy1,Float:tpz1, Float:tpx2,Float:tpy2,Float:tpz2, Float:T3D:tmp;
+		Tryg3D::GetPointInFront2D(x,y,0.0,size,tpx1,tpy1);
+		Tryg3D::GetPointInFront2D(x,y,180.0,size,tpx2,tpy2);
+		ColAndreas::FindZ_For2DCoord(tpx1,tpy1,tpz1);
+		ColAndreas::FindZ_For2DCoord(tpx2,tpy2,tpz2);
+		Tryg3D::GetRotationFor2Point3D(tpx1,tpy1,tpz1,tpx2,tpy2,tpz2,rx,T3D:tmp);
+		
+		Tryg3D::GetPointInFront2D(x,y,90.0,size,tpx1,tpy1);
+		Tryg3D::GetPointInFront2D(x,y,270.0,size,tpx2,tpy2);
+		ColAndreas::FindZ_For2DCoord(tpx1,tpy1,tpz1);
+		ColAndreas::FindZ_For2DCoord(tpx2,tpy2,tpz2);
+		Tryg3D::GetRotationFor2Point3D(tpx1,tpy1,tpz1,tpx2,tpy2,tpz2,ry,T3D:tmp);
+	}
+
+	#if defined TRYG3D_MOD_PLAYER
+		stock bool: Tryg3D::IsPointInWaterFrontOfPlayer(const playerid, const Float:radius){
+			new Float:x, Float:y, Float:z;
+			GetPlayerPos(playerid,x,y,z);
+			Tryg3D::GetPointInFrontOfPlayer(playerid,x,y,radius);
+			return Tryg3D::IsPointInWater(x,y,0.0);
+		}
+	#endif
+	
 	stock bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT){
 		new Item3D_Type:item_type,element_id,Float:T3D:x,Float:T3D:y,Float:T3D:z;
 		if(Tryg3D::CollisionCheck(x,y,z,px,py,pz,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags)) return false;
 		return Tryg3D::IsPointInSphericalSector(px,py,pz,x,y,z,rx,rz,radius,vrx,vrz);
 	}
+
 #endif
 
 /********************************
