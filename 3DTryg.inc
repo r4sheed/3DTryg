@@ -436,17 +436,6 @@ Tryg3D::ToggleActorCollision(actorid,bool:toggle);
 	#endif
 #endif
 
-#if defined TRYG3D_MOD_OBJECT
-    #error [ADM] Module already defined: TRYG3D_MOD_OBJECT
-#endif
-#if defined TRYG3D_ENABLE_OBJECT
-	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
-		#error [ADM] Trying to enable Object Module without initialized SA:MP Platform
-	#else
-		#define TRYG3D_MOD_OBJECT "Object"
-	#endif
-#endif
-
 //Detect foreach
 #if defined _FoX_Foreach
 	#define T3_Foreach(%0) FoxForeach(%0,Character)
@@ -609,7 +598,7 @@ Tryg3D::ToggleActorCollision(actorid,bool:toggle);
     #error [ADM] Module already defined: TRYG3D_MOD_UNIVERSAL
 #endif
 #if defined TRYG3D_ENABLE_UNIVERSAL
-	#if !defined TRYG3D_MOD_PLAYER && !defined TRYG3D_MOD_VEHICLE && !defined TRYG3D_MOD_OBJECT && !defined TRYG3D_MOD_ACTOR && !defined TRYG3D_MOD_STREAMER && !defined TRYG3D_MOD_FCNPC
+	#if !defined TRYG3D_MOD_PLAYER && !defined TRYG3D_MOD_VEHICLE && !defined TRYG3D_MOD_ACTOR && !defined TRYG3D_MOD_STREAMER && !defined TRYG3D_MOD_FCNPC
 		#error [ADM] Trying to enable Universal Module without initialized any of supported elements
 	#else
 		#define TRYG3D_MOD_UNIVERSAL "Universal"
