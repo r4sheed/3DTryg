@@ -7,7 +7,7 @@ Contributors: Nero_3D (Shisk), Crayder, IllidanS4, RyDeR, Zoutdaxv, hesambia, Ne
 Website: N/A
 
 Plugins: ColAndreas, Streamer, FCNPC, YSF
-Internal Modules: Player, Vehicle, Actor, VehicleCollision, PlayerCollision, ActorCollision, GrenadeDetection, Universal, Draw3D, CatchItems
+Internal Modules: Player, Vehicle, Actor, VehicleCollision, PlayerCollision, ActorCollision, GrenadeDetection, Universal, Draw3D, Cast3D, CatchItems
 
 Platforms:
 - SA:MP 0.3.7
@@ -16,7 +16,41 @@ Platforms:
 File Version:
 - Gen. 2 v1.0.0
 
+Plugin Versions:
+- ColAndreas Version: 1.5.0
+- YSF Version: R19 (kurta999)
+- Streamer Version: 2.9.5
+- FCNPC Version: 2.0.0
+
+Foreach Types:
+- FoxForeach
+- StandaloneForeach
+- YSI Foreach
+- GetPlayerPoolSize
+
+Compiler Options:
+- TRYG3D_ENABLE_PLAYER           //Use before 3DTryg.inc for enable Player Module
+- TRYG3D_ENABLE_VEHICLE          //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_ACTOR            //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_GRENADEDETECTION //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_VEHICLECOL       //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_PLAYERCOL        //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_ACTORCOL         //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_UNIVERSAL        //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_DRAW3D           //Use before 3DTryg.inc for enable Draw3D Module
+- TRYG3D_ENABLE_CAST3D           //Use before 3DTryg.inc for enable Cast3D Module
+- TRYG3D_ENABLE_CATCHITEMS       //Use before 3DTryg.inc for enable CatchItems Module
+- TRYG3D_ENABLE_COLANDREAS       //Use before 3DTryg.inc for enable ColAndreas Plugin Module
+- TRYG3D_ENABLE_STREAMER         //Use before 3DTryg.inc for enable Streamer Plugin Module
+- TRYG3D_ENABLE_FCNPC            //Use before 3DTryg.inc for enable FCNPC Plugin Module
+- TRYG3D_ENABLE_YSF              //Use before 3DTryg.inc for enable YSF Plugin Module
+
 # Complementary Functions
+Float: sqrtN(Float:value, Float:exponent);
+abs(value);
+Float: fabs(Float:value);
+power(value, Float:exponent);
+bool: IsEven(value);
 
 # Internal Functions
 Float: Tryg3D::RandomFloat(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
@@ -328,6 +362,8 @@ bool: Tryg3D::IsVehicleFullyInArea(const vehicleid, const STREAMER_TAG_AREA:area
 Tryg3D::GetPointInDynamicArea(const STREAMER_TAG_AREA:areaid, &Float:tx, &Float:ty, &Float:tz);
 
 # YSF Functions
+Tryg3D::GetPlayerHydraReactorRX(const playerid);
+Tryg3D::IsPlayerHydraReactorBoost(const playerid);
 Tryg3D::CountTextDraw();
 Tryg3D::CountVisibleTextDraw(const playerid);
 Tryg3D::CountPlayerTextDraw(const playerid);
@@ -369,6 +405,181 @@ Tryg3D::ExitActorCollision();
 Tryg3D::SyncActorCollision(actorid); //After create/change actor position
 bool: Tryg3D::IsToggledActorCollision(actorid);
 Tryg3D::ToggleActorCollision(actorid, bool:toggle);
+
+# Definitions
+TRYG3D_ELEMENT_TAG
+FLOAT_PI
+FLOAT_EULER
+FLOAT_NAN
+FLOAT_DEFECT
+FLOAT_INFINITY
+VERTICAL_CAMERA_RADIUS
+HORIZONTAL_CAMERA_RADIUS
+
+C_IN_GAME_X
+C_IN_GAME_Y
+C_IN_GAME_YW
+C_ON_SCREEN_X
+C_ON_SCREEN_Y
+
+TRYG3D_MAX_POLYGON_POINTS
+TRYG3D_VEHICLE_SPEED_MULTIPLIER
+TRYG3D_PLAYER_SPEED_MULTIPLIER
+TRYG3D_DEFAULT_RANDOM_ACCURACY
+TRYG3D_CHARACTER_GROUND_Z_DIFF
+TRYG3D_MAX_AREA_CHECK
+TRYG3D_INVALID_ROTATION
+TRYG3D_INVALID_VIRTUAL_WORLD
+TRYG3D_INVALID_MOVE_TIME
+TRYG3D_INVALID_MOVE_SPEED
+TRYG3D_INVALID_ORIENTATION
+TRYG3D_MAX_MODULES_STRING
+TRYG3D_RANDOM_MAX_ANGLE
+TRYG3D_VBTP
+TRYG3D_VLTP
+
+TRYG3D_EXTRA_DATA_FLAG_VEHICLE
+TRYG3D_EXTRA_DATA_FLAG_PLAYER
+TRYG3D_EXTRA_DATA_FLAG_ACTOR
+
+WEAPON_DYNAMIC_EXPLOSION_DMG
+WEAPON_DYNAMIC_EXPLOSION_RANGE
+
+//ColAndreas collision flags
+TRYG3D_COLLISION_FLAG_NONE, TRYG3D_COLLISION_FLAG_OBJECT, TRYG3D_COLLISION_FLAG_VEHICLE, TRYG3D_COLLISION_FLAG_PLAYER, TRYG3D_COLLISION_FLAG_ACTOR, TRYG3D_COLLISION_FLAG_ALL
+
+//Player position flags
+POSITION_FLAG_WORLD, POSITION_FLAG_INTERIOR, POSITION_FLAG_AIR, POSITION_FLAG_GROUND, POSITION_FLAG_WATER, POSITION_FLAG_UNDERWATER, POSITION_FLAG_UNDERGROUND
+
+//Vehicle flags
+VF_STREET, VF_AIRBORNE, VF_NATATORIAL, VF_MILITARY, VF_TRAIN, VF_RC, VF_CARRIAGE, VF_AIRPLANE, VF_HELICOPTER, VF_BIKES, VF_TRAILER, VF_TOWABLE, VF_POLICE
+
+// Vehicle parts
+VEHICLE_PART_RFTIRE    // Right Front tire
+VEHICLE_PART_LFTIRE    // Left Front tire
+VEHICLE_PART_RRTIRE    // Right Rear tire
+VEHICLE_PART_LRTIRE    // Left Rear tire
+VEHICLE_PART_HOOD      // In Front
+VEHICLE_PART_TRUNK     // Behind
+VEHICLE_PART_ROOF      // Roof
+VEHICLE_PART_CHASSIS   // Chassis
+VEHICLE_PART_PETROLCAP // Petrolcap
+
+# Enums
+
+enum 'EulerModes'
+- T3D:euler_xzx
+- T3D:euler_xyx
+- T3D:euler_yxy
+- T3D:euler_yzy
+- T3D:euler_zyz
+- T3D:euler_zxz
+- T3D:euler_xzy
+- T3D:euler_xyz
+- T3D:euler_yxz
+- T3D:euler_yzx
+- T3D:euler_zyx
+- T3D:euler_zxy
+
+enum 'OrientationCube3D'
+- o_left_back_down
+- o_right_back_down
+- o_right_front_down
+- o_left_front_down
+- o_left_back_up
+- o_right_back_up
+- o_right_front_up
+- o_left_front_up
+
+enum 'ElementOrientation'
+- o_left
+- o_right
+- o_up
+- o_down
+- o_front
+- o_back
+- o_front_left
+- o_front_right
+- o_back_left
+- o_back_right
+
+enum 'Vectors3D'
+- Float: T3D:X
+- Float: T3D:Y
+- Float: T3D:Z
+- Float: T3D:A
+
+enum 'Float3D'
+- Float: T3D:X
+- Float: T3D:Y
+- Float: T3D:Z
+- Float: T3D:rX
+- Float: T3D:rY
+- Float: T3D:rZ
+- Float: T3D:tX
+- Float: T3D:tY
+- Float: T3D:tZ
+-        T3D:VW
+-        T3D:INT
+- Float: T3D:SPEED
+
+enum 'LongFloat3D'
+- Float: T3D:X
+- Float: T3D:Y
+- Float: T3D:Z
+- Float: T3D:rX
+- Float: T3D:rY
+- Float: T3D:rZ
+- Float: T3D:tX
+- Float: T3D:tY
+- Float: T3D:tZ
+- Float: T3D:trX
+- Float: T3D:trY
+- Float: T3D:trZ
+- Float: T3D:VecX
+- Float: T3D:VecY
+- Float: T3D:VecZ
+-        T3D:VW
+-        T3D:INT
+- Float: T3D:SPEED
+
+enum 'LootArray'
+-        ItemID
+- Float: ItemChance
+
+enum 'Item3D'
+- item_player
+- item_npc
+- item_actor
+- item_object
+- item_vehicle
+- item_dynamic_object
+- item_dynamic_pickup
+- item_dynamic_cp
+- item_dynamic_racecp
+- item_dynamic_mapicon
+- item_dynamic_3dtext
+- item_dynamic_actor
+- item_dynamic_vehicle
+- item_fcnpc
+
+enum 'StreamType'
+- s_invalid
+- s_circle
+- s_cylinder2d
+- s_cylinder3d
+- s_sphere
+- s_rectangle
+- s_cube2d
+- s_cube3d
+- s_polygon
+- s_circularsector
+- s_sphericalsector
+- s_cone2d
+- s_cone3d
+- s_ellipse
+- s_ellipticalcyl2d
+- a_sphericalsectorex
 
 */
 
