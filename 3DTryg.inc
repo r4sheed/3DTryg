@@ -327,6 +327,21 @@ Tryg3D::SetPlayerAbsolutePositionVeh(const playerid, const Float:x, const Float:
 bool: Tryg3D::IsVehicleFullyInArea(const vehicleid, const STREAMER_TAG_AREA:areaid);
 Tryg3D::GetPointInDynamicArea(const STREAMER_TAG_AREA:areaid, &Float:tx, &Float:ty, &Float:tz);
 
+# YSF Functions
+Tryg3D::CountTextDraw();
+Tryg3D::CountVisibleTextDraw(const playerid);
+Tryg3D::CountPlayerTextDraw(const playerid);
+Tryg3D::CountVisiblePlayerTextDraw(const playerid);
+Tryg3D::CountGangZone();
+Tryg3D::CountVisibleGangZone(const playerid);
+Tryg3D::CountPlayerGangZone(const playerid);
+Tryg3D::CountVisiblePlayerGangZone(const playerid);
+bool: Tryg3D::IsVehicleOnSpawn(const vehicleid, const Float:check_radius = 1.0);
+bool: Tryg3D::IsPlayerOnSpawn(const playerid, Float:check_radius = 1.0);
+Tryg3D::GetPlayerRotation(const playerid, &Float:rx, &Float:ry, &Float:rz);
+Tryg3D::GetPointInGangZone(const zoneid, &Float:tx, &Float:ty);
+Tryg3D::GetPointInPlayerGangZone(const playerid,zoneid, &Float:tx, &Float:ty);
+
 # Grenade Detection Callbacks
 OnPlayerDroppingGrenade(playerid, weaponid, Float:x, Float:y, Float:z);
 OnPlayerGrenadeExplode(playerid, weaponid, Float:x, Float:y, Float:z);
@@ -2985,8 +3000,9 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 	}
 
 	stock Tryg3D::InteriorFindZ(const Float:px, const Float:py, const Float:pz, const Float:size = 2.0, &Float:z = 0.0){
+		new Float:tmp_float;
 		z = 0.0;
-		return ColAndreas::RayCastLine(px,py,pz+size,px,py,pz-100.0,px,py,z);
+		return ColAndreas::RayCastLine(px,py,pz+size,px,py,pz-100.0,tmp_float,tmp_float,z);
 	}
 
 	stock bool: Tryg3D::IsPointInWater(const Float:x, const Float:y, const Float:z = 0.0){
@@ -4410,6 +4426,97 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 		return 0;
 	}
 
+#endif
+
+/********************************
+ * YSF Functions                *
+ ********************************/
+
+#if defined TRYG3D_MOD_YSF
+
+	#define T3_GetPlayerHydraReactorRX(%0)   Tryg3D::CompressRotation((GetPlayerHydraReactorAngle(%0)/55.5555555))
+	#define T3_IsPlayerHydraReactorBoost(%0) (GetPlayerHydraReactorAngle(%0) == 0)
+
+	stock Tryg3D::CountTextDraw(){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_TEXT_DRAWS; i++) if(IsValidTextDraw(Text:i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountVisibleTextDraw(const playerid){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_TEXT_DRAWS; i++) if(IsValidTextDraw(Text:i) && IsTextDrawVisibleForPlayer(playerid,Text:i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountPlayerTextDraw(const playerid){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_PLAYER_TEXT_DRAWS; i++) if(IsValidPlayerTextDraw(playerid,PlayerText:i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountVisiblePlayerTextDraw(const playerid){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_PLAYER_TEXT_DRAWS; i++) if(IsValidPlayerTextDraw(playerid,PlayerText:i) && IsPlayerTextDrawVisible(playerid,PlayerText:i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountGangZone(){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_GANG_ZONES; i++) if(IsValidGangZone(i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountVisibleGangZone(const playerid){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_GANG_ZONES; i++) if(IsValidGangZone(i) && IsGangZoneVisibleForPlayer(playerid,i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountPlayerGangZone(const playerid){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_GANG_ZONES; i++) if(IsValidPlayerGangZone(playerid,i)) T3D:count++;
+		return T3D:count;
+	}
+
+	stock Tryg3D::CountVisiblePlayerGangZone(const playerid){
+		new T3D:count = 0;
+		for(new i = 0; i < MAX_GANG_ZONES; i++) if(IsValidPlayerGangZone(playerid,i) && IsPlayerGangZoneVisible(playerid,i)) T3D:count++;
+		return T3D:count;
+	}
+
+	#if defined TRYG3D_MOD_VEHICLE
+		stock bool: Tryg3D::IsVehicleOnSpawn(const vehicleid, const Float:check_radius = 1.0){
+			new Float:x,Float:y,Float:z,Float:rz,color1,color2;
+			GetVehicleSpawnInfo(vehicleid,x,y,z,rz,color1,color2);
+			return Tryg3D::IsVehicleInRangeOfPoint(vehicleid,check_radius,x,y,z);
+		}
+	#endif
+
+	stock bool: Tryg3D::IsPlayerOnSpawn(const playerid, Float:check_radius = 1.0){
+		new teamid,modelid,Float:spawn_x,Float:spawn_y,Float:spawn_z,Float:z_angle,weapon1,weapon1_ammo,weapon2,weapon2_ammo,weapon3,weapon3_ammo;
+		GetSpawnInfo(playerid,teamid,modelid,spawn_x,spawn_y,spawn_z,z_angle,weapon1,weapon1_ammo,weapon2,weapon2_ammo,weapon3,weapon3_ammo);
+		return IsPlayerInRangeOfPoint(playerid,check_radius,spawn_x,spawn_y,spawn_z);
+	}
+
+	stock Tryg3D::GetPlayerRotation(const playerid, &Float:rx, &Float:ry, &Float:rz){
+		new Float:qw,Float:qx,Float:qy,Float:qz;
+		GetPlayerRotationQuat(playerid,qw,qx,qy,qz);
+		Tryg3D::QuatToEuler(rx,ry,rz,qw,qx,qy,qz);
+	}
+
+	stock Tryg3D::GetPointInGangZone(const zoneid, &Float:tx, &Float:ty){
+		new Float:minx,Float:miny,Float:maxx,Float:maxy;
+		GangZoneGetPos(zoneid,minx,miny,maxx,maxy);
+		Tryg3D::GetPointInRectangle(minx,miny,maxx,maxy,tx,ty);
+	}
+
+	stock Tryg3D::GetPointInPlayerGangZone(const playerid,zoneid, &Float:tx, &Float:ty){
+		new Float:minx,Float:miny,Float:maxx,Float:maxy;
+		PlayerGangZoneGetPos(playerid,zoneid,minx,miny,maxx,maxy);
+		Tryg3D::GetPointInRectangle(minx,miny,maxx,maxy,tx,ty);
+	}
+	
 #endif
 
 /********************************
