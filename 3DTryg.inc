@@ -1311,7 +1311,6 @@ new const Float: Tryg3D::OrientationRotation[ElementOrientation][2] = {
 
 #define T3_GetWeaponDamage(%0)                  Tryg3D::WeaponDamage[(%0)]
 #define T3_RoundAccuracy(%0)                    (floatround((%0)*10000.0)/10000.0)
-#define T3_RoundAccuracy2(%0)                   (floatround((%0)*100.0)/100.0)
 #define T3_AppendLineArguments2D(%0,%1,%2)      %0[0] = (%1), %0[0] = (%2)
 #define T3_AppendLineArguments3D(%0,%1,%2,%3)   %0[0] = (%1), %0[0] = (%2), %0[0] = (%3)
 #define T3_DivideValues(%0,%1,%2,%3)            ((%1) /= (%0)), ((%2) /= (%0)), ((%3) /= (%0))
@@ -2255,22 +2254,22 @@ stock bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:
 stock bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, const Float:x, const Float:y, Float:rz, const Float:radius, Float:view_angle){
 	new Float:T3D:dist = Tryg3D::GetDistance2D(px,py,x,y);
 	if(T3D:dist == 0.0) return true;
-	if(Tryg3D::RoundAccuracy2(T3D:dist) > radius) return false;
+	if(Tryg3D::RoundAccuracy(T3D:dist) > radius) return false;
 	view_angle /= 2.0;
 	new Float:trz, Float:T3D:min = -view_angle, Float:T3D:max = view_angle;
 	Tryg3D::GetRotationFor2Point2D(x,y,px,py,trz);
-	trz = Tryg3D::RoundAccuracy2(Tryg3D::CompressRotation(trz-rz));
+	trz = Tryg3D::RoundAccuracy(Tryg3D::CompressRotation(trz-rz));
 	if(T3D:min <= 0.0){
 		T3D:min = floatabs(T3D:min);
 		T3D:max += T3D:min;
-		trz = Tryg3D::RoundAccuracy2(Tryg3D::CompressRotation(trz+T3D:min));
+		trz = Tryg3D::RoundAccuracy(Tryg3D::CompressRotation(trz+T3D:min));
 		T3D:min = 0.0;
 		if(trz == 360.0) trz = 0.0;
 	} else if(T3D:max > 360.0){
 		new Float:T3D:diff = -(360.0-T3D:max);
 		T3D:max = 360.0;
 		T3D:min -= T3D:diff;
-		trz = Tryg3D::RoundAccuracy2(Tryg3D::CompressRotation(trz-Float:T3D:diff));
+		trz = Tryg3D::RoundAccuracy(Tryg3D::CompressRotation(trz-Float:T3D:diff));
 		if(trz == 0.0) trz = 360.0;
 	}
 	return Tryg3D::RotationInRange(trz,T3D:min,T3D:max);
