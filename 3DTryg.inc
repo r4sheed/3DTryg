@@ -836,7 +836,9 @@ enum 'StreamType'
     #error [ADM] Module already defined: TRYG3D_MOD_GRENADEDETECTION
 #endif
 #if defined TRYG3D_ENABLE_GRENADEDETECTION
-	#if !defined TRYG3D_MOD_COLANDREAS
+	#if !defined TRYG3D_MOD_PLAYER
+		#error [ADM] Trying to enable Grenade Detection without Player Module
+	#elseif !defined TRYG3D_MOD_COLANDREAS
 		#error [ADM] Trying to enable Grenade Detection without ColAndreas Module
 	#else
 		#define TRYG3D_MOD_GRENADEDETECTION "GrenadeDetection"
@@ -1159,24 +1161,22 @@ enum LootArray {
 	Float:ItemChance
 }
 
-#if defined TRYG3D_MOD_UNIVERSAL
-	enum Item3D {
-		item_player,
-		item_npc,
-		item_actor,
-		item_object,
-		item_vehicle,
-		item_dynamic_object,
-		item_dynamic_pickup,
-		item_dynamic_cp,
-		item_dynamic_racecp,
-		item_dynamic_mapicon,
-		item_dynamic_3dtext,
-		item_dynamic_actor,
-		item_dynamic_vehicle,
-		item_fcnpc
-	}
-#endif
+enum Item3D {
+	item_player,
+	item_npc,
+	item_actor,
+	item_object,
+	item_vehicle,
+	item_dynamic_object,
+	item_dynamic_pickup,
+	item_dynamic_cp,
+	item_dynamic_racecp,
+	item_dynamic_mapicon,
+	item_dynamic_3dtext,
+	item_dynamic_actor,
+	item_dynamic_vehicle,
+	item_fcnpc
+}
 
 #if defined TRYG3D_MOD_CATCHITEMS
 	enum StreamType {
