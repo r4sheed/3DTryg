@@ -1,17 +1,20 @@
 /*
 
-3DTryg.inc
+Library: 3DTryg.inc
 Copyright © 2021 Abyss Morgan. All rights reserved.
-Contributors: Nero_3D, Crayder, IllidanS4, RyDeR, Zoutdaxv, hesambia, Neil Lamoureux, Ivan_Ino, Ralfie, Unrea1, $continue$, Mr.Reus, Switel12
+Contributors: Nero_3D (Shisk), Crayder, IllidanS4, RyDeR, Zoutdaxv, hesambia, Neil Lamoureux, Ivan_Ino, Ralfie, Unrea1, $continue$, Switel12, Mr.Reus
 
 Website: N/A
 
-Plugins: N/A
-Internal Modules: Draw3D
+Plugins: ColAndreas, Streamer, FCNPC, YSF
+Internal Modules: Player, Vehicle, Actor, VehicleCollision, PlayerCollision, ActorCollision, GrenadeDetection, Universal, Draw3D, CatchItems
 
-Platform: RAW
+Platforms:
+- SA:MP 0.3.7
+- SA:MP 0.3 DL
 
-File Version: 1.0.0
+File Version:
+- Gen. 2 v1.0.0
 
 # Complementary Functions
 
@@ -324,29 +327,34 @@ Tryg3D::SetPlayerAbsolutePositionVeh(const playerid, const Float:x, const Float:
 bool: Tryg3D::IsVehicleFullyInArea(const vehicleid, const STREAMER_TAG_AREA:areaid);
 Tryg3D::GetPointInDynamicArea(const STREAMER_TAG_AREA:areaid, &Float:tx, &Float:ty, &Float:tz);
 
-# VehicleCollision Functions:
+# Grenade Detection Callbacks
+OnPlayerDroppingGrenade(playerid, weaponid, Float:x, Float:y, Float:z);
+OnPlayerGrenadeExplode(playerid, weaponid, Float:x, Float:y, Float:z);
+ 
+# VehicleCollision Functions
 Tryg3D::IsVehicleCollisionEnabled();
 Tryg3D::InitVehicleCollision(); //OnGameModeInit / OnFilterScriptInit
 Tryg3D::ExitVehicleCollision();
 Tryg3D::SyncVehicleCollision(vehicleid); //EVF -> OnVehicleCreated
-Tryg3D::IsToggledVehicleCollision(vehicleid);
-Tryg3D::ToggleVehicleCollision(vehicleid,bool:toggle);
+bool: Tryg3D::IsToggledVehicleCollision(vehicleid);
+Tryg3D::ToggleVehicleCollision(vehicleid, bool:toggle);
 
-# PlayerCollision Functions:
+# PlayerCollision Functions
 Tryg3D::IsPlayerCollisionEnabled();
 Tryg3D::InitPlayerCollision(); //OnGameModeInit / OnFilterScriptInit
 Tryg3D::ExitPlayerCollision();
 Tryg3D::SyncPlayerCollision(playerid); //auto called after player spawn
-Tryg3D::IsToggledPlayerCollision(playerid);
-Tryg3D::TogglePlayerCollision(playerid,bool:toggle);
+bool: Tryg3D::IsToggledPlayerCollision(playerid);
+Tryg3D::TogglePlayerCollision(playerid, bool:toggle);
 
-# ActorCollision Functions:
+# ActorCollision Functions
 Tryg3D::IsActorCollisionEnabled();
 Tryg3D::InitActorCollision(); //OnGameModeInit / OnFilterScriptInit
 Tryg3D::ExitActorCollision();
 Tryg3D::SyncActorCollision(actorid); //After create/change actor position
-Tryg3D::IsToggledActorCollision(actorid);
-Tryg3D::ToggleActorCollision(actorid,bool:toggle);
+bool: Tryg3D::IsToggledActorCollision(actorid);
+Tryg3D::ToggleActorCollision(actorid, bool:toggle);
+
 */
 
 /********************************
