@@ -274,10 +274,24 @@ bool: Tryg3D::ItemInEllipse(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:ele
 bool: Tryg3D::ItemInEllipticalCylinder2D(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y);
 bool: Tryg3D::ItemGetToPointVector(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:tx, const Float:ty, const Float:tz, &Float:vx, &Float:vy, &Float:vz);
 bool: Tryg3D::ItemGetRotatedVector(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:tx, const Float:ty, const Float:tz, &Float:vx, &Float:vy, &Float:vz, const bool:return_vector = true, const Float:rx = 0.0, const Float:ry = 0.0, const Float:rz = 0.0);
-bool: Tryg3D::ItemGetOrientationPos(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation = o_front, const Float:distance, &Float:tx, &Float:ty, &Float:tz);
+bool: Tryg3D::ItemGetOrientationPos(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation, const Float:distance, &Float:tx, &Float:ty, &Float:tz);
 bool: Tryg3D::ItemInRangeOfPoint(const Float:x, const Float:y, const Float:z, const Float:range, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
 bool: Tryg3D::ItemInRangeOfItem(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:range, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
 bool: Tryg3D::ItemIsPlayerInRange(const playerid, const Float:range, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
+
+# Universal Functions (Streamer)
+bool: Tryg3D::ItemInDynamicArea(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const STREAMER_TAG_AREA:areaid);
+Tryg3D::ItemGetInDynamicArea(const STREAMER_TAG_AREA:areaid, const Item3D:element_type, element_list[], const max_element = sizeof(element_list));
+
+# Universal Functions (ColAndreas)
+bool: Tryg3D::ItemCollisionToPoint(const Float:x, const Float:y, const Float:z, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL);
+bool: Tryg3D::ItemCollisionToItem(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL);
+Tryg3D::ItemToItemIsWall(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type);
+Tryg3D::ItemToPointIsWall(const Float:x, const Float:y, const Float:z, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type);
+Tryg3D::ItemGetCollisionFlags(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type);
+Tryg3D::ItemGetOrientationPosCol(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation, const Float:distance, &Float:tx, &Float:ty, &Float:tz);
+bool: Tryg3D::ItemIsPointInWaterOrient(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:radius, const ElementOrientation:orientation = o_front);
+
 */
 
 /********************************
@@ -455,6 +469,23 @@ bool: Tryg3D::ItemIsPlayerInRange(const playerid, const Float:range, const TRYG3
 	#endif
 #endif
 
+//Detect SA:MP YSF Plugin
+#if defined TRYG3D_MOD_YSF
+    #error [ADM] Module already defined: TRYG3D_MOD_YSF
+#endif
+#if defined TRYG3D_ENABLE_YSF
+	#if TRYG3D_PLATFORM_CODE != TRYG3D_PLATFORM_SAMP
+		#error [ADM] Trying to enable YSF Module without initialized SA:MP Platform
+	#elseif !defined _YSF_included
+		#error [ADM] Trying to enable YSF Module without YSF
+	#else
+		#define TRYG3D_MOD_YSF "YSF R19"
+		#if (!defined RemovePlayerForPlayer)
+			#error [ADM] Update your YSF to R19 (github.com/kurta999/YSF/releases)
+		#endif
+	#endif
+#endif
+
 //Detect Actor Module
 #if defined TRYG3D_MOD_ACTOR
     #error [ADM] Module already defined: TRYG3D_MOD_ACTOR
@@ -607,11 +638,11 @@ bool: Tryg3D::ItemIsPlayerInRange(const playerid, const Float:range, const TRYG3
 #endif
 
 #if !defined VERTICAL_CAMERA_RADIUS
-    #define VERTICAL_CAMERA_RADIUS                      (55.0) // 27.5 * 2
+    #define VERTICAL_CAMERA_RADIUS                      (56.0)
 #endif
 
 #if !defined HORIZONTAL_CAMERA_RADIUS
-    #define HORIZONTAL_CAMERA_RADIUS                    (70.0) // 35.0 * 2
+    #define HORIZONTAL_CAMERA_RADIUS                    (86.0)
 #endif
 
 #if !defined TRYG3D_MAX_AREA_CHECK
@@ -3446,7 +3477,7 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 		return true;
 	}
 
-	stock bool: Tryg3D::ItemGetOrientationPos(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation = o_front, const Float:distance, &Float:tx, &Float:ty, &Float:tz){
+	stock bool: Tryg3D::ItemGetOrientationPos(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation, const Float:distance, &Float:tx, &Float:ty, &Float:tz){
 		new Float:x,Float:y,Float:z,Float:rx,Float:ry,Float:rz;
 		if(!Tryg3D::ItemGetPos(elementid,element_type,x,y,z)) return false;
 		switch(element_type){
@@ -3533,6 +3564,278 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 	stock bool: Tryg3D::ItemIsPlayerInRange(const playerid, const Float:range, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE){
 		return Tryg3D::ItemInRangeOfItem(playerid,item_player,range,targetid,target_type,ignore_vehicle,ignore_player,ignore_actor,collision_flags);
 	}
+	
+	#if defined TRYG3D_MOD_STREAMER
+		
+		stock bool: Tryg3D::ItemInDynamicArea(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const STREAMER_TAG_AREA:areaid){
+			new Float:px,Float:py,Float:pz;
+			if(!Tryg3D::ItemGetPos(elementid,element_type,px,py,pz)) return false;
+			return IsPointInDynamicArea(areaid,px,py,pz) == 1;
+		}
+
+		stock Tryg3D::ItemGetInDynamicArea(const STREAMER_TAG_AREA:areaid, const Item3D:element_type, element_list[], const max_element = sizeof(element_list)){
+			new T3D:cnt = 0, T3D:upp = -1;
+			switch(element_type){
+				case item_player: {
+					Tryg3D::Foreach(i){
+						if(T3D:upp >= max_element) break;
+						if(!IsPlayerNPC(i)){
+							if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+								element_list[T3D:upp++] = i;
+								T3D:cnt++;
+							}
+						}
+					}
+				}
+				
+				case item_npc: {
+					Tryg3D::Foreach(i){
+						if(T3D:upp >= max_element) break;
+						if(IsPlayerNPC(i)){
+							if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+								element_list[T3D:upp++] = i;
+								T3D:cnt++;
+							}
+						}
+					}
+				}
+				
+				#if defined TRYG3D_MOD_ACTOR
+					case item_actor: {
+						for(new i = 0, j = GetActorPoolSize(); i <= j; i++){
+							if(T3D:upp >= max_element) break;
+							if(IsValidActor(i) && Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+								element_list[T3D:upp++] = i;
+								T3D:cnt++;
+							}
+						}
+					}
+				#endif
+				
+				case item_object: {
+					for(new i = 0; i < MAX_OBJECTS; i++){
+						if(T3D:upp >= max_element) break;
+						if(IsValidObject(i) && Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+							element_list[T3D:upp++] = i;
+							T3D:cnt++;
+						}
+					}
+				}
+				
+				case item_vehicle: {
+					for(new i = 0, j = GetVehiclePoolSize(); i <= j; i++){
+						if(T3D:upp >= max_element) break;
+						if(IsValidVehicle(i) && Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+							element_list[T3D:upp++] = i;
+							T3D:cnt++;
+						}
+					}
+				}
+				
+				#if defined TRYG3D_MOD_STREAMER
+					case item_dynamic_object: {
+						for(new i = 1, j = Streamer::GetUpperBound(STREAMER_TYPE_OBJECT); i <= j; i++){
+							if(IsValidDynamicObject(STREAMER_TAG_OBJECT:i)){
+								if(T3D:upp >= max_element) break;
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+					case item_dynamic_pickup: {
+						for(new i = 1, j = Streamer::GetUpperBound(STREAMER_TYPE_PICKUP); i <= j; i++){
+							if(IsValidDynamicPickup(STREAMER_TAG_PICKUP:i)){
+								if(T3D:upp >= max_element) break;
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+					case item_dynamic_cp: {
+						for(new i = 1, j = Streamer::GetUpperBound(STREAMER_TYPE_CP); i <= j; i++){
+							if(IsValidDynamicCP(STREAMER_TAG_CP:i)){
+								if(T3D:upp >= max_element) break;
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+					case item_dynamic_racecp: {
+						for(new i = 1, j = Streamer::GetUpperBound(STREAMER_TYPE_RACE_CP); i <= j; i++){
+							if(IsValidDynamicRaceCP(STREAMER_TAG_RACE_CP:i)){
+								if(T3D:upp >= max_element) break;
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+					case item_dynamic_mapicon: {
+						for(new i = 1, j = Streamer::GetUpperBound(STREAMER_TYPE_MAP_ICON); i <= j; i++){
+							if(IsValidDynamicMapIcon(STREAMER_TAG_MAP_ICON:i)){
+								if(T3D:upp >= max_element) break;
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+					case item_dynamic_3dtext: {
+						for(new i = 1, j = Streamer::GetUpperBound(STREAMER_TYPE_3D_TEXT_LABEL); i <= j; i++){
+							if(IsValidDynamic3DTextLabel(STREAMER_TAG_3D_TEXT_LABEL:i)){
+								if(T3D:upp >= max_element) break;
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+					case item_dynamic_actor: {
+						for(new i = 1, j = Streamer::GetUpperBound(STREAMER_TYPE_ACTOR); i <= j; i++){
+							if(IsValidDynamicActor(STREAMER_TAG_ACTOR:i)){
+								if(T3D:upp >= max_element) break;
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+				#endif
+				
+				#if defined TRYG3D_MOD_FCNPC
+					case item_fcnpc: {
+						Tryg3D::Foreach(i){
+							if(T3D:upp >= max_element) break;
+							if(IsPlayerNPC(i) && FCNPC::IsValid(i)){
+								if(Tryg3D::ItemInDynamicArea(i,element_type,areaid)){
+									element_list[T3D:upp++] = i;
+									T3D:cnt++;
+								}
+							}
+						}
+					}
+				#endif
+			}
+			return T3D:cnt;
+		}
+		
+	#endif
+	
+	#if defined TRYG3D_MOD_COLANDREAS
+	
+		stock bool: Tryg3D::ItemCollisionToPoint(const Float:x, const Float:y, const Float:z, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL){
+			new Float:xB,Float:yB,Float:zB;
+			if(!Tryg3D::ItemGetPos(targetid,target_type,xB,yB,zB)) return false;
+			new Item3D:item_type,element_id,Float:T3D:x,Float:T3D:y,Float:T3D:z;
+			return Tryg3D::CollisionCheck(x,y,z,xB,yB,zB,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags);
+		}
+
+		stock bool: Tryg3D::ItemCollisionToItem(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL){
+			new Float:xA,Float:yA,Float:zA,Float:xB,Float:yB,Float:zB;
+			if(!Tryg3D::ItemGetPos(elementid,element_type,xA,yA,zA)) return false;
+			if(!Tryg3D::ItemGetPos(targetid,target_type,xB,yB,zB)) return false;
+			new Item3D:item_type,element_id,Float:T3D:x,Float:T3D:y,Float:T3D:z;
+			return Tryg3D::CollisionCheck(xA,yA,zA,xB,yB,zB,T3D:x,T3D:y,T3D:z,item_type,element_id,0.0,ignore_vehicle,ignore_player,ignore_actor,collision_flags);
+		}
+
+		stock Tryg3D::ItemToItemIsWall(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type){
+			new Float:xA,Float:yA,Float:zA,Float:xB,Float:yB,Float:zB,Float:T3D:tmp;
+			if(!Tryg3D::ItemGetPos(elementid,element_type,xA,yA,zA)) return 0;
+			if(!Tryg3D::ItemGetPos(targetid,target_type,xB,yB,zB)) return 0;
+			return ColAndreas::RayCastLine(xA,yA,zA,xB,yB,zB,T3D:tmp,T3D:tmp,T3D:tmp);
+		}
+
+		stock Tryg3D::ItemToPointIsWall(const Float:x, const Float:y, const Float:z, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type){
+			new Float:xB,Float:yB,Float:zB,Float:T3D:tmp;
+			if(!Tryg3D::ItemGetPos(targetid,target_type,xB,yB,zB)) return false;
+			return ColAndreas::RayCastLine(xB,yB,zB,x,y,z,T3D:tmp,T3D:tmp,T3D:tmp);
+		}
+
+		stock Tryg3D::ItemGetCollisionFlags(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type){
+			new Float:x,Float:y,Float:z;
+			if(!Tryg3D::ItemGetPos(elementid,element_type,x,y,z)) return 0;
+			return Tryg3D::GetPointCollisionFlags(x,y,z);
+		}
+
+		stock Tryg3D::ItemGetOrientationPosCol(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation, const Float:distance, &Float:tx, &Float:ty, &Float:tz){
+			new Float:x,Float:y,Float:z,Float:rx,Float:ry,Float:rz;
+			if(!Tryg3D::ItemGetPos(elementid,element_type,x,y,z)) return -1;
+			switch(element_type){
+				case item_player: GetPlayerFacingAngle(_:elementid,rz);
+				case item_npc: {
+					#if defined TRYG3D_MOD_FCNPC
+						if(FCNPC::IsValid(_:elementid)){
+							rz = FCNPC::GetAngle(_:elementid);
+						} else {
+							GetPlayerFacingAngle(_:elementid,rz);
+						}
+					#else
+						GetPlayerFacingAngle(_:elementid,rz);
+					#endif
+				}
+				#if defined TRYG3D_MOD_ACTOR
+					case item_actor: GetActorFacingAngle(_:elementid,rz);
+				#endif
+				case item_object: GetObjectRot(_:elementid,rx,ry,rz);
+				case item_vehicle: Tryg3D::GetVehicleRotation(_:elementid,rx,ry,rz);
+				#if defined TRYG3D_MOD_STREAMER
+					case item_dynamic_object: GetDynamicObjectRot(STREAMER_TAG_OBJECT:elementid,rx,ry,rz);
+					case item_dynamic_actor: GetDynamicActorFacingAngle(STREAMER_TAG_ACTOR:elementid,rz);
+				#endif
+				#if defined TRYG3D_MOD_FCNPC
+					case item_fcnpc: rz = FCNPC::GetAngle(_:elementid);
+				#endif
+				default: return -1;
+			}
+			
+			switch(element_type){
+				case item_player, item_npc, item_actor, item_dynamic_actor, item_fcnpc: {
+					return Tryg3D::GetPointInFront3DCol(x,y,z,Tryg3D::CompressRotation(rx+Tryg3D::OrientationRotation[orientation][0]),Tryg3D::CompressRotation(rz+Tryg3D::OrientationRotation[orientation][1]),distance,tx,ty,tz);
+				}
+				case item_vehicle, item_object, item_dynamic_object, item_dynamic_vehicle: {
+					switch(orientation){
+						case o_left:		return Tryg3D::GetPointInFront3DCol(x,y,z,ry,Tryg3D::CompressRotation(rz+90.0),distance,tx,ty,tz);
+						case o_right:		return Tryg3D::GetPointInFront3DCol(x,y,z,Tryg3D::CompressRotation(ry+180.0),Tryg3D::CompressRotation(rz+90.0),distance,tx,ty,tz);
+						case o_up:		{
+							new Float:ox,Float:oy,Float:oz;
+							Tryg3D::ItemGetUpPos(elementid,element_type,distance,ox,oy,oz);
+							return Tryg3D::MovePointCol(x,y,z,ox,oy,oz,tx,ty,tz);
+						}
+						case o_down:	{
+							new Float:ox,Float:oy,Float:oz;
+							Tryg3D::ItemGetUpPos(elementid,element_type,distance,ox,oy,oz,true);
+							return Tryg3D::MovePointCol(x,y,z,ox,oy,oz,tx,ty,tz);
+						}
+						case o_front:		return Tryg3D::GetPointInFront3DCol(x,y,z,rx,rz,distance,tx,ty,tz);
+						case o_back:		return Tryg3D::GetPointInFront3DCol(x,y,z,Tryg3D::CompressRotation(rx+180.0),rz,distance,tx,ty,tz);
+						case o_front_left:	return Tryg3D::GetPointInFront3DCol(x,y,z,ry,Tryg3D::CompressRotation(rz+45.0),distance,tx,ty,tz);
+						case o_front_right: return Tryg3D::GetPointInFront3DCol(x,y,z,ry,Tryg3D::CompressRotation(rz-45.0),distance,tx,ty,tz);
+						case o_back_left:	return Tryg3D::GetPointInFront3DCol(x,y,z,Tryg3D::CompressRotation(ry+180.0),Tryg3D::CompressRotation(rz-45.0),distance,tx,ty,tz);
+						case o_back_right:	return Tryg3D::GetPointInFront3DCol(x,y,z,Tryg3D::CompressRotation(ry+180.0),Tryg3D::CompressRotation(rz+45.0),distance,tx,ty,tz);
+					}
+				}
+			}
+			return -1;
+		}
+
+		stock bool: Tryg3D::ItemIsPointInWaterOrient(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:radius, const ElementOrientation:orientation = o_front){
+			new Float:px,Float:py,Float:pz,Float:x,Float:y,Float:z;
+			if(!Tryg3D::ItemGetPos(elementid,element_type,px,py,pz)) return false;
+			if(!Tryg3D::ItemGetOrientationPos(elementid,element_type,orientation,radius,x,y,z)) return false;
+			return Tryg3D::IsPointInWater(x,y,0.0);
+		}
+	
+	#endif
 
 #endif
 
