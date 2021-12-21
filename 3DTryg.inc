@@ -318,6 +318,30 @@ Tryg3D::ItemGetCollisionFlags(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:e
 Tryg3D::ItemGetOrientationPosCol(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation, const Float:distance, &Float:tx, &Float:ty, &Float:tz);
 bool: Tryg3D::ItemIsPointInWaterOrient(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:radius, const ElementOrientation:orientation = o_front);
 
+
+# VehicleCollision Functions:
+Tryg3D::IsVehicleCollisionEnabled();
+Tryg3D::InitVehicleCollision(); //OnGameModeInit / OnFilterScriptInit
+Tryg3D::ExitVehicleCollision();
+Tryg3D::SyncVehicleCollision(vehicleid); //EVF -> OnVehicleCreated
+Tryg3D::IsToggledVehicleCollision(vehicleid);
+Tryg3D::ToggleVehicleCollision(vehicleid,bool:toggle);
+
+# PlayerCollision Functions:
+Tryg3D::IsPlayerCollisionEnabled();
+Tryg3D::InitPlayerCollision(); //OnGameModeInit / OnFilterScriptInit
+Tryg3D::ExitPlayerCollision();
+Tryg3D::SyncPlayerCollision(playerid); //auto called after player spawn
+Tryg3D::IsToggledPlayerCollision(playerid);
+Tryg3D::TogglePlayerCollision(playerid,bool:toggle);
+
+# ActorCollision Functions:
+Tryg3D::IsActorCollisionEnabled();
+Tryg3D::InitActorCollision(); //OnGameModeInit / OnFilterScriptInit
+Tryg3D::ExitActorCollision();
+Tryg3D::SyncActorCollision(actorid); //After create/change actor position
+Tryg3D::IsToggledActorCollision(actorid);
+Tryg3D::ToggleActorCollision(actorid,bool:toggle);
 */
 
 /********************************
@@ -965,6 +989,29 @@ new const Float: Tryg3D::OrientationRotation[ElementOrientation][2] = {
 	};
 #endif
 
+#if defined TRYG3D_MOD_PLAYERCOLLISION
+
+	new STREAMER_TAG_AREA: Tryg3D::PlayerCollisionZone[MAX_PLAYERS],
+		bool: Tryg3D::PlayerCollisionUsed[MAX_PLAYERS],
+		bool: Tryg3D::PlayerCollisionSystem = false;
+
+#endif
+
+#if defined TRYG3D_MOD_VEHICLECOLLISION
+
+	new STREAMER_TAG_AREA: Tryg3D::VehicleCollisionZone[MAX_VEHICLES],
+		bool: Tryg3D::VehicleCollisionUsed[MAX_VEHICLES],
+		bool: Tryg3D::VehicleCollisionSystem = false;
+
+#endif
+
+#if defined TRYG3D_MOD_ACTORCOLLISION
+
+	new STREAMER_TAG_AREA: Tryg3D::ActorCollisionZone[MAX_ACTORS],
+		bool: Tryg3D::ActorCollisionUsed[MAX_ACTORS],
+		bool: Tryg3D::ActorCollisionSystem = false;
+
+#endif
 /********************************
  * Complementary Functions      *
  ********************************/
@@ -4239,6 +4286,257 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 	
 	#endif
 
+#endif
+
+/********************************
+ * VehicleCollision Functions   *
+ ********************************/
+
+#if defined TRYG3D_MOD_VEHICLECOLLISION
+
+	#define T3_IsVehicleCollisionEnabled()   Tryg3D::VehicleCollisionSystem
+	#define T3_IsToggledVehicleCollision(%0) Tryg3D::VehicleCollisionUsed[(%0)]
+	#define T3_ToggleVehicleCollision(%0,%1) Tryg3D::VehicleCollisionUsed[(%0)] = (%1)
+	
+	T3D:function Tryg3D::SyncVehicleCollision(vehicleid){
+		if(!Tryg3D::VehicleCollisionSystem) return 0;
+		new Float:T3D:sx,Float:T3D:sy,Float:T3D:sz;
+		GetVehicleModelInfo(GetVehicleModel(vehicleid),VEHICLE_MODEL_INFO_SIZE,T3D:sx,T3D:sy,T3D:sz);
+		T3D:sx /= 2.0;
+		T3D:sy /= 2.0;
+		T3D:sz /= 2.0;
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::VehicleCollisionZone[vehicleid],E_STREAMER_MIN_X,-T3D:sx);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::VehicleCollisionZone[vehicleid],E_STREAMER_MIN_Y,-T3D:sy);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::VehicleCollisionZone[vehicleid],E_STREAMER_MIN_Z,-T3D:sz);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::VehicleCollisionZone[vehicleid],E_STREAMER_MAX_X,T3D:sx);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::VehicleCollisionZone[vehicleid],E_STREAMER_MAX_Y,T3D:sy);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::VehicleCollisionZone[vehicleid],E_STREAMER_MAX_Z,T3D:sz);
+		AttachDynamicAreaToVehicle(Tryg3D::VehicleCollisionZone[vehicleid],vehicleid);
+		return 1;
+	}
+
+	T3D:function Tryg3D::InitVehicleCollision(){
+		if(Tryg3D::VehicleCollisionSystem) return 0;
+		Tryg3D::VehicleCollisionSystem = true;
+		for(new vehicleid = 1; vehicleid < MAX_VEHICLES; vehicleid++){
+			Tryg3D::VehicleCollisionZone[vehicleid] = CreateDynamicCube(-1.0,-1.0,-6000.0,1.0,1.0,-5000.0);
+			Tryg3D::VehicleCollisionUsed[vehicleid] = true;
+			new Tryg3D::ExtraArray[2];
+			Tryg3D::ExtraArray[0] = TRYG3D_EXTRA_DATA_FLAG_VEHICLE;
+			Tryg3D::ExtraArray[1] = vehicleid;
+			Streamer::SetArrayData(STREAMER_TYPE_AREA,Tryg3D::VehicleCollisionZone[vehicleid],E_STREAMER_EXTRA_ID,Tryg3D::ExtraArray);
+			if(IsValidVehicle(vehicleid)){
+				Tryg3D::SyncVehicleCollision(vehicleid);
+			}
+		}
+		print("[ADM] Info: VehicleCollision successfully init.");
+		return 1;
+	}
+
+	T3D:function Tryg3D::ExitVehicleCollision(){
+		if(!Tryg3D::VehicleCollisionSystem) return 0;
+		for(new vehicleid = 1; vehicleid < MAX_VEHICLES; vehicleid++){
+			if(IsValidDynamicArea(Tryg3D::VehicleCollisionZone[vehicleid])) DestroyDynamicArea(Tryg3D::VehicleCollisionZone[vehicleid]);
+			Tryg3D::VehicleCollisionZone[vehicleid] = STREAMER_TAG_AREA:INVALID_STREAMER_ID;
+			Tryg3D::VehicleCollisionUsed[vehicleid] = false;
+		}
+		Tryg3D::VehicleCollisionSystem = false;
+		print("[ADM] Info: VehicleCollision successfully exit.");
+		return 1;
+	}
+
+	stock Tryg3D::MovePointColWithVehicle(Float:StartX,Float:StartY,Float:StartZ,Float:EndX,Float:EndY,Float:EndZ,&Float:x,&Float:y,&Float:z){
+		new Item3D:item_type,element_id;
+		Tryg3D::CollisionCheck(StartX,StartY,StartZ,EndX,EndY,EndZ,x,y,z,item_type,element_id,0.0,.collision_flags = TRYG3D_COLLISION_FLAG_OBJECT + TRYG3D_COLLISION_FLAG_VEHICLE);
+		if(item_type == item_vehicle) return element_id;
+		return INVALID_VEHICLE_ID;
+	}
+
+	stock Tryg3D::MovePointColWithVehicleCut(Float:StartX,Float:StartY,Float:StartZ,Float:EndX,Float:EndY,Float:EndZ,&Float:x,&Float:y,&Float:z,Float:cut_size=0.0){
+		new Item3D:item_type,element_id;
+		Tryg3D::CollisionCheck(StartX,StartY,StartZ,EndX,EndY,EndZ,x,y,z,item_type,element_id,cut_size,.collision_flags = TRYG3D_COLLISION_FLAG_OBJECT + TRYG3D_COLLISION_FLAG_VEHICLE);
+		if(item_type == item_vehicle) return element_id;
+		return INVALID_VEHICLE_ID;
+	}
+
+	//Hook: OnVehicleSpawn
+	public OnVehicleSpawn(vehicleid){
+		if(!IsValidVehicle(vehicleid)) return 0;
+		if(Tryg3D::VehicleCollisionSystem){
+			Tryg3D::SyncVehicleCollision(vehicleid);
+		}
+		#if defined T3_OnVehicleSpawn
+			T3_OnVehicleSpawn(vehicleid);
+		#endif
+		return 1;
+	}
+
+	#if defined T3_OnVehicleSpawn
+		forward T3_OnVehicleSpawn(vehicleid);
+	#endif
+	#if defined _ALS_OnVehicleSpawn
+		#undef OnVehicleSpawn
+	#else
+		#define _ALS_OnVehicleSpawn
+	#endif
+	#define OnVehicleSpawn T3_OnVehicleSpawn
+
+#endif
+
+/********************************
+ * ActorCollision Functions     *
+ ********************************/
+
+#if defined TRYG3D_MOD_ACTORCOLLISION
+
+	#define T3_IsActorCollisionEnabled()   Tryg3D::ActorCollisionSystem
+	#define T3_IsToggledActorCollision(%0) Tryg3D::ActorCollisionUsed[(%0)]
+	#define T3_ToggleActorCollision(%0,%1) Tryg3D::ActorCollisionUsed[(%0)] = (%1)
+
+	T3D:function Tryg3D::SyncActorCollision(actorid){
+		if(!Tryg3D::ActorCollisionSystem) return 0;
+		new Float:T3D:pos[3];
+		GetActorPos(actorid,T3D:pos[0],T3D:pos[1],T3D:pos[2]);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::ActorCollisionZone[actorid],E_STREAMER_MIN_X,T3D:pos[0]-0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::ActorCollisionZone[actorid],E_STREAMER_MIN_Y,T3D:pos[1]-0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::ActorCollisionZone[actorid],E_STREAMER_MIN_Z,T3D:pos[2]-1.00);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::ActorCollisionZone[actorid],E_STREAMER_MAX_X,T3D:pos[0]+0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::ActorCollisionZone[actorid],E_STREAMER_MAX_Y,T3D:pos[0]+0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::ActorCollisionZone[actorid],E_STREAMER_MAX_Z,T3D:pos[2]+1.00);
+		return 1;
+	}
+
+	T3D:function Tryg3D::InitActorCollision(){
+		if(Tryg3D::ActorCollisionSystem) return 0;
+		Tryg3D::ActorCollisionSystem = true;
+		for(new actorid = 0; actorid < MAX_ACTORS; actorid++){
+			Tryg3D::ActorCollisionZone[actorid] = CreateDynamicCube(-1.0,-1.0,-6000.0,1.0,1.0,-5000.0);
+			Tryg3D::ActorCollisionUsed[actorid] = true;
+			new Tryg3D::ExtraArray[2];
+			Tryg3D::ExtraArray[0] = TRYG3D_EXTRA_DATA_FLAG_ACTOR;
+			Tryg3D::ExtraArray[1] = actorid;
+			Streamer::SetArrayData(STREAMER_TYPE_AREA,Tryg3D::ActorCollisionZone[actorid],E_STREAMER_EXTRA_ID,Tryg3D::ExtraArray);
+			if(IsValidActor(actorid)){
+				Tryg3D::SyncActorCollision(actorid);
+			}
+		}
+		print("[ADM] Info: ActorCollision successfully init.");
+		return 1;
+	}
+
+	T3D:function Tryg3D::ExitActorCollision(){
+		if(!Tryg3D::ActorCollisionSystem) return 0;
+		for(new actorid = 1; actorid < MAX_ACTORS; actorid++){
+			if(IsValidDynamicArea(Tryg3D::ActorCollisionZone[actorid])) DestroyDynamicArea(Tryg3D::ActorCollisionZone[actorid]);
+			Tryg3D::ActorCollisionZone[actorid] = STREAMER_TAG_AREA:INVALID_STREAMER_ID;
+			Tryg3D::ActorCollisionUsed[actorid] = false;
+		}
+		Tryg3D::ActorCollisionSystem = false;
+		print("[ADM] Info: ActorCollision successfully exit.");
+		return 1;
+	}
+
+#endif
+
+/********************************
+ * PlayerCollision Functions    *
+ ********************************/
+
+#if defined TRYG3D_MOD_PLAYERCOLLISION
+
+	#define T3_IsPlayerCollisionEnabled()   Tryg3D::PlayerCollisionSystem
+	#define T3_IsToggledPlayerCollision(%0) Tryg3D::PlayerCollisionUsed[(%0)]
+	#define T3_TogglePlayerCollision(%0,%1) Tryg3D::PlayerCollisionUsed[(%0)] = (%1)
+
+	T3D:function Tryg3D::SyncPlayerCollision(playerid){
+		if(!Tryg3D::PlayerCollisionSystem) return 0;
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::PlayerCollisionZone[playerid],E_STREAMER_MIN_X,-0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::PlayerCollisionZone[playerid],E_STREAMER_MIN_Y,-0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::PlayerCollisionZone[playerid],E_STREAMER_MIN_Z,-1.00);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::PlayerCollisionZone[playerid],E_STREAMER_MAX_X,0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::PlayerCollisionZone[playerid],E_STREAMER_MAX_Y,0.30);
+		Streamer::SetFloatData(STREAMER_TYPE_AREA,Tryg3D::PlayerCollisionZone[playerid],E_STREAMER_MAX_Z,1.00);
+		AttachDynamicAreaToPlayer(Tryg3D::PlayerCollisionZone[playerid],playerid);
+		return 1;
+	}
+
+	T3D:function Tryg3D::InitPlayerCollision(){
+		if(Tryg3D::PlayerCollisionSystem) return 0;
+		Tryg3D::PlayerCollisionSystem = true;
+		for(new playerid = 0; playerid < MAX_PLAYERS; playerid++){
+			Tryg3D::PlayerCollisionZone[playerid] = CreateDynamicCube(-1.0,-1.0,-6000.0,1.0,1.0,-5000.0);
+			Tryg3D::PlayerCollisionUsed[playerid] = true;
+			new Tryg3D::ExtraArray[2];
+			Tryg3D::ExtraArray[0] = TRYG3D_EXTRA_DATA_FLAG_PLAYER;
+			Tryg3D::ExtraArray[1] = playerid;
+			Streamer::SetArrayData(STREAMER_TYPE_AREA,Tryg3D::PlayerCollisionZone[playerid],E_STREAMER_EXTRA_ID,Tryg3D::ExtraArray);
+			if(IsPlayerConnected(playerid)){
+				Tryg3D::SyncPlayerCollision(playerid);
+			}
+		}
+		print("[ADM] Info: PlayerCollision successfully init.");
+		return 1;
+	}
+
+	T3D:function Tryg3D::ExitPlayerCollision(){
+		if(!Tryg3D::PlayerCollisionSystem) return 0;
+		for(new playerid = 1; playerid < MAX_PLAYERS; playerid++){
+			if(IsValidDynamicArea(Tryg3D::PlayerCollisionZone[playerid])) DestroyDynamicArea(Tryg3D::PlayerCollisionZone[playerid]);
+			Tryg3D::PlayerCollisionZone[playerid] = STREAMER_TAG_AREA:INVALID_STREAMER_ID;
+			Tryg3D::PlayerCollisionUsed[playerid] = false;
+		}
+		Tryg3D::PlayerCollisionSystem = false;
+		print("[ADM] Info: PlayerCollision successfully exit.");
+		return 1;
+	}
+
+	//Hook: OnPlayerSpawn
+	public OnPlayerSpawn(playerid){
+		if(!IsPlayerConnected(playerid)) return 0;
+		if(Tryg3D::PlayerCollisionSystem){
+			Tryg3D::SyncPlayerCollision(playerid);
+		}
+		#if defined T3_OnPlayerSpawn
+			T3_OnPlayerSpawn(playerid);
+		#endif
+		return 1;
+	}
+
+	#if defined T3_OnPlayerSpawn
+		forward T3_OnPlayerSpawn(playerid);
+	#endif
+	#if defined _ALS_OnPlayerSpawn
+		#undef OnPlayerSpawn
+	#else
+		#define _ALS_OnPlayerSpawn
+	#endif
+	#define OnPlayerSpawn T3_OnPlayerSpawn
+	
+	#if defined TRYG3D_MOD_FCNPC
+		//Hook: FCNPC_OnSpawn
+		public FCNPC_OnSpawn(npcid){
+			if(!IsPlayerConnected(npcid)) return 0;
+			if(Tryg3D::PlayerCollisionSystem){
+				Tryg3D::SyncPlayerCollision(npcid);
+			}
+			#if defined T3_FCNPC_OnSpawn
+				T3_FCNPC_OnSpawn(npcid);
+			#endif
+			return 1;
+		}
+
+		#if defined T3_FCNPC_OnSpawn
+			forward T3_FCNPC_OnSpawn(npcid);
+		#endif
+		#if defined _ALS_FCNPC_OnSpawn
+			#undef FCNPC_OnSpawn
+		#else
+			#define _ALS_FCNPC_OnSpawn
+		#endif
+		#define FCNPC_OnSpawn T3_FCNPC_OnSpawn
+
+	#endif
+	
 #endif
 
 /********************************
