@@ -29,6 +29,7 @@ Foreach Types:
 - GetPlayerPoolSize
 
 Compiler Options:
+- TRYG3D_DISABLE_INIT            //Use before 3DTryg.inc for disable ColAndreas Auto Init
 - TRYG3D_ENABLE_PLAYER           //Use before 3DTryg.inc for enable Player Module
 - TRYG3D_ENABLE_VEHICLE          //Use before 3DTryg.inc for enable  Module
 - TRYG3D_ENABLE_ACTOR            //Use before 3DTryg.inc for enable  Module
@@ -173,6 +174,8 @@ Tryg3D::GetArcPoints3D(const Float:x, const Float:y, const Float:z, const Float:
 Tryg3D::GetCube3DPoint(const OrientationCube3D:orientation, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z, &Float:tx, &Float:ty, &Float:tz);
 
 # ColAndreas Functions
+Tryg3D::IsColAndreasInit();
+Tryg3D::SafeColAndreasInit();
 Tryg3D::IsCollisionFlag(const value, const flag);
 Tryg3D::IsPointInUnderwater(const Float:x, const Float:y, const Float:z);
 Tryg3D::FindGroundZ(const Float:x, const Float:y, const Float:z, &Float:gZ);
@@ -200,6 +203,11 @@ bool: Tryg3D::GetWallRotation(const Float:sx, const Float:sy, const Float:sz, co
 Tryg3D::GetGroundRotation(const Float:x, const Float:y, const Float:size, &Float:rx, &Float:ry);
 bool: Tryg3D::IsPointInWaterFrontOfPlayer(const playerid, const Float:radius);
 bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
+
+# ColAndreas Callbacks
+OnColAndreasRemoveBuilding();
+OnColAndreasInitSuccess();
+OnColAndreasInitFail();
 
 # Area Functions
 bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius);
@@ -367,6 +375,24 @@ Tryg3D::SetPlayerAbsolutePosition(const playerid, const Float:x, const Float:y, 
 Tryg3D::SetPlayerAbsolutePositionVeh(const playerid, const Float:x, const Float:y, const Float:z, const Float:angle, const worldid = -1, const interiorid = -1, const compensatedtime = -1, const freezeplayer = 1);
 bool: Tryg3D::IsVehicleFullyInArea(const vehicleid, const STREAMER_TAG_AREA:areaid);
 Tryg3D::GetPointInDynamicArea(const STREAMER_TAG_AREA:areaid, &Float:tx, &Float:ty, &Float:tz);
+
+# FCNPC Functions
+bool: FCNPC::InRangeOfPoint(const npcid, const Float:range, const Float:x, const Float:y, const Float:z);
+Float: FCNPC::GetPointInFront(const npcid, &Float:tx, &Float:ty, const Float:radius);
+FCNPC::GetTargetAngle(const npcid, const Float:x, const Float:y, &Float:rz);
+FCNPC::SetTargetAngle(const npcid, const Float:x, const Float:y, &Float:rz = 0.0);
+FCNPC::SetVehicleRotation(const npcid, const Float:rx, const Float:ry, const Float:rz);
+bool: FCNPC::SetVehicleTargetRotation(const npcid, const Float:tx, const Float:ty, const Float:tz, const Float:ry = 0.0);
+FCNPC::GoToAir(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const Float:min_distance = 0.0, const stopdelay = 250);
+Float: FCNPC::GetPointInFrontCol(const npcid, &Float:tx, &Float:ty, const Float:radius);
+FCNPC::GoToCol(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 0.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::GoToPlayerCol(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 0.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::GoToPlayerOnGroundCol(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 1.0, const Float:climbing = 2.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::GoToAirCol(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const Float:cut_size = 0.0, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::SetFloorPos(const npcid);
+FCNPC::GoToPlayerOnGroundColVeh(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 1.0, const Float:climbing = 2.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::RandomMoveInDynamicArea(const npcid, const STREAMER_TAG_AREA:areaid, const Float:climbing = 2.0, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::SetAbsolutePosition(const npcid, const Float:x, const Float:y, const Float:z, const Float:angle, const worldid = -1, const interiorid = -1, const compensatedtime = -1, const freezeplayer = 1);
 
 # YSF Functions
 Tryg3D::GetPlayerHydraReactorRX(const playerid);
@@ -996,7 +1022,7 @@ enum 'StreamType'
 #define TRYG3D_INVALID_MOVE_TIME                        (-1)
 #define TRYG3D_INVALID_MOVE_SPEED                       (-1.0)
 #define TRYG3D_INVALID_ORIENTATION                      (-1)
-#define TRYG3D_MAX_MODULES_STRING                       (400)
+#define TRYG3D_MAX_MODULES_STRING                       (600)
 #define TRYG3D_RANDOM_MAX_ANGLE                         (359.999999)
 #define TRYG3D_VBTP                                     (0x7FFFFFFF)
 #define TRYG3D_VLTP                                     (0x80000000)
@@ -3161,6 +3187,37 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
  
 	#define T3_IsCollisionFlag(%0,%1)        ((%0) & (%1))
 	#define T3_IsPointInUnderwater(%1,%2,%3) (Tryg3D::IsPointInWater((%1),(%2),(%3)) && ((%3) < -1.0))
+	
+	forward OnColAndreasRemoveBuilding();
+	forward OnColAndreasInitSuccess();
+	forward OnColAndreasInitFail();
+
+	stock Tryg3D::IsColAndreasInit(){
+		new Float:mapunit;
+		ColAndreas::FindZ_For2DCoord(0.0,0.0,mapunit);
+		return !(mapunit <= 0.0);
+	}
+
+	stock Tryg3D::SafeColAndreasInit(){
+		//check ColAndreas Init
+		new bool:ColAndreasLastStat = false;
+		if(!Tryg3D::IsColAndreasInit()){
+			CallRemoteFunction("OnColAndreasRemoveBuilding","");
+			ColAndreas::Init();
+			ColAndreasLastStat = true;
+		}
+		if(!Tryg3D::IsColAndreasInit()){
+			print("[ADM] Error: ColAndreas failed to initiated.");
+			print("[ADM] Error: Cannot load /scriptfiles/colandreas/ColAndreas.cadb");
+			Tryg3D::UpdateErrorCount();
+			CallRemoteFunction("OnColAndreasInitFail","");
+		} else {
+			if(ColAndreasLastStat){
+				CallRemoteFunction("OnColAndreasInitSuccess","");
+				print("[ADM] Info: ColAndreas successfully init.");
+			}
+		}
+	}
 
 	stock Tryg3D::FindGroundZ(const Float:x, const Float:y, const Float:z, &Float:gZ){
 		new Float:gX,Float:gY;
@@ -5246,6 +5303,167 @@ stock Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Fl
 #endif
 
 /********************************
+ * FCNPC Functions              *
+ ********************************/
+ 
+#if defined TRYG3D_MOD_FCNPC
+
+	stock bool: FCNPC::InRangeOfPoint(const npcid, const Float:range, const Float:x, const Float:y, const Float:z){
+		new Float:px,Float:py,Float:pz;
+		FCNPC::GetPosition(npcid,px,py,pz);
+		return Tryg3D::GetDistance3D(x,y,z,px,py,pz) <= range;
+	}
+
+	stock Float: FCNPC::GetPointInFront(const npcid, &Float:tx, &Float:ty, const Float:radius){
+		new Float:rz;
+		FCNPC::GetPosition(npcid,tx,ty,rz);
+		if(IsPlayerInAnyVehicle(npcid)){
+			GetVehicleZAngle(FCNPC::GetVehicleID(npcid),rz);
+		} else {
+			rz = FCNPC::GetAngle(npcid);
+		}
+		Tryg3D::GetPointInFront2D(tx,ty,rz,radius,tx,ty);
+		return rz;
+	}
+
+	stock FCNPC::GetTargetAngle(const npcid, const Float:x, const Float:y, &Float:rz){
+		new Float:mx,Float:my;
+		FCNPC::GetPosition(npcid,mx,my,rz);
+		Tryg3D::GetRotationFor2Point2D(mx,my,x,y,rz);
+	}
+
+	stock FCNPC::SetTargetAngle(const npcid, const Float:x, const Float:y, &Float:rz = 0.0){
+		new Float:mx,Float:my;
+		FCNPC::GetPosition(npcid,mx,my,rz);
+		Tryg3D::GetRotationFor2Point2D(mx,my,x,y,rz);
+		FCNPC::SetAngle(npcid,rz);
+	}
+
+	stock FCNPC::SetVehicleRotation(const npcid, const Float:rx, const Float:ry, const Float:rz){
+		new Float:qw,Float:qx,Float:qy,Float:qz;
+		Tryg3D::EulerToQuat(rx,ry,rz,qw,qx,qy,qz);
+		FCNPC::SetQuaternion(npcid,qw,qx,qy,qz);
+	}
+
+	stock bool: FCNPC::SetVehicleTargetRotation(const npcid, const Float:tx, const Float:ty, const Float:tz, const Float:ry = 0.0){
+		new Float:x,Float:y,Float:z,Float:rx,Float:rz;
+		GetVehiclePos(FCNPC::GetVehicleID(npcid),x,y,z);
+		if(Tryg3D::GetRotationFor2Point3D(x,y,z,tx,ty,tz,rx,rz)){
+			new Float:qw,Float:qx,Float:qy,Float:qz;
+			Tryg3D::EulerToQuat(rx,ry,rz,qw,qx,qy,qz);
+			FCNPC::SetQuaternion(npcid,qw,qx,qy,qz);
+			return true;
+		}
+		return false;
+	}
+
+	stock FCNPC::GoToAir(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const Float:min_distance = 0.0, const stopdelay = 250){
+		FCNPC::SetVehicleTargetRotation(npcid,x,y,z);
+		FCNPC::GoTo(npcid,x,y,z,type,speed,FCNPC_MOVE_MODE_NONE,FCNPC_MOVE_PATHFINDING_NONE,0.0,false,min_distance,stopdelay);
+	}
+
+	#if defined TRYG3D_MOD_COLANDREAS
+
+		stock Float: FCNPC::GetPointInFrontCol(const npcid, &Float:tx, &Float:ty, const Float:radius){
+			new Float:rz,Float:z;
+			FCNPC::GetPosition(npcid,tx,ty,z);
+			if(IsPlayerInAnyVehicle(npcid)){
+				GetVehicleZAngle(FCNPC::GetVehicleID(npcid),rz);
+			} else {
+				rz = FCNPC::GetAngle(npcid);
+			}
+			Tryg3D::GetPointInFront3DCol(tx,ty,z,0.0,rz,radius,tx,ty,z);
+			return rz;
+		}
+
+		stock FCNPC::GoToCol(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 0.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250){
+			new Float:px,Float:py,Float:pz,Float:tx,Float:ty,Float:tz;
+			FCNPC::GetPosition(npcid,px,py,pz);
+			Tryg3D::MovePointColCutLine(px,py,pz,x,y,z,tx,ty,tz,cut_size);
+			if(Tryg3D::GetDistance3D(px,py,pz,tx,ty,tz) >= 0.0){
+				FCNPC::GoTo(npcid,tx,ty,tz,type,speed,mode,FCNPC_MOVE_PATHFINDING_NONE,0.0,set_angle,min_distance,stopdelay);
+			}
+		}
+
+		stock FCNPC::GoToPlayerCol(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 0.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250){
+			new Float:px,Float:py,Float:pz,Float:x,Float:y,Float:z,Float:tx,Float:ty,Float:tz;
+			GetPlayerPos(playerid,x,y,z);
+			FCNPC::GetPosition(npcid,px,py,pz);
+			Tryg3D::MovePointColCutLine(px,py,pz,x,y,z,tx,ty,tz,cut_size);
+			if(Tryg3D::GetDistance3D(px,py,pz,tx,ty,tz) >= 0.0){
+				FCNPC::GoTo(npcid,tx,ty,tz,type,speed,mode,FCNPC_MOVE_PATHFINDING_NONE,0.0,set_angle,min_distance,stopdelay);
+			}
+		}
+
+		stock FCNPC::GoToPlayerOnGroundCol(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 1.0, const Float:climbing = 2.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250){
+			new Float:px,Float:py,Float:pz,Float:x,Float:y,Float:z,Float:tx,Float:ty,Float:tz;
+			GetPlayerPos(playerid,x,y,z);
+			FCNPC::GetPosition(npcid,px,py,pz);
+			if(Tryg3D::GetDistance1D(pz,z) > climbing) z = pz;
+			Tryg3D::MovePointColCutLine(px,py,pz,x,y,z,tx,ty,tz,cut_size);
+			if(Tryg3D::GetDistance3D(px,py,pz,tx,ty,tz) >= 0.0){
+				FCNPC::GoTo(npcid,tx,ty,tz,type,speed,mode,FCNPC_MOVE_PATHFINDING_NONE,0.0,set_angle,min_distance,stopdelay);
+			}
+		}
+
+		stock FCNPC::GoToAirCol(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const Float:cut_size = 0.0, const Float:min_distance = 0.0, const stopdelay = 250){
+			new Float:px,Float:py,Float:pz,Float:tx,Float:ty,Float:tz;
+			GetVehiclePos(FCNPC::GetVehicleID(npcid),px,py,pz);
+			Tryg3D::MovePointColCutLine(px,py,pz,x,y,z,tx,ty,tz,cut_size);
+			if(Tryg3D::GetDistance3D(px,py,pz,tx,ty,tz) >= 0.0){
+				FCNPC::SetVehicleTargetRotation(npcid,tx,ty,tz);
+				FCNPC::GoTo(npcid,tx,ty,tz,type,speed,FCNPC_MOVE_MODE_NONE,FCNPC_MOVE_PATHFINDING_NONE,0.0,false,min_distance,stopdelay);
+			}
+		}
+
+		stock FCNPC::SetFloorPos(const npcid){
+			new Float:x,Float:y,Float:z, Float:target_z;
+			FCNPC::GetPosition(npcid,x,y,z);
+			Tryg3D::FindGroundZ(x,y,z,target_z);
+			FCNPC::SetPosition(npcid,x,y,target_z+TRYG3D_CHARACTER_GROUND_Z_DIFF);
+		}
+
+		#if defined TRYG3D_MOD_VEHICLECOLLISION
+			stock FCNPC::GoToPlayerOnGroundColVeh(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 1.0, const Float:climbing = 2.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250){
+				new Float:px,Float:py,Float:pz,Float:x,Float:y,Float:z,Float:tx,Float:ty,Float:tz;
+				GetPlayerPos(playerid,x,y,z);
+				FCNPC::GetPosition(npcid,px,py,pz);
+				if(Tryg3D::GetDistance1D(pz,z) > climbing) z = pz;
+				if(Tryg3D::MovePointColWithVehicleCut(px,py,pz,x,y,z,tx,ty,tz,cut_size)){
+					FCNPC::GoTo(npcid,tx,ty,tz,type,speed,mode,FCNPC_MOVE_PATHFINDING_NONE,0.0,set_angle,min_distance,stopdelay);
+				}
+			}
+		#endif
+
+		#if defined TRYG3D_MOD_STREAMER
+			stock FCNPC::RandomMoveInDynamicArea(const npcid, const STREAMER_TAG_AREA:areaid, const Float:climbing = 2.0, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250){
+				if(!FCNPC::IsValid(npcid) || FCNPC::IsDead(npcid)) return 0;
+				new Float:x,Float:y,Float:z,Float:tx,Float:ty,Float:tz,Float:T3D:tmp,cnt = 0;
+				FCNPC::GetPosition(npcid,x,y,z);
+				do {
+					if(cnt >= 100) return 0;
+					Tryg3D::GetPointInDynamicArea(areaid,tx,ty,tz);
+					ColAndreas::FindZ_For2DCoord(tx,ty,tz);
+					tz += TRYG3D_CHARACTER_GROUND_Z_DIFF;
+					cnt++;
+				} while (Tryg3D::IsPointInWater(tx,ty) || ColAndreas::RayCastLine(x,y,z,tx,ty,tz,T3D:tmp,T3D:tmp,T3D:tmp) || Tryg3D::GetDistance1D(tz,z) > climbing || !IsPointInDynamicArea(areaid,tx,ty,tz));
+				return FCNPC::GoTo(npcid,tx,ty,tz,type,speed,mode,FCNPC_MOVE_PATHFINDING_NONE,0.0,set_angle,min_distance,stopdelay);
+			}
+		#endif
+	#endif
+
+	#if defined TRYG3D_MOD_STREAMER
+		stock FCNPC::SetAbsolutePosition(const npcid, const Float:x, const Float:y, const Float:z, const Float:angle, const worldid = -1, const interiorid = -1, const compensatedtime = -1, const freezeplayer = 1){
+			Streamer::UpdateEx(npcid,x,y,z,worldid,interiorid,-1,compensatedtime,freezeplayer);
+			if(worldid != -1) FCNPC::SetVirtualWorld(npcid,worldid);
+			if(interiorid != -1) FCNPC::SetInterior(npcid,interiorid);
+			FCNPC::SetPosition(npcid,x,y,z);
+			FCNPC::SetAngle(npcid,angle);
+		}
+	#endif
+#endif
+ 
+/********************************
  * Streamer Functions           *
  ********************************/
 
@@ -5806,7 +6024,66 @@ stock Tryg3D::Init(){
 	Tryg3D::UpTime = GetTickCount();
 	
 	new T3D:modules[TRYG3D_MAX_MODULES_STRING];
-	/* todo */
+
+	#if defined TRYG3D_MOD_PLAYER
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_PLAYER);
+	#endif
+
+	#if defined TRYG3D_MOD_VEHICLE
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_VEHICLE);
+	#endif
+
+	#if defined TRYG3D_MOD_ACTOR
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_ACTOR);
+	#endif
+
+	#if defined TRYG3D_MOD_GRENADEDETECTION
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_GRENADEDETECTION);
+	#endif
+
+	#if defined TRYG3D_MOD_VEHICLECOL
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_VEHICLECOL);
+	#endif
+
+	#if defined TRYG3D_MOD_PLAYERCOL
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_PLAYERCOL);
+	#endif
+
+	#if defined TRYG3D_MOD_ACTORCOL
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_ACTORCOL);
+	#endif
+
+	#if defined TRYG3D_MOD_UNIVERSAL
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_UNIVERSAL);
+	#endif
+
+	#if defined TRYG3D_MOD_DRAW3D
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_DRAW3D);
+	#endif
+
+	#if defined TRYG3D_MOD_CAST3D
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_CAST3D);
+	#endif
+
+	#if defined TRYG3D_MOD_CATCHITEMS
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_CATCHITEMS);
+	#endif
+
+	#if defined TRYG3D_MOD_COLANDREAS
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_COLANDREAS);
+	#endif
+
+	#if defined TRYG3D_MOD_STREAMER
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_STREAMER);
+	#endif
+
+	#if defined TRYG3D_MOD_FCNPC
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_FCNPC);
+	#endif
+
+	#if defined TRYG3D_MOD_YSF
+		format(T3D:modules,TRYG3D_MAX_MODULES_STRING,"%s %s,",T3D:modules,TRYG3D_MOD_YSF);
+	#endif
 	
 	new T3D:ver_name[16];
 	format(T3D:ver_name,sizeof(T3D:ver_name),"%d.%d.%d",Tryg3D::GetVersion(TRYG3D_VERSION));
@@ -5837,6 +6114,20 @@ stock Tryg3D::Init(){
 		print("[ADM] Error: Definition TRYG3D_CHARACTER_GROUND_Z_DIFF must be greater or equal 0.0");
 		Tryg3D::UpdateErrorCount();
 	}
+	
+	#if defined TRYG3D_MOD_FCNPC
+		if(!fexist("FCNPC/nodes")){
+			print("[ADM] Error: Plugin data not found /scriptfiles/FCNPC/nodes/*.dat");
+			Tryg3D::UpdateErrorCount();
+		}
+	#endif
+	
+	//Init Map Precision
+	#if !defined TRYG3D_DISABLE_INIT
+		#if defined TRYG3D_MOD_COLANDREAS
+			Tryg3D::SafeColAndreasInit();
+		#endif
+	#endif
 	
 	new T3D:errors = Tryg3D::GetErrorCount();
 	if(T3D:errors > 0) printf("[ADM] Info: 3DTryg running with %d errors detected, see above",T3D:errors);
