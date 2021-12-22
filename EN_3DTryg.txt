@@ -1,0 +1,719 @@
+Include contain professional functions for manipulating (coordinates / rotations / vectors / arc / areas / offset) supported (2D / 3D)
+
+[b]Videos:[/b]
+- [url=https://www.youtube.com/watch?v=WJZCn3XXRHY]Knife Shoot[/url]
+- [url=https://www.youtube.com/watch?v=fTvbNnZpogY]EngineV6[/url]
+- [url=https://www.youtube.com/watch?v=PtJCS-3EGY0]EngineX[/url]
+- [url=https://www.youtube.com/watch?v=ZCThAi3FKyU]Missile Launch[/url]
+- [url=https://www.youtube.com/watch?v=HTHinI1IGhY]Vehicle Missile Launch (ColAndreas Version)[/url]
+- [url=https://www.youtube.com/watch?v=SR0jZ_IxnRc]GetGroundRotation[/url]
+- [url=https://www.youtube.com/watch?v=dJUQKrBkeY8]GetPlayerCollisionFlags (ColAndreas)[/url]
+- [url=https://www.youtube.com/watch?v=B4pfX39bIwM]Marica Mortar V1[/url]
+- [url=https://www.youtube.com/watch?v=0FlZwi34wIA]Heavy Marica Mortar[/url]
+- [url=https://www.youtube.com/watch?v=6NvuOozTExE]Acid Renia (FCNPC)[/url]
+- [url=https://www.youtube.com/watch?v=snZ-25QuBm0]Beta Interceptor (FCNPC)[/url]
+- [url=https://www.youtube.com/watch?v=Y2ZcCaxajrY]GoToPlayerOnGroundCol (FCNPC)[/url]
+- [url=https://www.youtube.com/watch?v=ih9P_Cwkz68]IsElementOnPlayerScreen (ColAndreas) [/url]
+- [url=https://www.youtube.com/watch?v=Z1xotEcITUs]Arc Points[/url]
+- [url=https://www.youtube.com/watch?v=bS6jnEebJR4]Missile Launcher Aim Player[/url]
+- [url=https://www.youtube.com/watch?v=hQLvmf0duAM]GetRandomPointOnSphericalSector[/url]
+- [url=https://www.youtube.com/watch?v=Fxp-BDCQ94U]Vehicle Missile Congreve Rocket[/url]
+- [url=https://www.youtube.com/watch?v=aaHfVz-UxR8]Magic Wand[/url]
+- [url=https://www.youtube.com/watch?v=TrxYkMeBtsU]Vehicle Parachute[/url]
+- [url=https://www.youtube.com/watch?v=pHGUVNh9y3c]Portal Gun #1[/url]
+- [url=https://www.youtube.com/watch?v=wDBgtBY-cPs]Portal Gun #2[/url]
+- [url=https://www.youtube.com/watch?v=lYS-ryk7n4E]Marica Mortar V2[/url]
+- [url=https://www.youtube.com/watch?v=nslVT5RC3J0]Stingers (Cops and Robbers)[/url]
+- [url=https://www.youtube.com/watch?v=rsse_32AcHM]NPC Driver Eye[/url]
+- [url=https://www.youtube.com/watch?v=TAAhBfIhZOQ]PET SAR v1.0[/url]
+- [url=https://www.youtube.com/watch?v=2YyP9EktcPU]Vehicle Speed Control[/url]
+- [url=https://www.youtube.com/watch?v=xjMHYBKYo1g]Prototype Grenade Detection[/url]
+
+[code]
+Library: 3DTryg.inc
+Copyright © 2021 Abyss Morgan. All rights reserved.
+Contributors: Nero_3D (Shisk), Crayder, IllidanS4, RyDeR, Zoutdaxv, hesambia, Neil Lamoureux, Ivan_Ino, Ralfie, Unrea1, $continue$, Switel12, Mr.Reus
+
+Website: N/A
+
+Plugins: ColAndreas, Streamer, FCNPC, YSF
+Internal Modules: Player, Vehicle, Actor, VehicleCollision, PlayerCollision, ActorCollision, GrenadeDetection, Universal, Draw3D, Cast3D, CatchItems
+
+Platforms:
+- SA:MP 0.3.7
+- SA:MP 0.3 DL
+
+File Version:
+- Gen. 2 v1.0.0
+
+Plugin Versions:
+- ColAndreas Version: 1.5.0
+- YSF Version: R19 (kurta999)
+- Streamer Version: 2.9.5
+- FCNPC Version: 2.0.0
+
+Foreach Types:
+- FoxForeach
+- StandaloneForeach
+- YSI Foreach
+- GetPlayerPoolSize
+
+Compiler Options:
+- TRYG3D_DISABLE_INIT            //Use before 3DTryg.inc for disable ColAndreas Auto Init
+- TRYG3D_ENABLE_PLAYER           //Use before 3DTryg.inc for enable Player Module
+- TRYG3D_ENABLE_VEHICLE          //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_ACTOR            //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_GRENADEDETECTION //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_VEHICLECOL       //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_PLAYERCOL        //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_ACTORCOL         //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_UNIVERSAL        //Use before 3DTryg.inc for enable  Module
+- TRYG3D_ENABLE_DRAW3D           //Use before 3DTryg.inc for enable Draw3D Module
+- TRYG3D_ENABLE_CAST3D           //Use before 3DTryg.inc for enable Cast3D Module
+- TRYG3D_ENABLE_CATCHITEMS       //Use before 3DTryg.inc for enable CatchItems Module
+- TRYG3D_ENABLE_COLANDREAS       //Use before 3DTryg.inc for enable ColAndreas Plugin Module
+- TRYG3D_ENABLE_STREAMER         //Use before 3DTryg.inc for enable Streamer Plugin Module
+- TRYG3D_ENABLE_FCNPC            //Use before 3DTryg.inc for enable FCNPC Plugin Module
+- TRYG3D_ENABLE_YSF              //Use before 3DTryg.inc for enable YSF Plugin Module
+
+# Complementary Functions
+Float: sqrtN(Float:value, Float:exponent);
+abs(value);
+Float: fabs(Float:value);
+power(value, Float:exponent);
+bool: IsEven(value);
+
+# Internal Functions
+Float: Tryg3D::RandomFloat(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
+Float: Tryg3D::RandomFloatEx(const Float:min, const Float:max, accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
+Tryg3D::RandomInteger(const min, const max);
+Float: Tryg3D::CalculatePercent(const Float:value, const Float:maxvalue);
+Float: Tryg3D::CompressRotation(const Float:rotation);
+Float: Tryg3D::DeCompressRotation(Float:rotation);
+Tryg3D::SwapInt(&variable1, &variable2);
+Tryg3D::SwapFloat(&Float:variable1, &Float:variable2);
+Tryg3D::RecoilVector(&Float:vx, &Float:vy, &Float:vz, const Float:sx, const Float:sy, const Float:sz);
+Float: Tryg3D::NormalizeVector(&Float:x, &Float:y, &Float:z = 0.0);
+Float: Tryg3D::SingleClock(max_items,index);
+Float: Tryg3D::EvenClock(max_items,index);
+Float: Tryg3D::UnevenClock(max_items,index);
+Tryg3D::NLTZ(value);
+Tryg3D::NMTZ(value);
+Float: Tryg3D::NLTZF(Float:value);
+Float: Tryg3D::NMTZF(Float:value);
+Tryg3D::NLTV(value, min);
+Tryg3D::NMTV(value, max);
+Float: Tryg3D::NLTVF(Float:value, Float:min);
+Float: Tryg3D::NMTVF(Float:value, Float:max);
+Tryg3D::GetWeaponDamage(weaponid);
+bool: Tryg3D::RotationInRange(const Float:rotation, Float:min, Float:max);
+Float: Tryg3D::RoundAccuracy(Float:value);
+Tryg3D::AppendLineArguments2D(Float:line[2], Float:x, Float:y);
+Tryg3D::AppendLineArguments3D(Float:line[3], Float:x, Float:y, Float:z);
+Tryg3D::DivideValues(denominator, &Float:x, &Float:y, &Float:z);
+Float: Tryg3D::RecoilFloat(Float:value, Float:recoil);
+Tryg3D::SetStreamDistance(const Float:streamdistance);
+Float: Tryg3D::GetStreamDistance();
+Tryg3D::KeyPressed(key);
+Tryg3D::KeyReleased(key);
+Tryg3D::KeyHolding(key);
+Tryg3D::SecToTimeDay(seconds);      //%d:%02d:%02d:%02d
+Tryg3D::MSToTimeDay(milliseconds);  //%d:%02d:%02d:%02d
+Tryg3D::SecToTime(seconds);         //%02d:%02d:%02d
+Tryg3D::MSToTime(milliseconds);     //%02d:%02d:%02d
+Tryg3D::SecToTimeMini(seconds);     //%02d:%02d
+Tryg3D::MSToTimeMini(milliseconds); //%02d:%02d
+
+# Quaternion Functions
+Tryg3D::EulerToQuat(Float:rx, Float:ry, Float:rz, &Float:qw, &Float:qx, &Float:qy, &Float:qz);
+Tryg3D::QuatToEuler(&Float:rx, &Float:ry, &Float:rz, Float:qw, Float:qx, Float:qy, Float:qz);
+Tryg3D::GetRotationMatrixEuler(Float:matrix[][], const Float:rx, const Float:ry, const Float:rz);
+Tryg3D::GetRotationMatrixEulerEx(Float:matrix[][], const Float:rx, const Float:ry, const Float:rz, const EulerModes: mode = T3D:euler_default);
+Tryg3D::MatrixRotate(const Float:matrix[][], const Float:oX, const Float:oY, const Float:oZ, &Float:x, &Float:y, &Float:z);
+Tryg3D::MatrixRotateReverse(const Float:matrix[][], const Float:oX, const Float:oY, const Float:oZ, &Float:x, &Float:y, &Float:z);
+Tryg3D::GetQuatFromEuler(Float:rx, Float:ry, Float:rz, &Float:qw, &Float:qx, &Float:qy, &Float:qz, EulerModes: mode = T3D:euler_default);
+Tryg3D::QuatRotate(const Float:qw, const Float:qx, const Float:qy, const Float:qz, const Float:oX, const Float:oY, const Float:oZ, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::EulerRotate(Float:rx, Float:ry, Float:rz, Float:oX, Float:oY, Float:oZ, &Float:tx,&Float:ty,&Float:tz);
+Tryg3D::EulerRotateEx(Float:rx, Float:ry, Float:rz, Float:oX, Float:oY, Float:oZ, &Float:tx, &Float:ty, &Float:tz, EulerModes: mode = T3D:euler_default);
+Tryg3D::GetQuatUpVector(const Float:qw, const Float:qx, const Float:qy, const Float:qz, &Float:vx, &Float:vy, &Float:vz);
+
+# Screen Functions
+Tryg3D::NormCrossProduct(&Float:x, &Float:y, &Float:z, Float:v1x, Float:v1y, Float:v1z, Float:v2x, Float:v2y, Float:v2z);
+Tryg3D::ScreenToWorld(const playerid, const Float:screenX, const Float:screenY, &Float:vX, &Float:vY, &Float:vZ);
+Tryg3D::WorldToScreen(const playerid, Float:x, Float:y, Float:z, &Float:screenX, &Float:screenY);
+Tryg3D::ScreenToWorldCol(const playerid, const Float:distance, const Float:screenX, const Float:screenY, &Float:wX, &Float:wY, &Float:wZ);
+
+# General Functions
+Float: Tryg3D::GetDistance1D(const Float:x1, const Float:x2);
+Float: Tryg3D::GetDistance2D(const Float:x1, const Float:y1, const Float:x2, const Float:y2);
+Float: Tryg3D::GetDistance3D(const Float:x1, const Float:y1, const Float:z1, const Float:x2, const Float:y2, const Float:z2);
+bool: Tryg3D::IsPolygonClosed(const Float:points[], const max_points = sizeof(points));
+bool: Tryg3D::IsValidPolygon(const Float:points[], const max_points = sizeof(points));
+ElementOrientation: Tryg3D::GetOrientation(Float:angle);
+bool: Tryg3D::GetOrientationName(orientation_name[], const Float:angle, bool:as_compass = false, const maxdest = sizeof(orientation_name));
+Float: Tryg3D::GetEllipseRadius(const Float:x, const Float:y, const Float:angle);
+Float: Tryg3D::GetLineSize2D(const Float:points[][2], const max_points = sizeof(points));
+Float: Tryg3D::GetLineSize3D(const Float:points[][3], const max_points = sizeof(points));
+Tryg3D::GetRotationFor2Point2D(const Float:x, const Float:y, const Float:tx, const Float:ty, &Float:rz);
+Tryg3D::GetPointInFront2D(const Float:x, const Float:y, const Float:rz, const Float:radius, &Float:tx, &Float:ty);
+Tryg3D::GetPointInFront3D(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetRotationFor2Point3D(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, &Float:rx, &Float:rz);
+Tryg3D::GetPointInFront3DEx(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointFor2Point2D(const Float:x1, const Float:y1, const Float:x2, const Float:y2, const Float:percent_size, &Float:tx, &Float:ty);
+Tryg3D::GetPointFor2Point3D(const Float:x1, const Float:y1, const Float:z1, const Float:x2, const Float:y2, const Float:z2, const Float:percent_size, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointFor2Point2DEx(const Float:x1, const Float:y1, const Float:x2, const Float:y2, const Float:distance, &Float:tx, &Float:ty);
+Tryg3D::GetPointFor2Point3DEx(const Float:x1, const Float:y1, const Float:z1, const Float:x2, const Float:y2, const Float:z2, const Float:distance, &Float:tx, &Float:ty, &Float:tz);
+Float: Tryg3D::GetDistancePointToLine(const Float:px, const Float:py, const Float:pz, const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:iX = 0.0, &Float:iY = 0.0, &Float:iZ = 0.0);
+Float: Tryg3D::GetDistancePointToLineEx(const Float:px, const Float:py, const Float:pz, const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:iX = 0.0, &Float:iY = 0.0, &Float:iZ = 0.0);
+Tryg3D::GetNearest2DPointOnPolygon(const Float:polygon_points[], const Float:x, const Float:y, &Float:tx, &Float:ty, const max_points = sizeof(polygon_points));
+Float: Tryg3D::GetLineCosTheta2D(const Float:StartLine1[2], const Float:EndLine1[2], const Float:StartLine2[2], const Float:EndLine2[2]);
+Float: Tryg3D::GetLineCosTheta3D(const Float:StartLine1[3], const Float:EndLine1[3], const Float:StartLine2[3], const Float:EndLine2[3]);
+bool: Tryg3D::IsLinesParallel2D(const Float:StartLine1[2], const Float:EndLine1[2], const Float:StartLine2[2], const Float:EndLine2[2]);
+bool: Tryg3D::IsLinesParallel3D(const Float:StartLine1[3], const Float:EndLine1[3], const Float:StartLine2[3], const Float:EndLine2[3]);
+bool: Tryg3D::IsLinesPerpendicular2D(const Float:StartLine1[2], const Float:EndLine1[2], const Float:StartLine2[2], const Float:EndLine2[2]);
+bool: Tryg3D::IsLinesPerpendicular3D(const Float:StartLine1[3], const Float:EndLine1[3], const Float:StartLine2[3], const Float:EndLine2[3]);
+bool: Tryg3D::IsPointBetween2Points2D(const Float:px, const Float:py, const Float:x1, const Float:y1, const Float:x2, const Float:y2);
+bool: Tryg3D::IsPointBetween2Points3D(const Float:px, const Float:py, const Float:pz, const Float:x1, const Float:y1, const Float:z1, const Float:x2, const Float:y2, const Float:z2);
+Tryg3D::GetGangZone(const Float:x, const Float:y, const Float:radius, &Float:minx, &Float:miny, &Float:maxx, &Float:maxy);
+bool: Tryg3D::IsProbable(const Float:chance, const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
+Tryg3D::RandomItemFromArray(const items[][LootArray], const max_items = sizeof(items), const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
+Tryg3D::GetWeaponShotPos(playerid, hittype, &Float:fx, &Float:fy, &Float:fz);
+
+# Converter Functions
+Float: Tryg3D::ShiftDegreeToRadian(const Float:value);
+Float: Tryg3D::ShiftDegreeToRadianEx(const Float:value);
+Float: Tryg3D::ShiftDegreeToGrades(const Float:value);
+Float: Tryg3D::ShiftRadianToDegree(const Float:value);
+Float: Tryg3D::ShiftRadianToDegreeEx(const Float:value);
+Float: Tryg3D::ShiftRadianToGrades(const Float:value);
+Float: Tryg3D::ShiftGradesToDegree(const Float:value);
+Float: Tryg3D::ShiftGradesToRadian(const Float:value);
+Tryg3D::ShiftRotationToVector(const Float:rx, const Float:rz, &Float:vx, &Float:vy, &Float:vz);
+Tryg3D::ShiftVectorToRotation(const Float:vx, const Float:vy, const Float:vz, &Float:rx, &Float:rz);
+bool: Tryg3D::ShiftVectorRotation(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::ShiftOffsetToPosition(const Float:x, const Float:y, const Float:z, Float:rx, Float:ry, Float:rz, const Float:offset_x, const Float:offset_y, const Float:offset_z, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::ShiftPositionToOffset(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:offset_x, &Float:offset_y, &Float:offset_z, const Float:tx, const Float:ty, const Float:tz);
+Tryg3D::ShiftLineRotation(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ);
+bool: Tryg3D::ShiftLineRotationVector(const Float:sX, const Float:sY, const Float:sZ, Float:eX, Float:eY, Float:eZ, const Float:rx, const Float:ry, const Float:rz, &Float:nX, &Float:nY, &Float:nZ);
+Tryg3D::ShiftSpeedToMoveTime(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, const Float:speed);
+Float: Tryg3D::ShiftMoveTimeToSpeed(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, const movement_time);
+
+# Extended Functions
+bool: Tryg3D::IsPointToPointVector(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, &Float:vx, &Float:vy, &Float:vz);
+Tryg3D::GetArcPoints3D(const Float:x, const Float:y, const Float:z, const Float:tx, const Float:ty, const Float:tz, Float:ry, const Float:height, Float:points[][3], const max_points = sizeof(points));
+Tryg3D::GetCube3DPoint(const OrientationCube3D:orientation, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z, &Float:tx, &Float:ty, &Float:tz);
+
+# ColAndreas Functions
+Tryg3D::IsColAndreasInit();
+Tryg3D::SafeColAndreasInit();
+Tryg3D::IsCollisionFlag(const value, const flag);
+Tryg3D::IsPointInUnderwater(const Float:x, const Float:y, const Float:z);
+Tryg3D::FindGroundZ(const Float:x, const Float:y, const Float:z, &Float:gZ);
+Tryg3D::MovePointCol(const Float:StartX, const Float:StartY, const Float:StartZ, const Float:EndX, const Float:EndY, const Float:EndZ, &Float:x, &Float:y, &Float:z);
+Tryg3D::MovePointColCutLine(const Float:sX, const Float:sY, const Float:sZ, const Float:eX, const Float:eY, const Float:eZ, &Float:x, &Float:y, &Float:z, const Float:cut_size = 0.0);
+Tryg3D::GetPointInFront3DCol(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInFront3DColEx(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Float: Tryg3D::GetPointInFrontOfPlayerCol(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Float: Tryg3D::GetPointInFrontOfCamera2DCol(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Tryg3D::GetPointInFrontOfCamera3DCol(const playerid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+Tryg3D::GetPointInFrontOfVehicleCol(const vehicleid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+Tryg3D::UndergroundFindZ(const Float:x, const Float:y, &Float:z);
+Tryg3D::InteriorFindZ(const Float:px, const Float:py, const Float:pz, const Float:size = 2.0, &Float:z = 0.0);
+bool: Tryg3D::IsPointInWater(const Float:x, const Float:y, const Float:z = 0.0);
+bool: Tryg3D::IsPointInUnderground(const Float:x, const Float:y, const Float:z);
+bool: Tryg3D::IsPointInAir(const Float:x, const Float:y, const Float:z, const bool:interior = false, const Float:max_distance = 2.2);
+bool: Tryg3D::IsPointInGround(const Float:x, const Float:y, const Float:z, const bool:interior = false, const Float:max_distance = 2.2);
+Tryg3D::GetPointCollisionFlags(const Float:x, const Float:y, const Float:z, const interiorid = 0);
+Tryg3D::IsBetweenPlayersIsWall(const playerid, const targetid);
+Tryg3D::IsBetweenPlayerToPointIsWall(const playerid, const Float:x, const Float:y, const Float:z);
+bool: Tryg3D::GetPointInWallForPoint(const Float:x, const Float:y, const Float:z, const Float:radius, &Float:tx, &Float:ty, &Float:tz, const Float:sector = 90.0);
+Tryg3D::SetCameraDirectionLookAt(const playerid, const Float:x, const Float:y, const Float:z, const Float:distance = 5.0, const Float:rx = 20.0, const Float:sector = 90.0);
+bool: Tryg3D::CollisionCheck(const Float:StartX, const Float:StartY, const Float:StartZ, const Float:EndX, const Float:EndY, const Float:EndZ, &Float:x, &Float:y, &Float:z, &Item3D:item_type = Item3D:0, &element_id = 0, const Float:cut_size = 0.0, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL);
+bool: Tryg3D::GetWallRotation(const Float:sx, const Float:sy, const Float:sz, const Float:ex, const Float:ey, const Float:ez, &Float:rx, &Float:rz, &Float:px = 0.0, &Float:py = 0.0, &Float:pz = 0.0, const Float:size = 1.0, const Float:cut_size = 0.0);
+Tryg3D::GetGroundRotation(const Float:x, const Float:y, const Float:size, &Float:rx, &Float:ry);
+bool: Tryg3D::IsPointInWaterFrontOfPlayer(const playerid, const Float:radius);
+bool: Tryg3D::IsPointInSphericalSectorEx(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
+
+# ColAndreas Callbacks
+OnColAndreasRemoveBuilding();
+OnColAndreasInitSuccess();
+OnColAndreasInitFail();
+
+# Area Functions
+bool: Tryg3D::IsPointInCylinder3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius);
+bool: Tryg3D::IsPointInCube(const Float:px, const Float:py, const Float:pz, const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz);
+bool: Tryg3D::IsPointInCube3D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, Float:size_x, Float:size_y, Float:size_z);
+bool: Tryg3D::IsPointInCone3D(const Float:px, const Float:py, const Float:pz, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b);
+bool: Tryg3D::IsPointInCircularSector(const Float:px, const Float:py, const Float:x, const Float:y, Float:rz, const Float:radius, Float:view_angle);
+bool: Tryg3D::IsPointInSphericalSector(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz);
+bool: Tryg3D::IsPointInEllipse(const Float:px, const Float:py, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y);
+bool: Tryg3D::IsPointInEllipticalCylinder(const Float:px, const Float:py, const Float:pz, const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y);
+bool: Tryg3D::IsPointInPolygon(const Float:x, const Float:y, const Float:points[], const max_points = sizeof(points));
+bool: Tryg3D::IsPointInCylinder2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius);
+bool: Tryg3D::IsPointInCone2D(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b);
+bool: Tryg3D::IsPointInCircle(const Float:px, const Float:py, const Float:x, const Float:y, const Float:radius);
+bool: Tryg3D::IsPointInSphere(const Float:px, const Float:py, const Float:pz, const Float:x, const Float:y, const Float:z, const Float:radius);
+bool: Tryg3D::IsPointInRectangle(const Float:px, const Float:py, const Float:minx, const Float:miny, const Float:maxx, const Float:maxy);
+
+# Random Functions
+Tryg3D::GetRandomHit(const Float:x, const Float:y, const Float:z, const range, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInCircle(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty);
+Tryg3D::GetPointInCylinder2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+bool: Tryg3D::GetPointInCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInSphere(const Float:x, const Float:y, const Float:z, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInRectangle(const Float:minx, const Float:miny, const Float:maxx, const Float:maxy, &Float:tx, &Float:ty);
+Tryg3D::GetPointInCube(const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInCube3D(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, Float:size_x, Float:size_y, Float:size_z, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInCone2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInCone3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInCircularSector(const Float:x, const Float:y, const Float:rz, const Float:radius, Float:view_angle, &Float:tx, &Float:ty);
+Tryg3D::GetPointInSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty);
+Tryg3D::GetPointInEllipticalCylinder(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, Float:size_y, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, const max_points = sizeof(points),  max_iterations = 10000);
+Float: Tryg3D::GetPointOnClock(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty, &Float:trz, Float:rz = TRYG3D_INVALID_ROTATION);
+Tryg3D::GetPointOnCircle(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty);
+Tryg3D::GetPointOnCylinder2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointOnCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointOnSphere(const Float:x, const Float:y, const Float:z, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointOnRectangle(const Float:minx, const Float:miny, const Float:maxx, const Float:maxy, &Float:tx, &Float:ty);
+Tryg3D::GetPointOnCube(const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointOnCube3D(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, Float:size_x, Float:size_y, Float:size_z, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointOnCone3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointOnCircularSector(const Float:x, const Float:y, const Float:rz, const Float:radius, Float:view_angle, &Float:tx, &Float:ty);
+Tryg3D::GetPointOnSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz, &Float:tx, &Float:ty, &Float:tz);
+Tryg3D::GetPointOnEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty);
+Tryg3D::GetPointOnEllipticalCyl2D(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty, &Float:tz);
+
+# Draw3D Functions
+Tryg3D::DrawCircle3D(const Float:x, const Float:y, const Float:z, const Float:radius, Float:points[][3], const max_sector = 36, const Float:rx = 90.0, const Float:ry = 0.0, const max_points = sizeof(points));
+Tryg3D::DrawCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, Float:points[][3], const max_sector = 36, const max_circles = 5, const max_points = sizeof(points));
+Tryg3D::DrawSphere(const Float:x, const Float:y, const Float:z, const Float:radius, Float:points[][3], const max_sector = 36, const max_circles = 5, const max_points = sizeof(points));
+Tryg3D::DrawCone3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, Float:points[][3], const max_sector = 36, const max_circles = 5, const max_points = sizeof(points));
+Tryg3D::DrawRectangle2D(const Float:minx, const Float:miny, const Float:maxx, const Float:maxy, Float:points[][2], const points_per_wall = 36, const max_points = sizeof(points));
+Tryg3D::DrawPolygon2D(const Float:polygon_points[], Float:points[][2], const points_per_line = 36, const max_polygon_points = sizeof(polygon_points), const max_points = sizeof(points));
+Tryg3D::DrawCube2D(const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz, Float:points[][3], const points_per_wall = 36, const max_points = sizeof(points));
+
+# Cast3D Functions
+Tryg3D::CastExplosion(const Float:x, const Float:y, const Float:z, const type, const Float:radius, const worldid = -1, const interiorid = -1, const playerid = -1, const Float:distance = 200.0);
+Tryg3D::CastExplosionDMG(const Float:x, const Float:y, const Float:z, const type, const Float:radius, const worldid = -1, const interiorid = -1, const playerid = -1, const Float:distance = 200.0, const Float:damage = 82.5, const Float:vehicle_damage = 82.5, const byplayerid = INVALID_PLAYER_ID, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
+Tryg3D::CastExplosionRangeDMG(const Float:x, const Float:y, const Float:z, const type, const Float:radius, const worldid = -1, const interiorid = -1, const playerid = -1, const Float:distance = 200.0, const Float:min_damage = 10.0, const Float:max_damage = 82.5, const Float:min_vehicle_damage = 50.0, const Float:max_vehicle_damage = 250.0, const byplayerid = INVALID_PLAYER_ID, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
+Tryg3D::CastDamage(const weaponid, const bodypart, const Float:damage, const Float:vehicle_damage, const Float:x, const Float:y, const Float:z, const Float:radius, const worldid = -1, const interiorid = -1, const playerid = -1, const byplayerid = INVALID_PLAYER_ID);
+Tryg3D::CastGravity(const Float:x, const Float:y, const Float:z, const Float:radius, Float:power = 1.0, const worldid = -1, const interiorid = -1, const playerid = -1, const byplayerid = INVALID_PLAYER_ID);
+
+# Vehicle Functions
+Tryg3D::GetVehicleFlags(vehicleid)
+Tryg3D::IsVehicleFlag(vehicleid, flag)
+Tryg3D::GetVehicleRotation(const vehicleid, &Float:rx, &Float:ry, &Float:rz);
+Tryg3D::GetPartPos(const modelid, const partid, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, &Float:tx, &Float:ty, &Float:tz, Float:offset_x = 0.0, Float:offset_y = 0.0, Float:offset_z = 0.0);
+Tryg3D::GetVehiclePartPos(const vehicleid, const partid, &Float:tx, &Float:ty, &Float:tz, Float:offset_x = 0.0, Float:offset_y = 0.0, Float:offset_z = 0.0);
+Tryg3D::GenerateVehicleFlags(const modelid);
+Tryg3D::GetVehicleModelDefaultFlags(const modelid);	
+Tryg3D::GetVehicleModelFlags(const modelid);
+Tryg3D::SetVehicleModelFlags(const modelid, const value);
+Tryg3D::ToggleVehicleModelFlag(const modelid, const flag, const bool:toggle);
+Tryg3D::IsVehicleInRangeOfPoint(const vehicleid, const Float:range, const Float:x, const Float:y, const Float:z);
+Tryg3D::CountVisibleVehicles(const playerid);
+Float: Tryg3D::GetVehicleSpeed(const vehicleid);
+Tryg3D::SetVehicleSpeed(const vehicleid, const Float:speed);
+Float: Tryg3D::GetPointInFrontOfVehicle2D(const vehicleid, &Float:tx, &Float:ty, const Float:radius);
+Tryg3D::GetPointInFrontOfVehicle3D(const vehicleid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+
+# Actor Functions
+Tryg3D::CountActors();
+Tryg3D::CountVisibleActors(playerid);
+
+# Player Functions
+bool: Tryg3D::IsPlayerSpawned(const playerid);
+bool: Tryg3D::IsPlayerSkydiving(playerid);
+bool: Tryg3D::IsPlayerUsingParachute(playerid);
+bool: Tryg3D::IsPlayerFall(playerid);
+bool: Tryg3D::IsPlayerAiming(playerid);
+bool: Tryg3D::IsPlayerStay(playerid);
+bool: Tryg3D::IsPlayerSwim(playerid);
+bool: Tryg3D::IsPlayerJump(playerid);
+bool: Tryg3D::IsPlayerParaFall(playerid);
+bool: Tryg3D::IsPlayerParaGlide(playerid);
+bool: Tryg3D::IsPlayerRunning(playerid);
+Tryg3D::GivePlayerDamage(const targetid, Float:amount, const playerid, const weaponid, const bodypart);
+Tryg3D::CountPlayers(const bool:isplayer = true, const bool:isnpc = true);
+Tryg3D::CountVisiblePlayers(const playerid, const bool:isplayer = true, const bool:isnpc = true);
+Float: Tryg3D::GetPointInFrontOfPlayer(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Tryg3D::GetPlayerCameraRotation(const playerid, &Float:rx, &Float:rz);
+Tryg3D::GetPlayerCameraZAngle(const playerid, &Float:z_angle);
+Float: Tryg3D::GetPointInFrontOfCamera2D(const playerid, &Float:tx, &Float:ty, const Float:radius);
+Float: Tryg3D::GetPlayerSpeed(const playerid);
+Tryg3D::GetPlayerTargetAngle(const playerid, const Float:x, const Float:y, &Float:rz);
+Tryg3D::SetPlayerTargetAngle(const playerid, const Float:x, const Float:y, &Float:rz = 0.0);
+Tryg3D::GetPlayerTargetPlayerAngle(const playerid, const targetid, &Float:rz);
+Tryg3D::SetPlayerTargetPlayerAngle(const playerid, const targetid, &Float:rz = 0.0);
+Tryg3D::GetPointInFrontOfCamera3D(const playerid, &Float:tx, &Float:ty, &Float:tz, const Float:radius, &Float:rx = 0.0, &Float:rz = 0.0);
+Tryg3D::IsPlayerLookAtSky(const playerid);
+Tryg3D::IsPlayerFakeSpectating(const playerid, const bool:force_disable = true);
+Float: Tryg3D::GetCameraTargetDistance(const Float:CamX, const Float:CamY, const Float:CamZ, const Float:ObjX, const Float:ObjY, const Float:ObjZ, const Float:FrX, const Float:FrY, const Float:FrZ);
+Tryg3D::IsPlayerAimingAt(const playerid, const Float:x, const Float:y, const Float:z, const Float:radius);
+Tryg3D::GetPlayerCameraLookAt(const playerid, &Float:x, &Float:y, &Float:z);
+
+# Universal Functions
+Tryg3D::ItemGetInvalidID(const Item3D:item_type);
+bool: Tryg3D::ItemGetPos(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, &Float:x, &Float:y, &Float:z);
+Tryg3D::ItemGetVirtualWorld(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type);
+Tryg3D::ItemGetInterior(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type);
+bool: Tryg3D::ItemGetRotationQuat(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, &Float:qw, &Float:qx, &Float:qy, &Float:qz);
+bool: Tryg3D::ItemGetUpVector(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, &Float:vx, &Float:vy, &Float:vz);
+bool: Tryg3D::ItemGetUpPos(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:radius, &Float:x, &Float:y, &Float:z, const bool:reverse = false);
+bool: Tryg3D::ItemOnPlayerScreen(const playerid, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ElementOrientation:orientation = o_front, const Float:rx = TRYG3D_INVALID_ROTATION, const Float:rz = TRYG3D_INVALID_ROTATION, const Float:vrx = VERTICAL_CAMERA_RADIUS, const Float:vrz = HORIZONTAL_CAMERA_RADIUS, const bool:testVW = true, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
+bool: Tryg3D::ItemOnFakeScreen(const Float:x, const Float:y, const Float:z, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type, const Float:rx, const Float:rz, const Float:vrx = VERTICAL_CAMERA_RADIUS, const Float:vrz = HORIZONTAL_CAMERA_RADIUS, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT);
+Float: Tryg3D::ItemGetDistance(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type);
+Float: Tryg3D::ItemGetDistanceFromPoint(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:z);
+bool: Tryg3D::ItemInCircle(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:radius);
+bool: Tryg3D::ItemInCylinder3D(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius);
+bool: Tryg3D::ItemInCylinder2D(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius);
+bool: Tryg3D::ItemInSphere(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:z, const Float:radius);
+bool: Tryg3D::ItemInRectangle(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:minx, const Float:miny, const Float:maxx, const Float:maxy);
+bool: Tryg3D::ItemInCube(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:minx, const Float:miny, const Float:minz,Float:maxx, const Float:maxy, const Float:maxz);
+bool: Tryg3D::ItemInPolygon(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:points[], const maxpoints = sizeof(points));
+bool: Tryg3D::ItemInCircularSector(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:rz, const Float:radius, const Float:view_angle);
+bool: Tryg3D::ItemInSphericalSector(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz);
+bool: Tryg3D::ItemInCone2D(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b);
+bool: Tryg3D::ItemInCone3D(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius_a, const Float:radius_b);
+bool: Tryg3D::ItemInCube3D(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z);
+bool: Tryg3D::ItemInEllipse(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:cx, const Float:cy, const Float:size_x, const Float:size_y);
+bool: Tryg3D::ItemInEllipticalCylinder2D(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y);
+bool: Tryg3D::ItemGetToPointVector(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:tx, const Float:ty, const Float:tz, &Float:vx, &Float:vy, &Float:vz);
+bool: Tryg3D::ItemGetRotatedVector(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:tx, const Float:ty, const Float:tz, &Float:vx, &Float:vy, &Float:vz, const bool:return_vector = true, const Float:rx = 0.0, const Float:ry = 0.0, const Float:rz = 0.0);
+bool: Tryg3D::ItemGetOrientationPos(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation, const Float:distance, &Float:tx, &Float:ty, &Float:tz);
+bool: Tryg3D::ItemInRangeOfPoint(const Float:x, const Float:y, const Float:z, const Float:range, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
+bool: Tryg3D::ItemInRangeOfItem(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:range, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
+bool: Tryg3D::ItemIsPlayerInRange(const playerid, const Float:range, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type = item_player, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_NONE);
+
+# Universal Functions (Streamer)
+bool: Tryg3D::ItemInDynamicArea(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const STREAMER_TAG_AREA:areaid);
+Tryg3D::ItemGetInDynamicArea(const STREAMER_TAG_AREA:areaid, const Item3D:element_type, element_list[], const max_element = sizeof(element_list));
+
+# Universal Functions (ColAndreas)
+bool: Tryg3D::ItemCollisionToPoint(const Float:x, const Float:y, const Float:z, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL);
+bool: Tryg3D::ItemCollisionToItem(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type, const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_ALL);
+Tryg3D::ItemToItemIsWall(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type);
+Tryg3D::ItemToPointIsWall(const Float:x, const Float:y, const Float:z, const TRYG3D_ELEMENT_TAG:targetid, const Item3D:target_type);
+Tryg3D::ItemGetCollisionFlags(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type);
+Tryg3D::ItemGetOrientationPosCol(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const ElementOrientation:orientation, const Float:distance, &Float:tx, &Float:ty, &Float:tz);
+bool: Tryg3D::ItemIsPointInWaterOrient(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Float:radius, const ElementOrientation:orientation = o_front);
+
+# Streamer Functions
+Tryg3D::SetPlayerAbsolutePosition(const playerid, const Float:x, const Float:y, const Float:z, const Float:angle, const worldid = -1, const interiorid = -1, const compensatedtime = -1, const freezeplayer = 1);
+Tryg3D::SetPlayerAbsolutePositionVeh(const playerid, const Float:x, const Float:y, const Float:z, const Float:angle, const worldid = -1, const interiorid = -1, const compensatedtime = -1, const freezeplayer = 1);
+bool: Tryg3D::IsVehicleFullyInArea(const vehicleid, const STREAMER_TAG_AREA:areaid);
+Tryg3D::GetPointInDynamicArea(const STREAMER_TAG_AREA:areaid, &Float:tx, &Float:ty, &Float:tz);
+
+# FCNPC Functions
+bool: FCNPC::InRangeOfPoint(const npcid, const Float:range, const Float:x, const Float:y, const Float:z);
+Float: FCNPC::GetPointInFront(const npcid, &Float:tx, &Float:ty, const Float:radius);
+FCNPC::GetTargetAngle(const npcid, const Float:x, const Float:y, &Float:rz);
+FCNPC::SetTargetAngle(const npcid, const Float:x, const Float:y, &Float:rz = 0.0);
+FCNPC::SetVehicleRotation(const npcid, const Float:rx, const Float:ry, const Float:rz);
+bool: FCNPC::SetVehicleTargetRotation(const npcid, const Float:tx, const Float:ty, const Float:tz, const Float:ry = 0.0);
+FCNPC::GoToAir(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const Float:min_distance = 0.0, const stopdelay = 250);
+Float: FCNPC::GetPointInFrontCol(const npcid, &Float:tx, &Float:ty, const Float:radius);
+FCNPC::GoToCol(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 0.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::GoToPlayerCol(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 0.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::GoToPlayerOnGroundCol(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 1.0, const Float:climbing = 2.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::GoToAirCol(const npcid, const Float:x, const Float:y, const Float:z, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const Float:cut_size = 0.0, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::SetFloorPos(const npcid);
+FCNPC::GoToPlayerOnGroundColVeh(const npcid, const playerid, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const Float:cut_size = 1.0, const Float:climbing = 2.0, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::RandomMoveInDynamicArea(const npcid, const STREAMER_TAG_AREA:areaid, const Float:climbing = 2.0, const type = FCNPC_MOVE_TYPE_AUTO, const Float:speed = FCNPC_MOVE_SPEED_AUTO, const mode = FCNPC_MOVE_MODE_AUTO, const bool:set_angle = true, const Float:min_distance = 0.0, const stopdelay = 250);
+FCNPC::SetAbsolutePosition(const npcid, const Float:x, const Float:y, const Float:z, const Float:angle, const worldid = -1, const interiorid = -1, const compensatedtime = -1, const freezeplayer = 1);
+
+# YSF Functions
+Tryg3D::GetPlayerHydraReactorRX(const playerid);
+Tryg3D::IsPlayerHydraReactorBoost(const playerid);
+Tryg3D::CountTextDraw();
+Tryg3D::CountVisibleTextDraw(const playerid);
+Tryg3D::CountPlayerTextDraw(const playerid);
+Tryg3D::CountVisiblePlayerTextDraw(const playerid);
+Tryg3D::CountGangZone();
+Tryg3D::CountVisibleGangZone(const playerid);
+Tryg3D::CountPlayerGangZone(const playerid);
+Tryg3D::CountVisiblePlayerGangZone(const playerid);
+bool: Tryg3D::IsVehicleOnSpawn(const vehicleid, const Float:check_radius = 1.0);
+bool: Tryg3D::IsPlayerOnSpawn(const playerid, Float:check_radius = 1.0);
+Tryg3D::GetPlayerRotation(const playerid, &Float:rx, &Float:ry, &Float:rz);
+Tryg3D::GetPointInGangZone(const zoneid, &Float:tx, &Float:ty);
+Tryg3D::GetPointInPlayerGangZone(const playerid,zoneid, &Float:tx, &Float:ty);
+
+# CatchItems Functions
+Tryg3D::GetStreamType(Stream:data);
+Tryg3D::IsValidStream(Stream:data); 
+bool: Tryg3D::IsPointInStream(const Float:x, const Float:y, const Float:z, const Stream:AreaData[Stream3D]);
+bool: Tryg3D::ItemInStream(const TRYG3D_ELEMENT_TAG:elementid, const Item3D:element_type, const Stream:AreaData[Stream3D], const worldid = -1, const interiorid = -1);
+Tryg3D::GetInStream(const Stream:AreaData[Stream3D], const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchCircle(const Float:x, const Float:y, const Float:radius, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchCylinder2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchCylinder3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:radius, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchSphere(const Float:x, const Float:y, const Float:z, const Float:radius, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchRectangle(const Float:minx, const Float:miny, const Float:maxx, const Float:maxy, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchStreamCube(const Float:minx, const Float:miny, const Float:minz, const Float:maxx, const Float:maxy, const Float:maxz, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchPolygon(const Float:points[], const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list), const maxpoints = sizeof(points));
+Tryg3D::CatchCircularSector(const Float:x, const Float:y, const Float:rz, const Float:radius, const Float:view_angle, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchCone2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius_a, const Float:radius_b, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchCone3D(const Float:xA, const Float:yA, const Float:zA, const Float:xB, const Float:yB, const Float:zB, const Float:pointA_radius, const Float:pointB_radius, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchCube3D(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:ry, const Float:rz, const Float:size_x, const Float:size_y, const Float:size_z, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchEllipse(const Float:cx,Float:cy, const Float:size_x, const Float:size_y, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchEllipticalCylinder2D(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, const Float:size_y, const Item3D:element_type, element_list[], const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+Tryg3D::CatchSphericalSectorEx(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, const Float:vrx, const Float:vrz, const Item3D:element_type, element_list[], const ignore_vehicle = INVALID_VEHICLE_ID, const ignore_player = INVALID_PLAYER_ID, const ignore_actor = INVALID_ACTOR_ID, const collision_flags = TRYG3D_COLLISION_FLAG_OBJECT, const worldid = -1, const interiorid = -1, const max_element = sizeof(element_list));
+
+# Grenade Detection Callbacks
+OnPlayerDroppingGrenade(playerid, weaponid, Float:x, Float:y, Float:z);
+OnPlayerGrenadeExplode(playerid, weaponid, Float:x, Float:y, Float:z);
+ 
+# VehicleCollision Functions
+Tryg3D::IsVehicleCollisionEnabled();
+Tryg3D::InitVehicleCollision(); //OnGameModeInit / OnFilterScriptInit
+Tryg3D::ExitVehicleCollision();
+Tryg3D::SyncVehicleCollision(vehicleid); //EVF -> OnVehicleCreated
+bool: Tryg3D::IsToggledVehicleCollision(vehicleid);
+Tryg3D::ToggleVehicleCollision(vehicleid, bool:toggle);
+
+# PlayerCollision Functions
+Tryg3D::IsPlayerCollisionEnabled();
+Tryg3D::InitPlayerCollision(); //OnGameModeInit / OnFilterScriptInit
+Tryg3D::ExitPlayerCollision();
+Tryg3D::SyncPlayerCollision(playerid); //auto called after player spawn
+bool: Tryg3D::IsToggledPlayerCollision(playerid);
+Tryg3D::TogglePlayerCollision(playerid, bool:toggle);
+
+# ActorCollision Functions
+Tryg3D::IsActorCollisionEnabled();
+Tryg3D::InitActorCollision(); //OnGameModeInit / OnFilterScriptInit
+Tryg3D::ExitActorCollision();
+Tryg3D::SyncActorCollision(actorid); //After create/change actor position
+bool: Tryg3D::IsToggledActorCollision(actorid);
+Tryg3D::ToggleActorCollision(actorid, bool:toggle);
+
+# Definitions
+TRYG3D_ELEMENT_TAG
+FLOAT_PI
+FLOAT_EULER
+FLOAT_NAN
+FLOAT_DEFECT
+FLOAT_INFINITY
+VERTICAL_CAMERA_RADIUS
+HORIZONTAL_CAMERA_RADIUS
+
+C_IN_GAME_X
+C_IN_GAME_Y
+C_IN_GAME_YW
+C_ON_SCREEN_X
+C_ON_SCREEN_Y
+
+TRYG3D_MAX_POLYGON_POINTS
+TRYG3D_VEHICLE_SPEED_MULTIPLIER
+TRYG3D_PLAYER_SPEED_MULTIPLIER
+TRYG3D_DEFAULT_RANDOM_ACCURACY
+TRYG3D_CHARACTER_GROUND_Z_DIFF
+TRYG3D_MAX_AREA_CHECK
+TRYG3D_INVALID_ROTATION
+TRYG3D_INVALID_VIRTUAL_WORLD
+TRYG3D_INVALID_MOVE_TIME
+TRYG3D_INVALID_MOVE_SPEED
+TRYG3D_INVALID_ORIENTATION
+TRYG3D_MAX_MODULES_STRING
+TRYG3D_RANDOM_MAX_ANGLE
+TRYG3D_VBTP
+TRYG3D_VLTP
+
+TRYG3D_EXTRA_DATA_FLAG_VEHICLE
+TRYG3D_EXTRA_DATA_FLAG_PLAYER
+TRYG3D_EXTRA_DATA_FLAG_ACTOR
+
+WEAPON_DYNAMIC_EXPLOSION_DMG
+WEAPON_DYNAMIC_EXPLOSION_RANGE
+
+//ColAndreas collision flags
+TRYG3D_COLLISION_FLAG_NONE, TRYG3D_COLLISION_FLAG_OBJECT, TRYG3D_COLLISION_FLAG_VEHICLE, TRYG3D_COLLISION_FLAG_PLAYER, TRYG3D_COLLISION_FLAG_ACTOR, TRYG3D_COLLISION_FLAG_ALL
+
+//Player position flags
+POSITION_FLAG_WORLD, POSITION_FLAG_INTERIOR, POSITION_FLAG_AIR, POSITION_FLAG_GROUND, POSITION_FLAG_WATER, POSITION_FLAG_UNDERWATER, POSITION_FLAG_UNDERGROUND
+
+//Vehicle flags
+VF_STREET, VF_AIRBORNE, VF_NATATORIAL, VF_MILITARY, VF_TRAIN, VF_RC, VF_CARRIAGE, VF_AIRPLANE, VF_HELICOPTER, VF_BIKES, VF_TRAILER, VF_TOWABLE, VF_POLICE
+
+// Vehicle parts
+VEHICLE_PART_RFTIRE    // Right Front tire
+VEHICLE_PART_LFTIRE    // Left Front tire
+VEHICLE_PART_RRTIRE    // Right Rear tire
+VEHICLE_PART_LRTIRE    // Left Rear tire
+VEHICLE_PART_HOOD      // In Front
+VEHICLE_PART_TRUNK     // Behind
+VEHICLE_PART_ROOF      // Roof
+VEHICLE_PART_CHASSIS   // Chassis
+VEHICLE_PART_PETROLCAP // Petrolcap
+
+# Enums
+
+enum 'EulerModes'
+- T3D:euler_xzx
+- T3D:euler_xyx
+- T3D:euler_yxy
+- T3D:euler_yzy
+- T3D:euler_zyz
+- T3D:euler_zxz
+- T3D:euler_xzy
+- T3D:euler_xyz
+- T3D:euler_yxz
+- T3D:euler_yzx
+- T3D:euler_zyx
+- T3D:euler_zxy
+
+enum 'OrientationCube3D'
+- o_left_back_down
+- o_right_back_down
+- o_right_front_down
+- o_left_front_down
+- o_left_back_up
+- o_right_back_up
+- o_right_front_up
+- o_left_front_up
+
+enum 'ElementOrientation'
+- o_left
+- o_right
+- o_up
+- o_down
+- o_front
+- o_back
+- o_front_left
+- o_front_right
+- o_back_left
+- o_back_right
+
+enum 'Vectors3D'
+- Float: T3D:X             - Position X
+- Float: T3D:Y             - Position Y
+- Float: T3D:Z             - Position Z
+- Float: T3D:A             - Angle
+
+enum 'Float3D'
+- Float: T3D:X             - Position X
+- Float: T3D:Y             - Position Y
+- Float: T3D:Z             - Position Z
+- Float: T3D:rX            - Rotation X
+- Float: T3D:rY            - Rotation Y
+- Float: T3D:rZ            - Rotation Z
+- Float: T3D:tX            - Target Position X
+- Float: T3D:tY            - Target Position Y
+- Float: T3D:tZ            - Target Position Z
+-        T3D:VW            - Virtual World ID
+-        T3D:INT           - Interior ID
+- Float: T3D:SPEED         - Speed
+
+enum 'LongFloat3D'
+- Float: T3D:X             - Position X
+- Float: T3D:Y             - Position Y
+- Float: T3D:Z             - Position Z
+- Float: T3D:rX            - Rotation X
+- Float: T3D:rY            - Rotation Y
+- Float: T3D:rZ            - Rotation Z
+- Float: T3D:tX            - Target Position X
+- Float: T3D:tY            - Target Position Y
+- Float: T3D:tZ            - Target Position Z
+- Float: T3D:trX           - Target Rotation X
+- Float: T3D:trY           - Target Rotation Y
+- Float: T3D:trZ           - Target Rotation Z
+- Float: T3D:VecX          - Vector Position X
+- Float: T3D:VecY          - Vector Position Y
+- Float: T3D:VecZ          - Vector Position Z
+-        T3D:VW            - Virtual World ID
+-        T3D:INT           - Interior ID
+- Float: T3D:SPEED         - Speed
+
+enum 'LootArray'
+-        ItemID
+- Float: ItemChance
+
+enum 'Item3D'
+- item_player
+- item_npc
+- item_actor
+- item_object
+- item_vehicle
+- item_dynamic_object
+- item_dynamic_pickup
+- item_dynamic_cp
+- item_dynamic_racecp
+- item_dynamic_mapicon
+- item_dynamic_3dtext
+- item_dynamic_actor
+- item_dynamic_vehicle
+- item_fcnpc
+
+enum 'StreamType'
+- s_invalid
+- s_circle
+- s_cylinder2d
+- s_cylinder3d
+- s_sphere
+- s_rectangle
+- s_cube2d
+- s_cube3d
+- s_polygon
+- s_circularsector
+- s_sphericalsector
+- s_cone2d
+- s_cone3d
+- s_ellipse
+- s_ellipticalcyl2d
+- a_sphericalsectorex
+[/code]
+
+[b]Download:[/b]
+[url=https://adm.ct8.pl/cloud/Libs/3DTryg/3DTryg.inc]3DTryg.inc[/url]
+
+[b]More functions available with plugins:[/b]
+ColAndreas (Recommended 1GB RAM for server by using this plugin)
+YSF
+Streamer
+FCNPC
+
+[b]Supported elements:[/b]
+1. Character Elements:
+- Player's
+- NPC's
+- Actor's
+- FCNPC's
+
+2. Static Elements:
+- Object's
+- Vehicle's
+- GangZone's
+
+3. Dynamic Elements:
+- DynamicObject's
+- DynamicPickup's
+- DynamicCP's
+- DynamicRaceCP's
+- DynamicMapIcon's
+- Dynamic3DText's
+- DynamicActor's
+
+4. Areas 2D / 3D:
+a) Geometric Figures:
+- Circle
+- Rectangle
+- Polygon
+- CircularSector
+- Ellipse
+- Cone2D
+
+b) Chunk:
+- Cylinder2D
+- Sphere
+- Cube
+- EllipticalCylinder2D
+
+c) Rotated Chunk:
+- Cylinder3D
+- SphericalSector
+- Cube3D
+- Cone3D
