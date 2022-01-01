@@ -1,7 +1,7 @@
 /*
 
 Library: 3DTryg.inc
-Copyright © 2021 Abyss Morgan. All rights reserved.
+Copyright © 2022 Abyss Morgan. All rights reserved.
 Contributors: Nero_3D (Shisk), Crayder, IllidanS4, RyDeR, Zoutdaxv, hesambia, Neil Lamoureux, Ivan_Ino, Ralfie, Unrea1, $continue$, Switel12, Mr.Reus
 
 Website: N/A
@@ -672,8 +672,6 @@ enum 'StreamType'
 
 #define TRYG3D_PLATFORM_PAWN                            0x01
 #define TRYG3D_PLATFORM_SAMP                            0x02
-#define TRYG3D_PLATFORM_TRILOGYMP						0x03
-#define TRYG3D_PLATFORM_SADEMP							0x04
 
 #if defined _samp_included
 	#if (!defined GetPlayerPoolSize || !defined GetSVarInt)
