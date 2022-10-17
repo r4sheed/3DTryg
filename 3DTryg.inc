@@ -148,6 +148,7 @@ Tryg3D::GetGangZone(const Float:x, const Float:y, const Float:radius, &Float:min
 bool: Tryg3D::IsProbable(const Float:chance, const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
 Tryg3D::RandomItemFromArray(const items[][LootArray], const max_items = sizeof(items), const accuracy = TRYG3D_DEFAULT_RANDOM_ACCURACY);
 Tryg3D::GetWeaponShotPos(playerid, hittype, &Float:fx, &Float:fy, &Float:fz);
+Tryg3D::GetCenterRectangle(const Float: x_min, const Float: y_min, const Float: x_max, const Float: y_max, &Float: x_center, &Float: y_center);
 
 # Converter Functions
 Float: Tryg3D::ShiftDegreeToRadian(const Float:value);
@@ -1848,6 +1849,13 @@ stock bool: Tryg3D::IsValidPolygon(const Float:points[], const max_points = size
 		if(max_points < 6) return false;
 	}
 	return true;
+}
+
+stock Tryg3D::GetCenterRectangle(const Float: x_min, const Float: y_min, const Float: x_max, const Float: y_max, &Float: x_center, &Float: y_center)
+{
+	x_center = (x_min + x_max) / 2.0;
+	y_center = (y_min + y_max) / 2.0;
+	return 1;
 }
 
 stock ElementOrientation: Tryg3D::GetOrientation(Float:angle){
