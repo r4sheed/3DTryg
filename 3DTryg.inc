@@ -14,7 +14,7 @@ Platforms:
 - SA:MP 0.3 DL
 
 File Version:
-- Gen. 2 v1.0.0
+- Gen. 2 v1.0.1
 
 Plugin Versions:
 - ColAndreas Version: 1.5.0
@@ -241,7 +241,7 @@ Tryg3D::GetPointInCircularSector(const Float:x, const Float:y, const Float:rz, c
 Tryg3D::GetPointInSphericalSector(const Float:x, const Float:y, const Float:z, const Float:rx, const Float:rz, const Float:radius, Float:vrx, Float:vrz, &Float:tx, &Float:ty, &Float:tz);
 Tryg3D::GetPointInEllipse(const Float:cx, const Float:cy, const Float:size_x, const Float:size_y, &Float:tx, &Float:ty);
 Tryg3D::GetPointInEllipticalCylinder(const Float:cx, const Float:cy, const Float:minz, const Float:maxz, const Float:size_x, Float:size_y, &Float:tx, &Float:ty, &Float:tz);
-Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, const max_points = sizeof(points),  max_iterations = 10000);
+Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, const max_points = sizeof(points), max_iterations = 10000);
 Float: Tryg3D::GetPointOnClock(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty, &Float:trz, Float:rz = TRYG3D_INVALID_ROTATION);
 Tryg3D::GetPointOnCircle(const Float:x, const Float:y, const Float:radius, &Float:tx, &Float:ty);
 Tryg3D::GetPointOnCylinder2D(const Float:x, const Float:y, const Float:minz, const Float:maxz, const Float:radius, &Float:tx, &Float:ty, &Float:tz);
@@ -646,11 +646,11 @@ enum 'StreamType'
 /*
 //Check Version 3DTryg.inc
 #if !defined TRYG3D_REMASTERED_INCLUDE
-	#error [ADM] This include required 3DTryg.inc Gen. 2 v1.0.0
+	#error [ADM] This include required 3DTryg.inc Gen. 2 v1.0.1
 #elseif !defined TRYG3D_VERSION
-	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.0
-#elseif (TRYG3D_VERSION < 10000)
-	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.0
+	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.1
+#elseif (TRYG3D_VERSION < 10001)
+	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.1
 #endif
 */
 
@@ -667,7 +667,7 @@ enum 'StreamType'
 #endif
 #define TRYG3D_REMASTERED_INCLUDE
 
-#define TRYG3D_VERSION                                  (10000) //a.b.c g+10000*a+100*b+c
+#define TRYG3D_VERSION                                  (10001) //a.b.c g+10000*a+100*b+c
 #define TRYG3D_LIBRARY_NAME                             "3DTryg"
 #define TRYG3D_AUTHOR_NAME                              "Abyss Morgan"
 
@@ -937,7 +937,7 @@ enum 'StreamType'
  ********************************/
  
 #if !defined TRYG3D_ELEMENT_TAG
-	#define TRYG3D_ELEMENT_TAG							{Text3D,DynamicObject,DynamicPickup,DynamicCP,DynamicRaceCP,DynamicMapIcon,DynamicText3D,DynamicArea,DynamicActor,DynamicVehicle,_}
+	#define TRYG3D_ELEMENT_TAG							{Text3D,DynamicObject,DynamicPickup,DynamicCP,DynamicRaceCP,DynamicMapIcon,DynamicText3D,DynamicArea,DynamicActor,_}
 #endif
 
 #if !defined FLOAT_PI
@@ -2512,7 +2512,7 @@ stock Tryg3D::GetPointInEllipticalCylinder(const Float:cx, const Float:cy, const
 	tz = Tryg3D::RandomFloat(0.0,floatsqroot(floatpower(minz-maxz,2)),6)+minz;
 }
 
-stock Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, const max_points = sizeof(points),  max_iterations = 10000){
+stock Tryg3D::GetPointInPolygon(const Float:points[], &Float:tx, &Float:ty, const max_points = sizeof(points), max_iterations = 10000){
 	if(!Tryg3D::IsValidPolygon(points,max_points)) return -1;
 	new Float:minx, Float:miny, Float:maxx, Float:maxy, recheck = 1;
 	minx = maxx = points[0];
