@@ -2,14 +2,14 @@
 
 
 ### Repository developers:
-* Abyss Morgan (Main Programmer, Wiki)
+* [Abyss Morgan](https://github.com/AbyssMorgan) (Main Programmer, Wiki)
 * Switel12 (Manager)
 
 
 ### Contributors:
-* Nero_3D
-* Crayder
-* IllidanS4
+* [Nero_3D](https://github.com/Shiska)
+* [Crayder](https://github.com/Crayder)
+* [IllidanS4](https://github.com/IS4Code)
 * RyDeR
 * Zoutdaxv
 * hesambia
@@ -17,6 +17,6 @@
 * Ivan_Ino
 * Ralfie
 * Unrea1
-* "$continue$"
+* [$continue$](https://github.com/continue98)
 * Mr.Reus
 * Switel12
