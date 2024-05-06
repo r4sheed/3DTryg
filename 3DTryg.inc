@@ -14,7 +14,7 @@ Platforms:
 - SA:MP 0.3 DL
 
 File Version:
-- Gen. 2 v1.0.1
+- Gen. 2 v1.0.2
 
 Plugin Versions:
 - ColAndreas Version: 1.5.0
@@ -646,11 +646,11 @@ enum 'StreamType'
 /*
 //Check Version 3DTryg.inc
 #if !defined TRYG3D_REMASTERED_INCLUDE
-	#error [ADM] This include required 3DTryg.inc Gen. 2 v1.0.1
+	#error [ADM] This include required 3DTryg.inc Gen. 2 v1.0.2
 #elseif !defined TRYG3D_VERSION
-	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.1
-#elseif (TRYG3D_VERSION < 10001)
-	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.1
+	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.2
+#elseif (TRYG3D_VERSION < 10002)
+	#error [ADM] Update your 3DTryg.inc to Gen. 2 v1.0.2
 #endif
 */
 
@@ -667,7 +667,7 @@ enum 'StreamType'
 #endif
 #define TRYG3D_REMASTERED_INCLUDE
 
-#define TRYG3D_VERSION                                  (10001) //a.b.c g+10000*a+100*b+c
+#define TRYG3D_VERSION                                  (10002) //a.b.c g+10000*a+100*b+c
 #define TRYG3D_LIBRARY_NAME                             "3DTryg"
 #define TRYG3D_AUTHOR_NAME                              "Abyss Morgan"
 
@@ -1313,7 +1313,11 @@ new const Float: Tryg3D::OrientationRotation[ElementOrientation][2] = {
 #define abs(%0)                                 (((%0) < 0)?(-(%0)):((%0)))
 #define fabs(%0)                                (((%0) < 0.0)?(-(%0)):((%0)))
 #define sqrtN(%0,%1)                            floatpower((%0),(1.0/(%1)))
-#define IsEven(%0)                              ((((%0) % 2) == 0)?(true):(false))
+
+#if !defined IsEven
+	#define IsEven(%0)                          ((((%0) % 2) == 0)?(true):(false))
+#endif
+
 #define power(%0,%1)                            (floatround(floatpower((%0),(%1))))
 
 /********************************
